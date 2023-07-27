@@ -1,0 +1,223 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-10">Cities</div>
+      <div class="col-md-2">
+
+        <button type="submit" (click)="openCityNew(cityDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+          <nb-icon icon="plus-outline"></nb-icon>ADD
+        </button>
+      </div>
+
+    </div>
+
+  </nb-card-header>
+  <nb-card-body>
+
+    <nb-card *ngFor="let item of cities">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-10">{{item.cityName}}</div>
+          <div class="col-md-1">
+            <button type="button" (click)="openCityDelete(deleteCityDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="trash-outline"></nb-icon>
+            </button>
+          </div>
+          <div class="col-md-1">
+            <button type="button" (click)="openCity(cityDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-md-6">
+            {{item.cityName}}/{{item.cityCode}}
+          </div>
+          <div class="col-md-6">
+            {{item.stateCode}}/{{item.countryCode}}
+          </div>
+
+        </div>
+       
+      </nb-card-body>
+
+    </nb-card>
+  </nb-card-body>
+
+</nb-card>
+
+<ng-template #cityDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onNewCitySubmit()" #mainNewCityForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <label class="label">Country</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true" (selectedChange)="loadStates(city.countryCode)"
+                     name="countryCode"
+                     [(ngModel)]="city.countryCode"
+                     required #countryCode="ngModel"
+                     [status]="countryCode.dirty ? (countryCode.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value={{item.countryCode}} *ngFor="let item of countries">{{item.countryName}}</nb-option>
+
+
+          </nb-select>
+        </div>
+        <div class="form-group">
+          <label class="label">State</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true" (selectedChange)="loadCities()"
+                     name="stateCode"
+                     [(ngModel)]="city.stateCode"
+                     required #stateCode="ngModel"
+                     [status]="stateCode.dirty ? (stateCode.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value={{item.stateCode}} *ngFor="let item of states">{{item.stateName}}</nb-option>
+
+
+          </nb-select>
+        </div>
+        <div class="form-group">
+          <label class="label">City Name</label>
+          <input type="text" nbInput fullWidth placeholder="City Name"
+                 autocomplete="off"
+                 name="cityName"
+                 [(ngModel)]="city.cityName"
+                 required #cityName="ngModel"
+                 [status]="cityName.dirty ? (cityName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">City Code</label>
+          <input type="text" nbInput fullWidth placeholder="City Code"
+                 autocomplete="off"
+                 name="cityCode"
+                 [(ngModel)]="city.cityCode"
+                 required #cityCode="ngModel"
+                 [status]="cityCode.dirty ? (cityCode.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewCityForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #cityDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onCitySubmit()" #mainCityForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <label class="label">Country</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true" (selectedChange)="loadStates(city.countryCode)"
+                     name="countryCode"
+                     [(ngModel)]="city.countryCode"
+                     required #countryCode="ngModel"
+                     [status]="countryCode.dirty ? (countryCode.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value={{item.countryCode}} *ngFor="let item of countries">{{item.countryName}}</nb-option>
+
+
+          </nb-select>
+        </div>
+        <div class="form-group">
+          <label class="label">State</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true" (selectedChange)="loadCities()"
+                     name="stateCode"
+                     [(ngModel)]="city.stateCode"
+                     required #stateCode="ngModel"
+                     [status]="stateCode.dirty ? (stateCode.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value={{item.stateCode}} *ngFor="let item of states">{{item.stateName}}</nb-option>
+
+
+          </nb-select>
+        </div>
+
+        <div class="form-group">
+          <label class="label">City Name</label>
+          <input type="text" nbInput fullWidth placeholder="City Name"
+                 autocomplete="off"
+                 name="cityName"
+                 [(ngModel)]="city.cityName"
+                 required #cityName="ngModel"
+                 [status]="cityName.dirty ? (cityName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">City Code</label>
+          <input type="text" nbInput fullWidth placeholder="City Code"
+                 autocomplete="off"
+                 name="cityCode"
+                 [(ngModel)]="city.cityCode"
+                 required #cityCode="ngModel"
+                 [status]="cityCode.dirty ? (cityCode.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainCityForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>UPDATE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteCityDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this City?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteCity()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

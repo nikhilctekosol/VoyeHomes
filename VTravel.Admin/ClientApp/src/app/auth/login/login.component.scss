@@ -1,0 +1,14 @@
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  /deep/ {
+    .btn-login {
+      width: 100%;
+    }
+
+    .input-full-width {
+      background-color:black;
+    }
+  }
+}
+

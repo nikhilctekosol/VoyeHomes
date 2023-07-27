@@ -1,0 +1,207 @@
+
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header>
+
+
+        <div class="row">
+          <div class="col-md-4">
+            Inventory
+          
+          </div>
+          <div class="col-md-8">
+            <nb-select placeholder="[SELECT PROPERTY]" [fullWidth]="true" (selectedChange)="onPropertySelected($event)"
+                       name="propertyId"
+                       [(ngModel)]="defaultPropertyId">
+              <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
+
+            </nb-select>
+
+
+          </div>
+
+
+
+
+
+        </div>
+      </nb-card-header>
+
+
+    </nb-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header>
+        
+
+        <div class="col-12 search-box">
+          <input nbInput placeholder="Date Range" [nbDatepicker]="rangepicker" [(ngModel)]="dateRange" class="date-picker-box input-rectangle">
+          <nb-rangepicker #rangepicker></nb-rangepicker>
+          <button class="btn btn-primary btn-rectangle search-btn" (click)="loadInventories()"
+                  [nbSpinner]="loadingSearch" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            Search
+          </button>
+        </div>
+
+      </nb-card-header>
+      <nb-card-body>
+        
+        <table class="table inventory-table">
+          <tr>
+            <th class="room-name-fixed">Rooms</th>
+          
+            <th class="day-cell" *ngFor="let item of dayList">{{item.dayObj | date:'MMM d'}}</th>
+          </tr>
+          <tr *ngFor="let item of rooms">
+            <th class="room-name-fixed">
+              {{item.title}}<br />
+              <a href="javascript:vid(0);" (click)="openInv(invDialog,item.id)">Bulk Update</a>
+            </th>
+           
+            <td class="qty-cell" *ngFor="let itemd of dayList">
+              <ng-container *ngIf="getInv(itemd.dayObj,item.id) as inv">
+
+
+                <input type="number" placeholder="Qty" title="Qty" class="qty-txt" value="{{inv.totalQty}}" (blur)="onInvChange('QTY',$event.target.value,itemd.dayObj,item.id)" />
+                <br /> <a href="javascript:void(0);" title="Blocked Qty" class="blocked-qty">{{inv.bookedQty}} blocked</a>
+                <br />
+                <input type="number" placeholder="Price" title="Price" class="price-txt" value="{{inv.price}}" (blur)="onInvChange('PRICE',$event.target.value,itemd.dayObj,item.id)" />
+                <br />
+                <input type="number" placeholder="XPrice" title="Extra Bed Price" class="price-txt" value="{{inv.extraBedPrice}}" (blur)="onInvChange('EXTRA_BED_PRICE',$event.target.value,itemd.dayObj,item.id)" />
+                <br />
+                <input type="number" placeholder="CPrice" title="Child Price" class="price-txt" value="{{inv.childPrice}}" (blur)="onInvChange('CHILD_PRICE',$event.target.value,itemd.dayObj,item.id)" />
+
+              </ng-container>
+            </td>
+          </tr>
+        </table>
+
+     
+      </nb-card-body>
+      <nb-card-footer>
+        <!--<button class="btn btn-primary btn-rectangle search-btn"
+                [nbSpinner]="loadingSearch" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          Update
+        </button>-->
+      </nb-card-footer>
+
+    </nb-card>
+  </div>
+</div>
+
+
+
+
+<ng-template #invDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onInvSubmit()" #mainInvForm="ngForm" novalidate>
+
+        <div class="form-group row">
+          <div class="col-6">
+            <label class="label">From-Date</label>
+            <input type="date" nbInput fullWidth placeholder="From-Date"
+                   autocomplete="off"
+                   name="fromDate"
+                   [(ngModel)]="invData.fromDate"
+                   required #fromDate="ngModel"
+                   [status]="fromDate.dirty ? (fromDate.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+          <div class="col-6">
+            <label class="label">To-date</label>
+            <input type="date" nbInput fullWidth placeholder="To-date"
+                   autocomplete="off"
+                   name="toDate"
+                   [(ngModel)]="invData.toDate"
+                   required #toDate="ngModel"
+                   [status]="toDate.dirty ? (toDate.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+        </div>
+
+
+
+        <div class="form-group">
+          <label class="label">Quantity</label>
+          <input type="number" nbInput fullWidth placeholder="Quantity"
+                 autocomplete="off"
+                 name="totalQty"
+                 [(ngModel)]="invData.totalQty"
+                 required #totalQty="ngModel"
+                 [status]="totalQty.dirty ? (totalQty.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Price</label>
+          <input type="number" nbInput fullWidth placeholder="Price"
+                 autocomplete="off"
+                 name="price"
+                 [(ngModel)]="invData.price"
+                 required #price="ngModel"
+                 [status]="price.dirty ? (price.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Extra Bed Price</label>
+          <input type="number" nbInput fullWidth placeholder="Extra Bed Price"
+                 autocomplete="off"
+                 name="extraBedPrice"
+                 [(ngModel)]="invData.extraBedPrice"
+                 required #extraBedPrice="ngModel"
+                 [status]="extraBedPrice.dirty ? (extraBedPrice.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Child Price</label>
+          <input type="number" nbInput fullWidth placeholder="Child Price"
+                 autocomplete="off"
+                 name="childPrice"
+                 [(ngModel)]="invData.childPrice"
+                 required #childPrice="ngModel"
+                 [status]="childPrice.dirty ? (childPrice.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+
+
+        <div class="row">
+          <div class="col-8">
+
+          </div>
+          <div class="col-4">
+            <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainInvForm.invalid"
+                    [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+              <nb-icon icon="save-outline"></nb-icon>SAVE
+            </button>
+          </div>
+        </div>
+
+
+
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+
+
+
+
+
+
+

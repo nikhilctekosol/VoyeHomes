@@ -1,0 +1,65 @@
+﻿@model PageViewModel
+
+    <div class="container">
+
+        <div class="breadCrumbs">
+
+        </div>
+
+
+        <div class="row">
+            <!-- Highlights -->
+            <div class="col-md-12">
+
+                <div class="propertyCaption pt-0">
+                    <div class="row">
+                        <div class="col-md-8 ">
+                            <h1 class="h3">Our Super Hosts</h1>
+                        </div>
+                    </div>
+                </div>
+                @if (Model.hostList != null)
+                {
+                    <div class="formWraper dataHighlights">
+                        <div class="header pl-0 mb-2 pt-4">They know their places better than anyone else and are passionate about presenting them to the world</div>
+                        <div class="row">
+                            <div class="col-md-12 mt-3">
+                                <p>We aim to build the strongest relationships with both our guests and homeowners with consistent quality services. Apart from individual caretaker of each holiday home, we have Super Hosts in each destinations to manage our operations and provide a hassle free vacation for our guests.</p>
+                                <p class="fItalic">Our Super Host comprises of people that are proactive, energetic, friendly, helpful, cheerful and most importantly, honest and reliable. Our Super Host’s are generally locals and have a very ‘hands on’ approach to provide a fabulous vacation because they know their places better than anyone else and are passionate about presenting them to the world.</p>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row teamMembers">
+                                    @foreach (var host in Model.hostList)
+                                    {
+                                        <div class="col">
+                                            <div class="wrapper">
+                                                <div class="avatar"><img src="@host.image" alt="@host.host_name" onerror="this.src='/assets/img/default.jpg'"></div>
+                                                <div class="read">
+                                                    <div class="who">@host.host_name
+                                                    @*<span class="c-gray">Travel Assiatant</span>*@
+                                                    </div>
+                                                    <div class="gray location"><i class="fas fa-map-marker-alt"></i>  @host.destination_title</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    }
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+
+
+        </div>
+    </div>
+
+    
+    <script type="text/javascript">
+        $('header').addClass('noneBanner');
+    </script>

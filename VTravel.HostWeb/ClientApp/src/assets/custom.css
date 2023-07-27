@@ -1,0 +1,54 @@
+/*Scroll bars*/
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+.tabset {
+  justify-content: normal !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+.res-card-contaier{
+    max-height:400px;
+}
+
+.prop-name {
+  font-size: 10px;
+  position: absolute;
+  margin-left: 70px;
+  margin-top: 50px;
+}
+
+@media only screen and (max-width: 767px) {
+  .fc-daygrid-dot-event .fc-event-title {
+    font-weight: normal !important;
+    font-size: 11px !important;
+    text-align: center !important;
+    white-space: normal;
+  }
+
+  .fc-daygrid-event-dot {
+    display: none !important;
+  }
+  .fc .fc-toolbar.fc-header-toolbar {
+    
+    font-size: 10px !important;
+  }
+}

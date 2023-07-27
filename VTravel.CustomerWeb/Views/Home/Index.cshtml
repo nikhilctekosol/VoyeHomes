@@ -1,0 +1,259 @@
+﻿@model HomeViewModel
+
+
+
+<div class="highlightMessage">
+    <h2 class="stylish">Experience the Exclusive Stays</h2>
+    <h1>Experience the comforts of  private holiday homes and heritage bungalows</h1>
+    @*<a href="listing.html" class="btn btn-primary">Explore ></a>*@
+</div>
+
+
+@if (Model.bannerList.Count > 0)
+{
+
+
+    <div class="master-slider">
+        
+
+        @foreach (var banner in Model.bannerList)
+        {
+            <div class="item">
+                <picture>
+                    <source media="(max-width: 320px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_320,c_scale/")">
+                    <source media="(max-width: 375px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_375,c_scale/")">
+                    <source media="(max-width: 414px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_414,c_scale/")">
+                    <source media="(max-width: 480px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_480,c_scale/")">
+                    <source media="(max-width: 600px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_600,c_scale/")">
+                    <img src="@banner.image_url.Replace("/image/upload/", "/image/upload/w_1920,c_scale/")" alt="Voye Homes" onerror="this.src='/assets/img/default.jpg'">
+                </picture>
+            </div>
+
+        }
+    </div>
+}
+
+<div class="container">
+    @if (Model.featureList.Count > 0)
+    {
+        <!-- Values -->
+        <section class="values">
+            <div class="value-slider">
+                @foreach (var feature in Model.featureList)
+                {
+                    <div class="box">
+                        @if (feature.thumbnail != null)
+                        {
+                            <img src="@feature.thumbnail" alt="@feature.title"
+                                 onerror="this.src='/assets/img/default.jpg'" />
+                        }
+                        <p>@feature.title</p>
+                    </div>
+
+                }
+            </div>
+        </section>
+    }
+
+
+
+
+   @* <div id="destinations-div"></div>*@
+
+    <!-- Destinations -->
+  @if (Model.destinationList.Count > 0)
+    {
+        <section class="destination" id="desitnations">
+            <div class="header">Your Favourite Destinations<p>Voye Homes will be your best choice when you need privacy in a cosy home, the ambience of a fabulous vacation and the excellence of a hotel</p></div>
+            <div class="desti-slider">
+
+                @foreach (var destination in Model.destinationList)
+                {
+                    <div class="box">
+                        <a href="destination/@General.GetUrlSlug(destination.title)-@General.EncodeString(destination.id.ToString())">
+                            <div class="img"><img src="@destination.thumbnail"
+                                 alt="@destination.title" onerror="this.src='/assets/img/default.jpg'"  /></div>
+                        </a>
+                        <h4>@destination.title 
+                       
+                        </h4>
+                    </div>
+
+                }
+                
+            </div>
+        </section>
+    }
+    
+
+</div>
+
+<div class="highlights">
+    <div class="container">
+        <div class="row" id="popu-feature-div">
+            
+           
+            @{
+                var featuredTag = Model.tagList.FirstOrDefault(item => item.id == 3);
+
+                if (featuredTag != null)
+                {
+                    if (featuredTag.propertyList != null)
+                    {
+                        if (featuredTag.propertyList.Length > 0)
+                        {
+                            Random rnd = new Random();
+                            int randomIndex = rnd.Next(0, featuredTag.propertyList.Length);
+
+                            var property = featuredTag.propertyList[randomIndex];
+
+                            <div class="col-6">
+                                <a href="@General.GetUrlSlug(property.perma_title)-@General.EncodeString(property.id.ToString())">
+                                    <div class="featured">
+                                        <div class="featuredhead">
+                                            <div class="featuredLabel">Featured</div>
+                                            <div class="featuredProperty">@property.title</div>
+                                        </div>
+                                        <picture>
+                                            <source media="(max-width: 320px)" srcset="@property.thumbnail.Replace("/image/upload/", "/image/upload/w_320,c_scale/")">
+                                            <source media="(max-width: 375px)" srcset="@property.thumbnail.Replace("/image/upload/", "/image/upload/w_375,c_scale/")">
+                                            <source media="(max-width: 414px)" srcset="@property.thumbnail.Replace("/image/upload/", "/image/upload/w_414,c_scale/")">
+                                            <source media="(max-width: 480px)" srcset="@property.thumbnail.Replace("/image/upload/", "/image/upload/w_480,c_scale/")">
+                                            <source media="(max-width: 600px)" srcset="@property.thumbnail.Replace("/image/upload/", "/image/upload/w_600,c_scale/")">
+                                            <img src="@property.thumbnail.Replace("/image/upload/", "/image/upload/w_600,c_scale/")" alt="@property.title" onerror="this.src='/assets/img/default.jpg'">
+                                        </picture>
+                                    </div>
+                                </a>
+                            </div>
+
+                        }
+                    }
+                }
+             }
+                @{
+                    var popularTag = Model.tagList.FirstOrDefault(item => item.id == 1);
+
+                    if (popularTag != null)
+                    {
+                        if (popularTag.propertyList != null)
+                        {
+                            if (popularTag.propertyList.Length > 0)
+                            {
+                                <div class="col-6 popular">
+                                    <h3>Popular Holiday Homes</h3>
+                                    <p>
+                                        Think of a private holiday home for your next vacation? Think of VOYE HOMES!     <a href="category/@General.GetUrlSlug(popularTag.tagName)-@General.EncodeString(popularTag.id.ToString())" class="link">View all <i class="fas fa-arrow-right"></i></a>
+                                        <div class="single-slider-auto">
+                                            @foreach (var property in popularTag.propertyList)
+                                            {
+                                                <div class="popolarItems">
+                                                    <div class="wraper">
+                                                        <div class="brand">VOYE Homes</div>
+                                                        <div class="name">@property.title</div>
+                                                        <div class="type">@property.propertyTypeName</div>
+                                                        <a href="@General.GetUrlSlug(property.perma_title)-@General.EncodeString(property.id.ToString())" class="btn btn-primary sm">View Detail</a>
+                                                    </div>
+
+                                                
+                                                <img src="@property.thumbnail.Replace("/image/upload/", "/image/upload/w_600,c_scale/")" alt="@property.title" onerror="this.src='/assets/img/default.jpg'">
+
+                                            </div>
+                                            }
+                                        </div>
+
+                                </div>
+                            }
+                        }
+
+                    }
+
+                }
+
+
+            </div>
+        <div class="col-md-12 testimonials">
+            <div class="title">See what our happy customers says</div>
+            <!-- Values -->
+            <section class="client-says">
+                <div class="client-slider">
+                    <div class="item">
+                        <div class="wrapper">
+                            <div class="avatar"><img src="~/assets/theme2021/img/avatar01.jpg" alt="Voyehomes" /></div>
+                            <div class="read">
+                                <div class="who">Binu John</div>
+                                <p>
+                                    An excellent stay :)
+                                    Convenient location, easily accessible by private or public transportation. A great weekend getaway with your loved one.E3 theme park and sunrise view point is a must visit one when you are here. We wanted to spent sometime away from the hassles of city life. VOYE HOMES was the best choice we made. We hired a pool villa. Kids loved it. Rooms are neat, spacious and well maintained.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="wrapper">
+                            <div class="avatar"><img src="~/assets/theme2021/img/avatar02.jpg" alt="Voyehomes" /></div>
+                            <div class="read">
+                                <div class="who">Mouzam Khot</div>
+                                <p>Good vibe at this place. An isolated offbeat place with an amazing hill and tea plantation view. The ambience is good. Very quiet and peaceful place to visit with your friends and loved ones. The staff is also co-operative and Bornfire with barbeque is also available.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="holiday-homes">
+    <!-- Destinations -->
+    @foreach (var tag in Model.tagList)
+    {
+        @if (tag.propertyList != null)
+        {
+            if (tag.propertyList.Length > 0)
+            {
+                <section class="normListing">
+                    <div class="header">@tag.tagName <a href="category/@General.GetUrlSlug(tag.tagName)-@General.EncodeString(tag.id.ToString())" class="link float-right">View all <i class="fas fa-arrow-right"></i></a></div>
+                    <div class="listing-slider">
+                        @foreach (var property in tag.propertyList)
+                        {
+                            <div class="box">
+                                <a href="@General.GetUrlSlug(property.perma_title)-@General.EncodeString(property.id.ToString())">
+                                    <div class="wrapper">
+                                        <div class="img">
+
+                                            @if (property.priceList != null)
+                                            {
+                                                if (property.priceList.Length > 0)
+                                                {
+                                            <div class="price">from ₹@property.priceList[0].price</div>
+
+                                                }
+                                            }
+                                            <img src="@property.thumbnail.Replace("/image/upload/", "/image/upload/w_300,c_scale/")" alt="@property.title" onerror="this.src='/assets/img/default.jpg'">
+
+
+                                        </div>
+                                        <h4>@property.title</h4>
+                                        <div class="gray location"><i class="fas fa-map-marker-alt"></i> @property.city, @property.state</div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+        }
+    }
+</div>
+
+
+<!-- 
+<script src="~/assets/js/custom-pages/home-index.js?v=002" type="module"></script>
+-->
+
+
+
+
+
+<!-- * App Capsule -->

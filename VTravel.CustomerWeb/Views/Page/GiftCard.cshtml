@@ -1,0 +1,155 @@
+﻿@model PageViewModel
+
+
+
+
+<!-- Giftcard Header -->
+<section class="giftcard-header w-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img src="~/assets/theme2021/img/giftcard.jpg" alt="Popular Holiday Homes" class="img-fluid" />
+            </div>
+            <div class="col-md-6">
+                <div class="middle-container">
+                    <div class="text-middle">
+                        <div class="tagline color-secondary">Made to Spread Happiness</div>
+                        <h1>
+                            <span class="f-light">Think VOYE HOMES!</span><br />
+                            A special gift to create<br />
+                            good memmories
+                        </h1>
+                        <p>Need help? call <a href="tel:@General.GetSettingsValue("business_phone")">+919539690660</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Steps -->
+<section class="giftcard-steps">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-center">Gift Card Made Easy</h2>
+            </div>
+            <div class="col-md-4">
+                <div class="wrapper">
+                    <div class="img"><img src="~/assets/theme2021/img/giftcard-process01.png" alt="Popular Holiday Homes" class="img-fluid" /></div>
+                    <h3>Choose & Personlize</h3>
+                    <p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="wrapper">
+                    <div class="img"><img src="~/assets/theme2021/img/giftcard-process02.png" alt="Popular Holiday Homes" class="img-fluid" /></div>
+                    <h3>Receive by Email or Hard Copy</h3>
+                    <p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="wrapper">
+                    <div class="img"><img src="~/assets/theme2021/img/giftcard-process03.png" alt="Popular Holiday Homes" class="img-fluid" /></div>
+                    <h3>Now it is their Turn to Explore</h3>
+                    <p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gift Card Form -->
+<section class="giftcard-form">
+    <div class="container">
+        <div class="row frame">
+            <div class="col-md-5">
+                <div class="form-img">
+                    <img src="~/assets/theme2021/img/giftcard-front.jpg" alt="Popular Holiday Homes" class="img-fluid" />
+                </div>
+            </div>
+            <div class="col-md-7">
+                <form class="needs-validation row" novalidate="" id="giftcard-form" asp-controller="Page" asp-action="GiftCard" method="post">
+                    <div class="col-md-12"><h4 class="h2">Let’s create the gift card</h4></div>
+                    <div class="col-md-12"><h6 class="mt-3">Gift Details</h6></div>
+                    <div class="form-group col-md-6">
+                        <input type="number" class="form-control" id="denomination" name="denomination" placeholder="Enter Denomination*" required="">
+                        <div class="invalid-feedback">Invalid </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Quantity*" required="">
+                        <div class="invalid-feedback">Invalid </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control" id="delivery_option" name="delivery_option">
+                            <option selected>Delivery Options*</option>
+                            <option value="SEND_TO_FRIEND">Send as Gift</option>
+                            <option value="SEND_TO_SELF">Buy for Self</option>
+                        </select>
+                        <div class="invalid-feedback">Invalid </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control" id="delivery_mode" name="delivery_mode">
+                            <option selected>Delivery Mode*</option>
+                            <option value="EMAIL">Email</option>
+                            <option value="SMS">SMS</option>
+                            <option value="BOTH">Both</option>
+                        </select>
+                        <div class="invalid-feedback">Invalid </div>
+                    </div>
+                    <div class="col-md-12"><h6 class="mt-3">Receiver Information</h6></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="receiver_name" name="receiver_name" placeholder="Receiver Name*" required="">
+                            <div class="invalid-feedback">Invalid </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="receiver_email" name="receiver_email" placeholder="Receiver Email*" required="">
+                            <div class="invalid-feedback">Invalid </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="receiver_mobile" name="receiver_mobile" placeholder="Receiver Mobile Number*" required="">
+                            <div class="invalid-feedback">Invalid </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <textarea id="message" class="form-control message" name="message" rows="4" placeholder="Message for Sender"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12"><h6 class="mt-3">Sender Information</h6></div>
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="sender_name" name="sender_name" placeholder="Sender Name*" required="">
+                        <div class="invalid-feedback">Invalid </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="sender_email" name="sender_email" placeholder="Sender Email*" required="">
+                        <div class="invalid-feedback">Invalid </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <input type="text" class="form-control" id="sender_mobile" name="sender_mobile" placeholder="Sender Mobile Number*" required="">
+                        <div class="invalid-feedback">Invalid </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <select class="form-control" id="when_to_send" name="when_to_send">
+                            <option selected>When do you want to send your card?*</option>
+                            <option value="NOW">Gift Now</option>
+                            <option value="LATER">Gift Later</option>
+                        </select>
+                        <div class="invalid-feedback">Invalid </div>
+                    </div>
+                    <div class="form-group col-md-12 mt-2">
+                        <button type="submit" class="btn btn-primary">Buy Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script type="text/javascript">$('header').addClass('noneBanner');</script>
+
+
+
+

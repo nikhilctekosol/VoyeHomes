@@ -1,0 +1,292 @@
+﻿@model ReservationViewModel
+
+<div class="container">
+
+    <div class="breadCrumbs">
+        <ul>
+            <li><a href="/">Home</a></li>
+
+            <li><a href="../@General.GetUrlSlug(@Model.property.perma_title)-@General.EncodeString(@Model.property.id.ToString())">@Model.property.title </a></li>
+            <li><a href="#" class="active">Booking </a></li>
+        </ul>
+    </div>
+
+    
+    <div class="row form">
+        <!-- Highlights -->
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8 ">
+
+            <div class="propertyCaption">
+                <div class="row">
+                    <div class="col-md-8 ">
+                        <h3>@Model.property.title <span class="gray location"><i class="fas fa-map-marker-alt"></i>  @Model.property.city, @Model.property.state</span></h3>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        @if (Model.property.priceList != null)
+                            {
+                        @if (Model.property.priceList.Length > 0)
+                        {
+                        <h3 class="float-left text-right">
+                            Price from ₹@Model.property.priceList[0].price
+                            <span class="gray location">@Model.property.priceList[0].priceName</span>
+                        </h3>}}
+
+                    </div>
+                </div>
+            </div>
+            <div class="highlighting">
+                <div class="row">
+                    <div class="col-md-4 col-4">
+                        <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><path d="M432 230.7a79.44 79.44 0 00-32-6.7H112a79.51 79.51 0 00-32 6.69A80.09 80.09 0 0032 304v112a16 16 0 0032 0v-8a8.1 8.1 0 018-8h368a8.1 8.1 0 018 8v8a16 16 0 0032 0V304a80.09 80.09 0 00-48-73.3zM376 80H136a56 56 0 00-56 56v72a4 4 0 005.11 3.84A95.5 95.5 0 01112 208h4.23a4 4 0 004-3.55A32 32 0 01152 176h56a32 32 0 0131.8 28.45 4 4 0 004 3.55h24.46a4 4 0 004-3.55A32 32 0 01304 176h56a32 32 0 0131.8 28.45 4 4 0 004 3.55h4.2a95.51 95.51 0 0126.89 3.85A4 4 0 00432 208v-72a56 56 0 00-56-56z"></path></svg></div>
+                        <div class="info">
+                            @Model.property.roomCount<br>
+                            <span>Bedrooms</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-4">
+                        <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><path d="M261.56 101.28a8 8 0 00-11.06 0L66.4 277.15a8 8 0 00-2.47 5.79L63.9 448a32 32 0 0032 32H192a16 16 0 0016-16V328a8 8 0 018-8h80a8 8 0 018 8v136a16 16 0 0016 16h96.06a32 32 0 0032-32V282.94a8 8 0 00-2.47-5.79z"></path><path d="M490.91 244.15l-74.8-71.56V64a16 16 0 00-16-16h-48a16 16 0 00-16 16v32l-57.92-55.38C272.77 35.14 264.71 32 256 32c-8.68 0-16.72 3.14-22.14 8.63l-212.7 203.5c-6.22 6-7 15.87-1.34 22.37A16 16 0 0043 267.56L250.5 69.28a8 8 0 0111.06 0l207.52 198.28a16 16 0 0022.59-.44c6.14-6.36 5.63-16.86-.76-22.97z"></path></svg></div>
+                        <div class="info">
+                            @Model.property.propertyTypeName<br>
+                            <span>Property Type</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-4">
+                        <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><circle cx="256" cy="56" r="56"></circle><path d="M437 128H75a27 27 0 000 54h101.88c6.91 0 15 3.09 19.58 15 5.35 13.83 2.73 40.54-.57 61.23l-4.32 24.45a.42.42 0 01-.12.35l-34.6 196.81A27.43 27.43 0 00179 511.58a27.06 27.06 0 0031.42-22.29l23.91-136.8S242 320 256 320c14.23 0 21.74 32.49 21.74 32.49l23.91 136.92a27.24 27.24 0 1053.62-9.6L320.66 283a.45.45 0 00-.11-.35l-4.33-24.45c-3.3-20.69-5.92-47.4-.57-61.23 4.56-11.88 12.91-15 19.28-15H437a27 27 0 000-54z"></path></svg></div>
+                        <div class="info">
+                            @Model.property.bathroomCount<br>
+                            <span>Bathrooms</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="formWraper">
+                <div class="header pl-0 mb-2 pt-4">Reservation Form</div>
+                <div class="section mt-4 mb-5" id="enquiry-section">
+                    <form class="needs-validation row" novalidate="" id="enquiry-form"  action="Index" method="post">
+                        <input type="hidden" id="propertyId" name="propertyId" value="@Model.property.id">
+                        
+                        <div class="col-md-12 form-group boxed">
+                            <div class="input-wrapper full-phone-number">
+                                <label class="label" for="roomType">Room Type</label>
+                                <select class="form-control custom-select country-code" id="roomId" name="roomId" required="">
+                                    
+                                    @foreach (var room in Model.property.roomList)
+                                    {
+
+                                        <option value="@room.id">@room.title</option>
+
+                                    }
+
+                                </select>
+
+                                @if(Model.property.roomList!=null){
+                                  if(@Model.property.roomList.Length>0){
+                                       <input type="hidden" id="roomName" name="roomName" value="@Model.property.roomList[0].title" />
+                                }
+                                }
+
+                                <input type="hidden" id="priceListJson" name="priceListJson" value="" />
+                                  <input type="hidden" id="totalPricePerRoom" name="totalPricePerRoom" value="" />
+                               
+                            </div>
+                        </div>
+
+                           <div class="col-md-12 form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label" for="email5">Check-in - Check-out</label>
+                                <input type="text" autocomplete="off" readonly="readonly" class="form-control" id="daterange" name="daterange" placeholder="Check-in - Check-out" required="">
+                                <div class="invalid-feedback">Please select check-in and check-out.</div>
+                                <input type="hidden" id="startDate" name="startDate" />
+                                <input type="hidden" id="endDate" name="endDate" />
+                            </div>
+                        </div>
+
+                        @*<div class="col-md-12 form-group boxed" id="price_block" >
+
+                            <b>Total @Model.property.priceList[0].priceName : RS <label id="total"></label>(Incl. taxes and other charges)</b>   <a href="#" data-toggle="modal" data-target="#ModalPrice">Show Price Breakdown</a>
+                             
+                            
+                        </div>*@
+
+                         <div class="col-md-6 form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label" for="email5">No. of adults</label>
+                                <input type="number" autocomplete="off" class="form-control" id="adultsCount" name="adultsCount" placeholder="No. of adults" required="">
+                                <div class="invalid-feedback">Please enter number of adults.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label" for="email5">No. of children</label>
+                                <input type="number" autocomplete="off" class="form-control" id="childrenCount" name="childrenCount" placeholder="No. of children" required="">
+                                <div class="invalid-feedback">Please enter number of children.</div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="col-md-6 form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label" for="custName">Name</label>
+                                <input type="text" autocomplete="off" class="form-control" id="custName" name="custName" placeholder="Enter your name" required="">
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+                                </i>
+
+                                <div class="invalid-feedback">Please enter your name.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label" for="custEmail">E-mail</label>
+                                <input type="email" autocomplete="off" class="form-control" id="custEmail" name="custEmail" placeholder="E-mail address" required="">
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+                                </i>
+
+                                <div class="invalid-feedback">Please enter a valid e-mail.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 form-group boxed">
+                            <div class="input-wrapper full-phone-number">
+                                <label class="label" for="email5">Phone</label>
+                                <select class="form-control custom-select country-code" id="countryCode" name="countryCode" required="">
+                                    <option value="91">+91(INDIA)</option>
+                                    @foreach (var country in Model.countryList)
+                                    {
+
+                                        <option value="@country.phonecode">+@country.phonecode<lt>(</lt>@country.nicename<lt>)</lt></option>
+
+                                    }
+
+                                </select>
+                                <input type="number" autocomplete="off" class="form-control phone-number" id="phone" name="custPhone" placeholder="Phone number" required="">
+
+
+                                <div class="invalid-feedback">Please enter a valid phone number.</div>
+                            </div>
+                        </div>
+                     
+
+                         
+                       
+                        <div class="col-md-6 form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label" for="referralCode">Referral Code, If Any</label>
+                                <input type="text" autocomplete="off" class="form-control" id="referralCode" name="referralCode" placeholder="Referral Code">
+                                <div class="invalid-feedback">Please enter referral code.</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-2 mb-3 pl-3 col-md-12">
+                            <div class="custom-control custom-checkbox mb-1">
+                                <input type="checkbox" class="custom-control-input" id="customCheckb1" name="agreeTerms" required="">
+                                <label class="custom-control-label" for="customCheckb1">
+                                    I agree <a href="#" data-toggle="modal" data-target="#ModalTerms">Terms and Conditions</a>
+                                </label>
+
+
+                                <span class="res-info-txt">You won't be charged until we confirm your booking</span>
+                            </div>
+                            <div class="valid-feedback">Looks good!</div>
+                            <div class="invalid-feedback">Please select a city.</div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <button class="btn btn-default btn-block rsv-btn submit-btn" type="submit">
+                                Reserve
+                            </button>
+                        </div>
+                        @*<input name="__RequestVerificationToken" type="hidden" value="<token_generated_here>">*@  
+                    </form>
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal Basic -->
+<div class="modal fade" id="ModalTerms" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="left">
+                    <a href="javascript:;" class="headerButton" data-dismiss="modal">
+                        <ion-icon name="chevron-back-outline"></ion-icon>
+                    </a>
+                </div>
+                <h5 class="modal-title">Terms & Conditions</h5>
+                <a href="javascript:;" data-dismiss="modal">Close</a>
+            </div>
+            <div class="modal-body">
+                @Html.Raw(Model.terms)
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * Modal Basic -->
+
+
+<!-- Modal Basic -->
+<div class="modal fade bd-example-modal-sm" id="ModalPrice"  tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="left">
+                    <a href="javascript:;" class="headerButton" data-dismiss="modal">
+                        <ion-icon name="chevron-back-outline"></ion-icon>
+                    </a>
+                </div>
+                <h5 class="modal-title">Price Breakdown</h5>
+                <a href="javascript:;" data-dismiss="modal">Close</a>
+            </div>
+            <div class="modal-body">
+               <ul id="priceList">
+                   @*<li>Oct 11 : RS 1000</li>
+                   <li>Oct 12 : RS 1000</li>
+                   <li>Oct 13 : RS 1000</li>
+                   <li>Oct 14 : RS 1000</li>
+                   <li><b >Total : RS <label id="totalPrice">0</label></b> </li>*@
+               </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * Modal Basic -->
+
+<script type="text/javascript">
+    //window.onload = function () {
+       
+    //    loadCountryList();
+    //};
+
+    $('header').addClass('noneBanner');
+
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>

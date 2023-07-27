@@ -1,0 +1,195 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-10">Destinations</div>
+      <div class="col-md-2">
+
+        <button type="submit" (click)="openDestinationNew(destinationDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+          <nb-icon icon="plus-outline"></nb-icon>ADD
+        </button>
+      </div>
+
+    </div>
+
+  </nb-card-header>
+  <nb-card-body>
+
+    <nb-card *ngFor="let item of destinations">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-10">{{item.title}}</div>
+          <div class="col-md-1">
+            <button type="button" (click)="openDestinationDelete(deleteDestinationDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="trash-outline"></nb-icon>
+            </button>
+          </div>
+          <div class="col-md-1">
+            <button type="button" (click)="openDestination(destinationDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+
+          <div class="col-md-8">
+            {{item.title}}
+          </div>
+          <div class="col-md-4">
+            <img src="{{item.thumbnail}}" alt="" width="100" height="100"
+                 onerror="this.src='assets/images/default.jpg'" />
+          </div>
+
+        </div>
+       
+      </nb-card-body>
+
+    </nb-card>
+  </nb-card-body>
+
+</nb-card>
+
+<ng-template #destinationDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onNewDestinationSubmit()" #mainNewDestinationForm="ngForm" novalidate>
+
+
+        <div class="form-group">
+          <label class="label">Title</label>
+          <input type="text" nbInput fullWidth placeholder="Title"
+                 autocomplete="off"
+                 name="title"
+                 [(ngModel)]="destination.title"
+                 required #title="ngModel"
+                 [status]="title.dirty ? (title.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Thumbnail</label>
+          <input type="text" nbInput fullWidth placeholder="Thumbnail"
+                 autocomplete="off"
+                 name="title"
+                 [(ngModel)]="destination.thumbnail"
+                 required #thumbnail="ngModel"
+                 [status]="thumbnail.dirty ? (thumbnail.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <textarea nbInput fullWidth placeholder="Description"
+                  autocomplete="off"
+                  name="Description"
+                  [(ngModel)]="destination.description"
+                   #description="ngModel"
+                  [status]="description.dirty ? (description.invalid  ? 'danger' : 'success') : 'basic'">
+
+                    </textarea>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewDestinationForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #destinationDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onDestinationSubmit()" #mainDestinationForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <label class="label">Title</label>
+          <input type="text" nbInput fullWidth placeholder="Title"
+                 autocomplete="off"
+                 name="title"
+                 [(ngModel)]="destination.title"
+                 required #title="ngModel"
+                 [status]="title.dirty ? (title.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Thumbnail</label>
+          <input type="text" nbInput fullWidth placeholder="Thumbnail"
+                 autocomplete="off"
+                 name="thumbnail"
+                 [(ngModel)]="destination.thumbnail"
+                 required #thumbnail="ngModel"
+                 [status]="thumbnail.dirty ? (thumbnail.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <textarea nbInput fullWidth placeholder="Description"
+                  autocomplete="off"
+                  name="Description"
+                  [(ngModel)]="destination.description"
+                   #description="ngModel"
+                  [status]="description.dirty ? (description.invalid  ? 'danger' : 'success') : 'basic'">
+
+                    </textarea>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainDestinationForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>UPDATE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteDestinationDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this Destination?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteDestination()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

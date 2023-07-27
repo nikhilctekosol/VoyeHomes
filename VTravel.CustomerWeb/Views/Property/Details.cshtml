@@ -1,0 +1,466 @@
+﻿@model PropertyViewModel
+
+
+<div class="container">
+
+    <div class="breadCrumbs">
+        <ul>
+            <li><a href="/">Home</a></li>
+            @*<li><a href="">Wayanad </a></li>
+                <li><a href="">Experience Stay</a></li>*@
+            <li><a href="" class="active">@Model.property.title </a></li>
+        </ul>
+    </div>
+
+    @if (Model.property.imageList != null)
+    {
+<div class="carousel2-1 propertySlide">
+    <div class="carousel lightbox">
+        @foreach (var img in Model.property.imageList)
+        {
+<div class="card">
+    
+    <a href="@img.url" data-caption="" class="open-lightbox">
+       
+
+                            <picture>
+                                <source media="(max-width: 320px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_320,c_scale/")">
+                                <source media="(max-width: 375px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_375,c_scale/")">
+                                <source media="(max-width: 414px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_414,c_scale/")">
+                                <source media="(max-width: 480px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_480,c_scale/")">
+                                <source media="(max-width: 600px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_600,c_scale/")">
+                                <img src="@img.url.Replace("/image/upload/","/image/upload/w_1280,f_auto,c_scale/")" alt="@img.image_alt"
+                                     onerror="this.src='/assets/img/default.jpg'" class="img-fluid">
+                            </picture>
+    </a>
+</div>                }
+    </div>
+</div>}
+    <div class="row ">
+        <!-- Highlights -->
+        <div class="col-md-12">
+
+            <div class="propertyCaption">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h1>@Model.property.title <span class="gray location"><i class="fas fa-map-marker-alt"></i> @Model.property.city, @Model.property.state</span></h1>
+                        <a href="#" class="header-call-button share-btn">
+                            <i class="fa fa-share-alt" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        
+                        @if (Model.property.priceList != null)
+                        {
+                        @if (Model.property.priceList.Length > 0)
+                       {
+                        <h3 class="float-left text-right">
+                            Price ₹@Model.property.priceList[0].price
+                            <span class="gray location">@Model.property.priceList[0].priceName</span>
+                        </h3>}}
+
+                        
+                        @{
+                            var callBackLabel = "Reserve Now >";
+                            var btnClass = "btn-default";
+                        }
+                        @if(Model.property.sellOnline=="Y"){
+                        if (Model.property.bookingUrl !=null)
+                        {
+                           @if (Model.property.bookingUrl.Trim().Length > 50)
+                        {
+                               
+                                    callBackLabel = "Request Call Back";
+                                    btnClass = "btn-primary";
+                                    <br />
+
+                        }
+                        }}
+
+                          <a href="./reservation/@General.GetUrlSlug(@Model.property.perma_title)-@General.EncodeString(@Model.property.id.ToString())" class="btn @btnClass">@callBackLabel</a>
+                      
+                       
+
+                    </div>
+                     @if(Model.property.sellOnline=="Y"){
+                     if (Model.property.bookingUrl !=null)
+                        {
+                           @if (Model.property.bookingUrl.Trim().Length > 50)
+                        {
+                                
+                                <div class="col-md-12">
+                       <a href="@Model.property.bookingUrl" class="btn btn-default" style="float: right;margin-top: 10px;" target="_blank" >Book Now</a>
+
+
+                                </div>
+
+                        }
+                        }}
+                    <div class="col-md-12">
+                        <div class="priceNote">*Including taxes and other charges</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- About -->
+        <div class="col-md-8 leftItems">
+            <div class="highlighting">
+                <div class="row">
+                    <div class="col-md-4 col-4">
+                        <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><path d="M432 230.7a79.44 79.44 0 00-32-6.7H112a79.51 79.51 0 00-32 6.69A80.09 80.09 0 0032 304v112a16 16 0 0032 0v-8a8.1 8.1 0 018-8h368a8.1 8.1 0 018 8v8a16 16 0 0032 0V304a80.09 80.09 0 00-48-73.3zM376 80H136a56 56 0 00-56 56v72a4 4 0 005.11 3.84A95.5 95.5 0 01112 208h4.23a4 4 0 004-3.55A32 32 0 01152 176h56a32 32 0 0131.8 28.45 4 4 0 004 3.55h24.46a4 4 0 004-3.55A32 32 0 01304 176h56a32 32 0 0131.8 28.45 4 4 0 004 3.55h4.2a95.51 95.51 0 0126.89 3.85A4 4 0 00432 208v-72a56 56 0 00-56-56z"></path></svg></div>
+                        <div class="info">
+                            @Model.property.roomCount<br>
+                            <span>Bedrooms</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-4">
+                        <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><path d="M261.56 101.28a8 8 0 00-11.06 0L66.4 277.15a8 8 0 00-2.47 5.79L63.9 448a32 32 0 0032 32H192a16 16 0 0016-16V328a8 8 0 018-8h80a8 8 0 018 8v136a16 16 0 0016 16h96.06a32 32 0 0032-32V282.94a8 8 0 00-2.47-5.79z"></path><path d="M490.91 244.15l-74.8-71.56V64a16 16 0 00-16-16h-48a16 16 0 00-16 16v32l-57.92-55.38C272.77 35.14 264.71 32 256 32c-8.68 0-16.72 3.14-22.14 8.63l-212.7 203.5c-6.22 6-7 15.87-1.34 22.37A16 16 0 0043 267.56L250.5 69.28a8 8 0 0111.06 0l207.52 198.28a16 16 0 0022.59-.44c6.14-6.36 5.63-16.86-.76-22.97z"></path></svg></div>
+                        <div class="info">
+                            @Model.property.propertyTypeName<br>
+                            <span>Property Type</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-4">
+                        <div class="ico"><svg xmlns="http://www.w3.org/2000/svg" class="ionicon s-ion-icon" viewBox="0 0 512 512"><circle cx="256" cy="56" r="56"></circle><path d="M437 128H75a27 27 0 000 54h101.88c6.91 0 15 3.09 19.58 15 5.35 13.83 2.73 40.54-.57 61.23l-4.32 24.45a.42.42 0 01-.12.35l-34.6 196.81A27.43 27.43 0 00179 511.58a27.06 27.06 0 0031.42-22.29l23.91-136.8S242 320 256 320c14.23 0 21.74 32.49 21.74 32.49l23.91 136.92a27.24 27.24 0 1053.62-9.6L320.66 283a.45.45 0 00-.11-.35l-4.33-24.45c-3.3-20.69-5.92-47.4-.57-61.23 4.56-11.88 12.91-15 19.28-15H437a27 27 0 000-54z"></path></svg></div>
+                        <div class="info">
+                            @Model.property.bathroomCount<br>
+                            <span>Bathrooms</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.property.longDescription != null)
+            {
+<div class="content about about-property">
+
+    @Html.Raw(Model.property.longDescription)
+
+</div>
+                <div>
+                    <a href="javascript:void(0);" class="see-more">See more...</a>
+                    <a href="javascript:void(0);" class="see-less">...See less</a>
+                </div>}
+
+            @if (Model.property.attributeList != null)
+            {<!--Accordion wrapper-->
+                                <div class="accordion" id="myAccordion">
+                                    @foreach (var attr in Model.property.attributeList)
+                                    {
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading@(attr.id)">
+                            <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accordion@(attr.id)" aria-expanded="false">@attr.attributeName</button>
+                        </h2>
+                        <div id="accordion@(attr.id)" class="accordion-collapse collapse" data-bs-parent="#myAccordion">
+                            <div class="card-body">
+                                @Html.Raw(attr.longDescription)
+                            </div>
+                        </div>
+                    </div>}
+                                </div> <!-- Accordion wrapper Ends -->            }
+
+
+        </div>
+        <div class="col-md-4">
+            @if (Model.property.amenityList != null)
+            {
+<div class="aminities">
+    <div class="card-body">
+        <div class="header mb-3">Top Amenities</div>
+        <div class="row">
+            @foreach (var am in Model.property.amenityList)
+            {
+<div class="col-4 amenity">
+    <img src="@am.image1" alt="@am.amenityName" class="am-icon" onerror="this.src='/assets/img/default.jpg'">
+    <div class="am-name"> @am.amenityName</div>
+
+
+</div>}
+        </div>
+
+
+
+    </div>
+</div>}
+        <div class="location">
+          
+            <div class="header pl-0 mb-2">Location Map <a href="https://www.google.com/maps/dir/?api=1&destination=@Model.property.latitude,@Model.property.longitude"><i class="fa fa-location-arrow" aria-hidden="true"></i> Navigate</a> </div>
+            <div class="gMap">
+                <div id="map" class="map"></div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.promoPropertyList != null)
+{
+    <!-- Suggestion -->
+                <div class="container">
+                    <!-- Destinations -->
+                    <section class="normListing">
+                        <div class="header">People also looking for</div>
+                        <div class="listing-slider">
+                            @foreach (var property in Model.promoPropertyList)
+                            {
+                                <div class="box">
+                                    <a href="@General.GetUrlSlug(property.perma_title)-@General.EncodeString(property.id.ToString())">
+                                        <div class="wrapper">
+                                            <div class="img">
+                                                @if (property.priceList != null)
+                                                {
+                                                    if (property.priceList.Length > 0)
+                                                    {
+                                            <div class="price">from ₹@property.priceList[0].price</div>}
+                                                                }
+                                                <img src="@property.thumbnail.Replace("/image/upload/","/image/upload/w_251,h_188,c_scale/")" alt="@property.title" onerror="this.src='/assets/img/default.jpg'" />
+                                            </div>
+                                            <h4>@property.title</h4>
+                                            <div class="gray location"><i class="fas fa-map-marker-alt"></i> @property.city, @property.state</div>
+                                        </div>
+                                    </a>
+                                </div>}
+                        </div>
+                    </section>
+                </div>}
+
+
+
+
+
+<!-- Modal Form -->
+<div class="modal fade modalbox" id="ModalReserve" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="left">
+                    <a href="javascript:;" class="headerButton" data-dismiss="modal">
+                        <ion-icon name="chevron-back-outline"></ion-icon>
+                    </a>
+                </div>
+                <h5 class="modal-title">Reservation</h5>
+                <a href="javascript:;" data-dismiss="modal">Close</a>
+            </div>
+
+            <div class="modal-body">
+                <div class="login-form rsv-form">
+                    <div class="section mt-2">
+                        <h3 class="reserve-title">@Model.property.title</h3>
+                    </div>
+                    <div class="section mt-4 mb-5" id="enquiry-section">
+                        <form class="needs-validation" novalidate id="enquiry-form">
+                            <input type="hidden" id="propertyId" value="@Model.property.id" />
+                            <div class="form-group boxed">
+                                <div class="input-wrapper">
+                                    <label class="label" for="custName">Name</label>
+                                    <input type="text" autocomplete="off" class="form-control" id="custName" placeholder="Enter your name" required>
+                                    <i class="clear-input">
+                                        <ion-icon name="close-circle"></ion-icon>
+                                    </i>
+
+                                    <div class="invalid-feedback">Please enter your name.</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group boxed">
+                                <div class="input-wrapper">
+                                    <label class="label" for="custEmail">E-mail</label>
+                                    <input type="email" autocomplete="off" class="form-control" id="custEmail" placeholder="E-mail address" required>
+                                    <i class="clear-input">
+                                        <ion-icon name="close-circle"></ion-icon>
+                                    </i>
+
+                                    <div class="invalid-feedback">Please enter a valid e-mail.</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group boxed">
+                                <div class="input-wrapper full-phone-number">
+                                    <label class="label" for="email5">Phone</label>
+                                    <select class="form-control custom-select country-code" id="countryCode" required>
+                                        <option value="91">+91(INDIA)</option>
+
+                                    </select>
+                                    <input type="number" autocomplete="off" class="form-control phone-number" id="phone" placeholder="Phone number" required>
+
+
+                                    <div class="invalid-feedback">Please enter a valid phone number.</div>
+                                </div>
+                            </div>
+                            <div class="form-group boxed">
+                                <div class="input-wrapper">
+                                    <label class="label" for="email5">Check-in - Check-out</label>
+                                    <input type="text" autocomplete="off" readonly="readonly" class="form-control" id="daterange" placeholder="Check-in - Check-out" required>
+                                    <div class="invalid-feedback">Please select check-in and check-out.</div>
+                                </div>
+                            </div>
+                            <div class="form-group boxed">
+                                <div class="input-wrapper">
+                                    <label class="label" for="email5">No. of adults</label>
+                                    <input type="number" autocomplete="off" class="form-control" id="adultsCount" placeholder="No. of adults" required>
+                                    <div class="invalid-feedback">Please enter number of adults.</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group boxed">
+                                <div class="input-wrapper">
+                                    <label class="label" for="email5">No. of children</label>
+                                    <input type="number" autocomplete="off" class="form-control" id="childrenCount" placeholder="No. of children" required>
+                                    <div class="invalid-feedback">Please enter number of children.</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group boxed">
+                                <div class="input-wrapper">
+                                    <label class="label" for="referralCode">Referral Code, If Any</label>
+                                    <input type="text" autocomplete="off" class="form-control" id="referralCode" placeholder="Referral Code">
+                                    <div class="invalid-feedback">Please enter referral code.</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mt-2 mb-3">
+                                <div class="custom-control custom-checkbox mb-1">
+                                    <input type="checkbox" class="custom-control-input" id="customCheckb1" required>
+                                    <label class="custom-control-label" for="customCheckb1">
+                                        I agree <a href="#" data-toggle="modal" data-target="#ModalTerms">Terms and Conditions</a>
+                                    </label>
+                                    <span class="res-info-txt">You won't be charged until we confirm your booking</span>
+                                </div>
+                                <div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please select a city.</div>
+                            </div>
+
+                            <button class="btn btn-primary btn-block rsv-btn submit-btn" type="submit">
+                                Reserve
+                                <span class="spinner-border spinner-border-sm mr-05 submit-spinner btns-spinner" role="status" aria-hidden="true"></span>
+                            </button>
+
+                        </form>
+
+
+                    </div>
+
+                    <div class="section mt-4 mb-5" id="otp-section">
+                        <form class="needs-validation" novalidate id="otp-form">
+
+                            <div class="form-group boxed">
+                                <div class="input-wrapper">
+                                    <label class="label align-centre" for="custName">Verify OTP received to your phone</label>
+                                    <input type="text" autocomplete="off" class="form-control verify-input" id="smscode" placeholder="••••••" maxlength="6" required>
+                                    <div class="invalid-feedback">Please enter OTP.</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group boxed otp-wait-caption">
+                                Some places are not just a homestay or a holiday home,  few are made with love and passion like voye homes.
+                            </div>
+
+                            <div class="form-button-group">
+                                <button class="btn btn-primary btn-block rsv-btn" type="submit">
+                                    Verify OTP
+                                    <span class="spinner-border spinner-border-sm mr-05 submit-spinner btns-spinner" role="status" aria-hidden="true"></span>
+                                </button>
+                            </div>
+
+
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * Modal Form -->
+
+<!-- DialogIconedSuccess -->
+<div class="modal fade dialogbox" id="DialogEnquirySuccess" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-icon text-success">
+                <ion-icon name="checkmark-circle"></ion-icon>
+            </div>
+            <div class="modal-header">
+                <h5 class="modal-title">Thank you!</h5>
+            </div>
+            <div class="modal-body">
+                We have received your enquiry.  Our customer service team will contact you soon.
+            </div>
+            <div class="modal-footer">
+                <div class="btn-inline">
+                    <a href="#" class="btn" data-dismiss="modal">CLOSE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * DialogIconedSuccess -->
+<!-- DialogIconedDanger -->
+<div class="modal fade dialogbox" id="DialogEnquiryDanger" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-icon text-danger">
+                <ion-icon name="close-circle"></ion-icon>
+            </div>
+            <div class="modal-header">
+                <h5 class="modal-title">Sorry!</h5>
+            </div>
+            <div class="modal-body">
+                <label id="errormsg">Could not send enquiry, please try again.</label>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-inline">
+                    <a href="#" class="btn" data-dismiss="modal">CLOSE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * DialogIconedDanger -->
+<!-- DialogIconedDanger -->
+<div class="modal fade dialogbox" id="DialogEnquiryAlert" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-icon text-warning">
+                <ion-icon name="alert-outline"></ion-icon>
+            </div>
+            <div class="modal-header">
+                <h5 class="modal-title">Alert!</h5>
+            </div>
+            <div class="modal-body">
+                <label id="errormsg">@Model.property.reserveAlert</label>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-inline">
+                    @if (Model.property.reserveAllowed == "ALLOWED")
+                    {
+        <a href="#" class="btn btn-text-primary btn-alert-reserve"
+           onclick="openReserve('ALLOWED','')"
+           data-dismiss="modal">OK</a> }
+    else if (Model.property.reserveAllowed == "NOTALLOWED")
+    {
+<a href="#" class="btn btn-text-secondary" data-dismiss="modal">CLOSE</a>}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * DialogIconedDanger -->
+
+<script type="text/javascript">
+    window.onload = function () {
+        initMap(@Model.property.latitude,@Model.property.longitude);
+       
+    };
+</script>
+
+<script type="text/javascript">
+    $('header').addClass('noneBanner');
+</script>
+
+
+
+

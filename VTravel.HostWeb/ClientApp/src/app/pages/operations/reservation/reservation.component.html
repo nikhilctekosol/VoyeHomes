@@ -1,0 +1,357 @@
+
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header>
+
+
+        <div class="row">
+          <div class="col-md-4">
+            Reservation
+
+          </div>
+          <!--<div class="col-md-8">
+    <nb-select placeholder="[SELECT PROPERTY]" [fullWidth]="true" (selectedChange)="onPropertySelected($event)"
+               name="propertyId"
+               [(ngModel)]="defaultPropertyId">
+      <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
+
+    </nb-select>
+
+
+  </div>-->
+
+
+
+
+
+        </div>
+      </nb-card-header>
+
+
+    </nb-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+
+    <nb-card>
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-8">Select Room and Date</div>
+          <div class="col-md-2">
+            <input type="radio" checked (change)="showInventory($event)" id="rdInventory" name="rdDisplayMode" />
+            <label for="rdInventory"> Inventory</label>
+          </div>
+          <div class="col-md-2">
+
+            <input type="radio" (change)="showBookings($event)" id="rdBookings" name="rdDisplayMode" />
+            <label for="rdBookings"> Bookings</label>
+          </div>
+
+        </div>
+
+      </nb-card-header>
+      <nb-card-body>
+
+        <div class="row" [nbSpinner]="isLoadingRooms"
+             nbSpinnerStatus="primary"
+             nbSpinnerSize="large"
+             nbSpinnerMessage="">
+          <div class="col-sm-12 col-md-6 col-lg-2" *ngFor="let item of rooms">
+            <nb-card class="room-card" [ngClass]="{'room-card-selected': item.id === room.id}"
+                     (click)="selectRoom(item)">
+              <!--<nb-card-header>
+              {{item.title}}
+            </nb-card-header>-->
+              <nb-card-body>
+                {{item.title}}<br />
+                {{item.typeName}}
+              </nb-card-body>
+            </nb-card>
+          </div>
+        </div>
+        <hr/>
+        <full-calendar [nbSpinner]="isLoadingReservations"
+                       nbSpinnerStatus="primary"
+                       nbSpinnerSize="large"
+                       nbSpinnerMessage=""
+                       *ngIf="room.id>0" #calendar [options]="calendarOptions" deepChangeDetection="true"></full-calendar>
+
+
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+
+
+<ng-template #reserveDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onNewReserveSubmit()" #mainNewReservForm="ngForm" novalidate>
+
+        <div class="form-group row">
+          <div class="col-6">
+            <label class="label">Check-in</label>
+            <input type="date" nbInput fullWidth placeholder="Check-in"
+                   autocomplete="off"
+                   name="fromDate"
+                   [(ngModel)]="reservData.fromDate"
+                   required #fromDate="ngModel"
+                   [status]="fromDate.dirty ? (fromDate.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+          <div class="col-6">
+            <label class="label">Check-out</label>
+            <input type="date" nbInput fullWidth placeholder="Check-out"
+                   autocomplete="off"
+                   name="toDate"
+                   [(ngModel)]="reservData.toDate"
+                   required #toDate="ngModel"
+                   [status]="toDate.dirty ? (toDate.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="label">Number of Rooms (Available:{{reservData.maxAvailableQty}})</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="noOfRooms"
+                     [(ngModel)]="reservData.noOfRooms"
+                     required #noOfRooms="ngModel"
+                     [status]="noOfRooms.dirty ? (noOfRooms.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value={{i+1}} *ngFor="let c of [].constructor(reservData.maxAvailableQty); let i = index">{{i+1}}</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Number of Guests</label>
+          <input type="number" nbInput fullWidth placeholder="Number of Guests"
+                 autocomplete="off"
+                 name="noOfGuests"
+                 [(ngModel)]="reservData.noOfGuests"
+                 required #noOfGuests="ngModel"
+                 [status]="noOfGuests.dirty ? (noOfGuests.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Guest Name</label>
+          <input type="text" nbInput fullWidth placeholder="Guest Name"
+                 autocomplete="off"
+                 name="custName"
+                 [(ngModel)]="reservData.custName"
+                 required #custName="ngModel"
+                 [status]="custName.dirty ? (custName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group row">
+          <div class="col-6">
+            <label class="label">Guest Email</label>
+            <input type="email" nbInput fullWidth placeholder="Guest Email"
+                   autocomplete="off"
+                   name="custEmail"
+                   [(ngModel)]="reservData.custEmail"
+                   #custEmail="ngModel"
+                   [status]="custEmail.dirty ? (custEmail.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+
+          <div class="col-6">
+            <label class="label">Guest Phone</label>
+            <input type="number" nbInput fullWidth placeholder="Guest Phone"
+                   autocomplete="off"
+                   name="custPhone"
+                   [(ngModel)]="reservData.custPhone"
+                   #custPhone="ngModel"
+                   [status]="custPhone.dirty ? (custPhone.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <label class="label">Details</label>
+          <textarea nbInput fullWidth placeholder="Details"
+                    autocomplete="off"
+                    name="details"
+                    [(ngModel)]="reservData.details"
+                    #details="ngModel"
+                    [status]="details.dirty ? (details.invalid  ? 'danger' : 'success') : 'basic'">
+
+          </textarea>
+        </div>
+
+
+
+        <button *ngIf="user.role == 'ADMIN'" type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewReservForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #reserveDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onReserveSubmit()" #mainReservForm="ngForm" novalidate>
+
+        <div class="form-group row">
+          <div class="col-6">
+            <label class="label">Check-in</label>
+            <input type="text" readonly nbInput fullWidth placeholder="Check-in"
+                   autocomplete="off"
+                   name="fromDate"
+                   [(ngModel)]="reservData.fromDate"
+                   required #fromDate="ngModel"
+                   [status]="fromDate.dirty ? (fromDate.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+          <div class="col-6">
+            <label class="label">Check-out</label>
+            <input type="text" readonly nbInput fullWidth placeholder="Check-out"
+                   autocomplete="off"
+                   name="toDate"
+                   [(ngModel)]="reservData.toDate"
+                   required #toDate="ngModel"
+                   [status]="toDate.dirty ? (toDate.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="label">Number of Rooms</label>
+          <input type="text" readonly nbInput fullWidth placeholder="Number of rooms"
+                 autocomplete="off"
+                 name="noOfRooms"
+                 [(ngModel)]="reservData.noOfRooms"
+                 required #noOfRooms="ngModel"
+                 [status]="noOfRooms.dirty ? (noOfRooms.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Number of Guests</label>
+          <input type="number" nbInput fullWidth placeholder="Number of Guests"
+                 autocomplete="off"
+                 name="noOfGuests"
+                 [(ngModel)]="reservData.noOfGuests"
+                 required #noOfGuests="ngModel"
+                 [status]="noOfGuests.dirty ? (noOfGuests.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Guest Name</label>
+          <input type="text" nbInput fullWidth placeholder="Guest Name"
+                 autocomplete="off"
+                 name="custName"
+                 [(ngModel)]="reservData.custName"
+                 required #custName="ngModel"
+                 [status]="custName.dirty ? (custName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group row">
+          <div class="col-6">
+            <label class="label">Guest Email</label>
+            <input type="email" nbInput fullWidth placeholder="Guest Email"
+                   autocomplete="off"
+                   name="custEmail"
+                   [(ngModel)]="reservData.custEmail"
+                   #custEmail="ngModel"
+                   [status]="custEmail.dirty ? (custEmail.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+
+          <div class="col-6">
+            <label class="label">Guest Phone</label>
+            <input type="number" nbInput fullWidth placeholder="Guest Phone"
+                   autocomplete="off"
+                   name="custPhone"
+                   [(ngModel)]="reservData.custPhone"
+                   #custPhone="ngModel"
+                   [status]="custPhone.dirty ? (custPhone.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <label class="label">Details</label>
+          <textarea nbInput fullWidth placeholder="Details"
+                    autocomplete="off"
+                    name="details"
+                    [(ngModel)]="reservData.details"
+                    #details="ngModel"
+                    [status]="details.dirty ? (details.invalid  ? 'danger' : 'success') : 'basic'">
+
+          </textarea>
+        </div>
+
+        <div class="row" *ngIf="user.role == 'ADMIN'">
+          <div class="col-6">
+            <button type="button" (click)="openReserveDelete(deleteReserveDialog)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="trash-outline"></nb-icon>
+            </button>
+          </div>
+          <div class="col-6">
+            <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainReservForm.invalid"
+                    [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+              <nb-icon icon="save-outline"></nb-icon>SAVE
+            </button>
+          </div>
+        </div>
+
+
+
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+
+
+<ng-template #deleteReserveDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this reservation?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteReservation()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingDelete" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+
+
+

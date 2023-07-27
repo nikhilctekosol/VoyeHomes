@@ -1,0 +1,111 @@
+
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-10"> Properties</div>
+          <!--<div class="col-md-2">
+      <button type="button" nbButton class="btn btn-sm btn-outline-primary">
+        <nb-icon icon="checkmark-outline"></nb-icon>ACTIVATE
+      </button>
+    </div>-->
+          <div class="col-md-2">
+            <button type="button" nbButton class="btn btn-sm btn-outline-primary"
+                    (click)="openAddProperty(addPropertyDialog)">
+              <nb-icon icon="plus-outline"></nb-icon>ADD
+            </button>
+          </div>
+
+
+
+        </div>
+      </nb-card-header>
+        
+        <!--<nb-card-body>
+
+    </nb-card-body>-->
+    </nb-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-6 col-md-6 col-sm-12">
+    <!--<div>-->
+      <input type="text" nbInput fullWidth placeholder="Filter by property name" (keyup)="propertySearch()" [(ngModel)]="searchValue">
+    <!--</div>-->
+    <nb-list cdkDropList (cdkDropListDropped)="drop($event)" class="product-list">
+      <nb-list-item cdkDrag class="product-box row" *ngFor="let item of properties"
+                     (dblclick)="loadProperty(item.id)">
+
+        <div class="icon col-sm-3 col-lg-3 col-md-3">
+          <img src="{{item.thumbnail!=null?item.thumbnail:''}}"
+               width="40" height="40"
+               onerror="this.src='assets/images/default.jpg'"
+               alt="{{item.title}}">
+        </div>
+
+        <div class="details col-sm-9 col-md-9 col-lg-9">
+          <div class="title"> {{item.title}}</div>
+          <div class="status paragraph-2">{{ item.city }}</div>
+          <div class="status paragraph-2">{{ item.propertyStatus }}</div>
+
+        </div>
+
+      
+
+      </nb-list-item>
+      
+    </nb-list>
+
+    
+  </div>
+</div>
+
+<ng-template #addPropertyDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+        
+
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onFormSubmit()" #mainForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">Property Type</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="propertyTypeId" 
+                     [(ngModel)]="property.propertyTypeId"
+                     required #propertyTypeId="ngModel"
+                     [status]="propertyTypeId.dirty ? (propertyTypeId.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value={{item.id}} *ngFor="let item of propertyTypes">{{item.typeName}}</nb-option>
+          </nb-select>
+        </div>
+        <div class="form-group">
+          <label class="label">Title</label>
+          <input type="text" nbInput fullWidth placeholder="Property Title"
+                 autocomplete="off"
+                 name="title" 
+                 [(ngModel)]="property.title"
+                 required #title="ngModel"
+                 [status]="title.dirty ? (title.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary"  [disabled]="mainForm.invalid" 
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+

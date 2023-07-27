@@ -1,0 +1,239 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-10">Partner Users (SEASON users)</div>
+      <div class="col-md-2">
+
+        <button type="submit" (click)="openUserNew(userDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+          <nb-icon icon="plus-outline"></nb-icon>ADD
+        </button>
+      </div>
+
+    </div>
+
+  </nb-card-header>
+  <nb-card-body>
+
+    <nb-card *ngFor="let item of users">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-10">{{item.nameOfUser}}</div>
+          <div class="col-md-1">
+            <button type="button" (click)="openUserDelete(deleteUserDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="trash-outline"></nb-icon>
+            </button>
+          </div>
+          <div class="col-md-1">
+            <button type="button" (click)="openUser(userDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-md-6">
+            {{item.userRole}}
+          </div>
+          <div class="col-md-6">
+            {{item.userName}}
+          </div>
+
+        </div>
+       
+      </nb-card-body>
+
+    </nb-card>
+  </nb-card-body>
+
+</nb-card>
+
+<ng-template #userDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onNewUserSubmit()" #mainNewUserForm="ngForm" novalidate>
+
+
+        <div class="form-group">
+          <label class="label">Role</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="userRole"
+                     [(ngModel)]="user.userRole"
+                     required #userRole="ngModel"
+                     [status]="userRole.dirty ? (userRole.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value="SUB_ADMIN">SUB ADMIN</nb-option>
+            <nb-option value="ADMIN">ADMIN</nb-option>
+
+
+
+          </nb-select>
+        </div>
+        <div class="form-group">
+          <label class="label">Name</label>
+          <input type="text" nbInput fullWidth placeholder="Name of User"
+                 autocomplete="off"
+                 name="nameOfUser"
+                 [(ngModel)]="user.nameOfUser"
+                 required #nameOfUser="ngModel"
+                 [status]="nameOfUser.dirty ? (nameOfUser.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Email</label>
+          <input type="email" nbInput fullWidth placeholder="Email"
+                 autocomplete="off"
+                 name="userName"
+                 [(ngModel)]="user.userName"
+                 required #userName="ngModel"
+                 [status]="userName.dirty ? (userName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Properties</label>
+          <br />
+          <nb-select style="max-width:500px !important;" placeholder="[SELECT]" [fullWidth]="true"
+                     multiple
+                     [(selected)]="user.userProperties"
+                     name="userProperties"
+                     [(ngModel)]="user.userProperties"
+                     required #userProperties="ngModel"
+                     [status]="userProperties.dirty ? (userProperties.invalid  ? 'danger' : 'success') : 'basic'">
+            
+            <nb-option *ngFor="let item of properties" [value]="item.id">
+              {{ item.title }}
+            </nb-option>
+
+
+          </nb-select>
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewUserForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #userDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onUserSubmit()" #mainNewUserForm="ngForm" novalidate>
+
+
+        <div class="form-group">
+          <label class="label">Role</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="userRole"
+                     [(ngModel)]="user.userRole"
+                     required #userRole="ngModel"
+                     [status]="userRole.dirty ? (userRole.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value="SUB_ADMIN">SUB ADMIN</nb-option>
+            <nb-option value="ADMIN">ADMIN</nb-option>
+
+
+          </nb-select>
+        </div>
+        <div class="form-group">
+          <label class="label">Name</label>
+          <input type="text" nbInput fullWidth placeholder="Name of User"
+                 autocomplete="off"
+                 name="nameOfUser"
+                 [(ngModel)]="user.nameOfUser"
+                 required #nameOfUser="ngModel"
+                 [status]="nameOfUser.dirty ? (nameOfUser.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Email</label>
+          <input type="email" nbInput fullWidth placeholder="Email"
+                 autocomplete="off"
+                 name="userName"
+                 [(ngModel)]="user.userName"
+                 required #userName="ngModel"
+                 [status]="userName.dirty ? (userName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Properties</label>
+          <br />
+          <nb-select style="max-width:500px !important;" placeholder="[SELECT]" [fullWidth]="true"
+                     multiple
+                     [(selected)]="user.userProperties"
+                     name="userProperties"
+                     [(ngModel)]="user.userProperties"
+                     required #userProperties="ngModel"
+                     [status]="userProperties.dirty ? (userProperties.invalid  ? 'danger' : 'success') : 'basic'">
+
+            <nb-option *ngFor="let item of properties" [value]="item.id">
+              {{ item.title }}
+            </nb-option>
+
+
+          </nb-select>
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewUserForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>UPDATE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteUserDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this User?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteUser()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

@@ -1,0 +1,22 @@
+﻿
+.map {
+    height: 250px;
+}
+
+.about-property {
+    height: 100px;
+    overflow: hidden;
+}
+
+.about-property-full {
+    height: auto;
+    overflow: auto;
+}
+
+.see-less {
+    display: none;
+}
+
+.testi-avatar{
+    width:120px !important;
+}

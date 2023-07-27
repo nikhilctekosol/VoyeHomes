@@ -1,0 +1,210 @@
+
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header>
+
+
+        <div class="row">
+          <div class="col-md-8"> {{page.title}}</div>
+          <div class="col-md-2" *ngIf="page.pageStatus !='ACTIVE'">
+            <button type="button" (click)="updatePageStatus('ACTIVE')" nbButton class="btn btn-sm btn-outline-primary"
+                    [nbSpinner]="loadingStatusSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+              <nb-icon icon="checkmark-outline"></nb-icon>ACTIVATE
+            </button>
+          </div>
+          <div class="col-md-2" *ngIf="page.pageStatus =='ACTIVE'">
+            <button type="button" (click)="updatePageStatus('SUSPENDED')" nbButton class="btn btn-sm btn-outline-secondary"
+                    [nbSpinner]="loadingStatusSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+              <nb-icon icon="slash-outline"></nb-icon>SUSPEND
+            </button>
+          </div>
+          <div class="col-md-2">
+            <button type="button" (click)="openDelete(deleteDialog)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="trash-outline"></nb-icon>DELETE
+            </button>
+          </div>
+
+
+
+
+        </div>
+      </nb-card-header>
+
+
+    </nb-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+
+      <nb-card-body>
+        <nb-tabset fullWidth>
+          <nb-tab tabTitle="Details">
+
+
+            <form (ngSubmit)="onBasicFormSubmit()" #mainBasicForm="ngForm" novalidate>
+              <nb-card>
+                <nb-card-header>
+                  <div class="row">
+                    <div class="col-md-10">Details</div>
+                    <div class="col-md-2">
+                      <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainBasicForm.invalid"
+                              [nbSpinner]="loadingPageSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+
+                        <nb-icon icon="save-outline"></nb-icon>UPDATE
+                      </button>
+
+                    </div>
+                  </div>
+
+                </nb-card-header>
+                <nb-card-body>
+
+                  <div class="form-group">
+                    <label class="label">Status</label>
+                    <input type="text" nbInput fullWidth placeholder="Status" readonly="readonly"
+                           autocomplete="off"
+                           name="pageStatus"
+                           [(ngModel)]="page.pageStatus"
+                           required #pageStatus="ngModel"
+                           [status]="pageStatus.dirty ? (pageStatus.invalid  ? 'danger' : 'success') : 'basic'">
+                  </div>
+                  <div class="form-group">
+                    <label class="label">Title</label>
+                    <input type="text" nbInput fullWidth placeholder="Title"
+                           autocomplete="off"
+                           name="title"
+                           [(ngModel)]="page.title"
+                           required #title="ngModel"
+                           [status]="title.dirty ? (title.invalid  ? 'danger' : 'success') : 'basic'">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="label">Page Title</label>
+                    <input type="text" nbInput fullWidth placeholder="Page Title"
+                           autocomplete="off"
+                           name="metaTitle"
+                           [(ngModel)]="page.metaTitle"
+                           required #metaTitle="ngModel"
+                           [status]="metaTitle.dirty ? (metaTitle.invalid  ? 'danger' : 'success') : 'basic'">
+
+                  </div>
+                  <div class="form-group">
+                    <label class="label">Meta Key Words</label>
+                    <textarea nbInput fullWidth placeholder="Meta Keywords"
+                              autocomplete="off"
+                              name="metaKeywords"
+                              [(ngModel)]="page.metaKeywords"
+                              required #metaKeywords="ngModel"
+                              [status]="metaKeywords.dirty ? (metaKeywords.invalid  ? 'danger' : 'success') : 'basic'">
+                    </textarea>
+                  </div>
+                  <div class="form-group">
+                    <label class="label">Meta Description</label>
+                    <textarea nbInput fullWidth placeholder="Meta Description"
+                              autocomplete="off"
+                              name="metaDescription"
+                              [(ngModel)]="page.metaDescription"
+                              required #metaDescription="ngModel"
+                              [status]="metaDescription.dirty ? (metaDescription.invalid  ? 'danger' : 'success') : 'basic'">
+                    </textarea>
+                  </div>
+
+                </nb-card-body>
+              </nb-card>
+            </form>
+
+          </nb-tab>
+          <nb-tab tabTitle="Page Content">
+            <nb-card>
+              <nb-card-header>
+                <div class="row">
+                  <div class="col-md-10">Page Content</div>
+
+                  
+                  <div class="col-md-2">
+                    <button (click)="openAboutDialog(aboutDialog)" type="button" nbButton class="btn btn-sm btn-outline-secondary">
+                      <nb-icon icon="edit-outline"></nb-icon>EDIT
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </nb-card-header>
+              <nb-card-body>
+                <div [innerHTML]="page.content">
+
+                </div>
+               
+              </nb-card-body>
+
+            </nb-card>
+          </nb-tab>
+   
+
+        </nb-tabset>
+      </nb-card-body>
+
+    </nb-card>
+  </div>
+</div>
+
+
+<ng-template #deleteDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this page?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deletePage()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingDelete" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+<ng-template #aboutDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <div class="form-group">
+        <label class="label">Page Content</label>
+        <ckeditor [(ngModel)]="pageAbout" [config]="{ extraPlugins: 'divarea'}"></ckeditor>
+      </div>
+      <button type="button" (click)="updatePageContent()" nbButton class="btn btn-sm btn-outline-primary"
+              [nbSpinner]="loadingAboutSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+        <nb-icon icon="save-outline"></nb-icon>UPDATE
+      </button>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>

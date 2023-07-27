@@ -1,0 +1,73 @@
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  .uk-timeline .uk-timeline-item .uk-card {
+    max-height: 300px !important;
+  }
+
+  .uk-timeline .uk-timeline-item {
+    display: flex;
+    position: relative;
+  }
+
+  .uk-timeline .uk-timeline-item::before {
+    background: #dadee4;
+    content: "";
+    height: 100%;
+    left: 19px;
+    position: absolute;
+    top: 60px;
+    width: 2px;
+    /* z-index: -1;*/
+  }
+
+
+  .uk-timeline .uk-timeline-item .uk-timeline-icon .uk-badge {
+    margin-top: 20px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .uk-timeline .uk-timeline-item .uk-timeline-content {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 0 0 0 1rem;
+  }
+
+  .product-list {
+    max-width: 100%;
+    /*border: solid 1px #ccc;*/
+    min-height: 60px;
+    display: block;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 700px;
+    overflow-y: auto;
+    /*padding-right: 50px;*/
+  }
+
+  .product-box {
+    padding: 10px;
+    border-bottom: solid 1px #ccc;
+    color: rgba(0, 0, 0, 0.87);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    /* cursor: move;*/
+    background: white;
+    font-size: 14px;
+    margin-left: 10px;
+  }
+
+  .product-title {
+    font-weight: 600;
+  }
+
+  .action-btn{
+      margin-right:5px
+  }
+}
+

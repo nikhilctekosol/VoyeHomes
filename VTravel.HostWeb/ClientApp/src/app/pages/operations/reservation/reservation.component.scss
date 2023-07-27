@@ -1,0 +1,21 @@
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  /* .fc-scroller.fc-day-grid-container {
+    overflow: auto !important;
+    height: auto !important;
+  }*/
+  .room-card-selected {
+    background-color: #36f !important;
+    color: #ffffff !important;
+  }
+
+  .room-card {
+    height: 75px;
+    max-height: 75px;
+    margin-bottom: 5px;
+  }
+
+ 
+}
+

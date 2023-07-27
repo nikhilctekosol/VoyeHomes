@@ -1,0 +1,66 @@
+﻿@model PropertyViewModel
+
+<div class="highlightMessage inner">
+    <h1 class="stylish">@Model.title </h1>
+    <p class="stylishdesc">@Model.short_desc</p>
+   
+</div>
+<div class="master-slider inner">
+    <div class="itm">
+        <div class="overlay"></div>
+        <img src="@Model.banner_url" alt="@Model.title" onerror="this.src='/assets/theme2021/img/experienceBnr.jpg'" />
+    </div>
+</div>
+
+
+<div class="container clearfix">
+    <!-- Destinations -->
+    <section class="normListing inner">
+        <h1 class="header"><a href="javascript:history.back()"><i class="fas fa-arrow-left"></i></a> @Model.title</h1>
+        <div class="mainListing">
+
+
+            @foreach (var property in Model.propertyList)
+            {
+                <div class="box">
+                    <a href="../@General.GetUrlSlug(property.perma_title)-@General.EncodeString(property.id.ToString())">
+                        <div class="wrapper">
+                            <div class="img">
+
+                                @if (property.priceList != null)
+                                {
+                                    if (property.priceList.Length > 0)
+                                    {
+                                        <div class="price">
+                                            from ₹@property.priceList[0].price
+                                        </div>
+                                    }
+                                }
+
+                                @if (property.thumbnail != null)
+                                {
+                         @*   <img src="@property.thumbnail.Replace("/image/upload/","/image/upload/w_246,h_240,c_scale/")" class="card-img-top"
+                                 alt="@property.title" onerror="this.src='/assets/img/default.jpg'" />*@
+
+                                    <img src="@property.thumbnail.Replace("/image/upload/", "/image/upload/w_300,c_scale/")" alt="@property.title" onerror="this.src='/assets/img/default.jpg'">
+                                
+                                }
+
+
+
+
+                            </div>
+                            <h4>@property.title</h4>
+                            <div class="gray location"><i class="fas fa-map-marker-alt"></i>  @property.city, @property.state</div>
+                        </div>
+                    </a>
+                </div>
+
+            }
+        </div>
+    </section>
+</div>
+
+
+
+

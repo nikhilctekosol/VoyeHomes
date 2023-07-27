@@ -1,0 +1,145 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-10">Booking Channels</div>
+      <div class="col-md-2">
+
+        <button channel="submit" (click)="openBookingChannelNew(channelDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+          <nb-icon icon="plus-outline"></nb-icon>ADD
+        </button>
+      </div>
+
+    </div>
+
+  </nb-card-header>
+  <nb-card-body>
+
+    <nb-card *ngFor="let item of channels">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-10">{{item.channelName}}</div>
+          <div class="col-md-1">
+            <button channel="button" (click)="openBookingChannelDelete(deleteBookingChannelDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="trash-outline"></nb-icon>
+            </button>
+          </div>
+          <div class="col-md-1">
+            <button channel="button" (click)="openBookingChannel(channelDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+      </nb-card-header>
+      <nb-card-body>
+        <div>
+          {{item.channelName}}
+        </div>
+      </nb-card-body>
+
+    </nb-card>
+  </nb-card-body>
+
+</nb-card>
+
+<ng-template #channelDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button channel="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onNewBookingChannelSubmit()" #mainNewBookingChannelForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">BookingChannel Name</label>
+          <input channel="text" nbInput fullWidth placeholder="BookingChannel Name"
+                 autocomplete="off"
+                 name="channelName"
+                 [(ngModel)]="bookingChannel.channelName"
+                 required #channelName="ngModel"
+                 [status]="channelName.dirty ? (channelName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        
+        <button channel="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewBookingChannelForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #channelDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button channel="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onBookingChannelSubmit()" #mainBookingChannelForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">BookingChannel Name</label>
+          <input channel="text" nbInput fullWidth placeholder="BookingChannel Name"
+                 autocomplete="off"
+                 name="channelName"
+                 [(ngModel)]="bookingChannel.channelName"
+                 required #channelName="ngModel"
+                 [status]="channelName.dirty ? (channelName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        
+        <button channel="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainBookingChannelForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>UPDATE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteBookingChannelDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this Booking Channel?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button channel="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button channel="button" (click)="deleteBookingChannel()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

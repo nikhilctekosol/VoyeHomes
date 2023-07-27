@@ -1,0 +1,29 @@
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  .thumbnail {
+    height: 100px !important;
+    margin: 5px !important;
+    border: solid 1px #0c81ff;
+  }
+
+  .thumbnail img {
+    height: 100% !important;
+    width: 100% !important;
+    object-fit: scale-down !important;
+  }
+
+  .property-image img {
+    object-fit: scale-down !important;
+    width: 600px !important;
+    height: 300px !important;
+  }
+
+  .thumbnail button {
+    position: absolute !important;
+    top: -10px !important;
+    left: 70px !important;
+    background: #ffffff !important;
+    border-radius: 50% !important;
+  }
+}

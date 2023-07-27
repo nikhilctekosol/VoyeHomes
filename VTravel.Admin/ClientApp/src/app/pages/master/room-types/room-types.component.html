@@ -1,0 +1,145 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-10">Room Types</div>
+      <div class="col-md-2">
+
+        <button type="submit" (click)="openRoomTypeNew(typeDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+          <nb-icon icon="plus-outline"></nb-icon>ADD
+        </button>
+      </div>
+
+    </div>
+
+  </nb-card-header>
+  <nb-card-body>
+
+    <nb-card *ngFor="let item of types">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-10">{{item.typeName}}</div>
+          <div class="col-md-1">
+            <button type="button" (click)="openRoomTypeDelete(deleteRoomTypeDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="trash-outline"></nb-icon>
+            </button>
+          </div>
+          <div class="col-md-1">
+            <button type="button" (click)="openRoomType(typeDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+      </nb-card-header>
+      <nb-card-body>
+        <div>
+          {{item.typeName}}
+        </div>
+      </nb-card-body>
+
+    </nb-card>
+  </nb-card-body>
+
+</nb-card>
+
+<ng-template #typeDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onNewRoomTypeSubmit()" #mainNewRoomTypeForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">RoomType Name</label>
+          <input type="text" nbInput fullWidth placeholder="RoomType Name"
+                 autocomplete="off"
+                 name="typeName"
+                 [(ngModel)]="roomType.typeName"
+                 required #typeName="ngModel"
+                 [status]="typeName.dirty ? (typeName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewRoomTypeForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #typeDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onRoomTypeSubmit()" #mainRoomTypeForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">RoomType Name</label>
+          <input type="text" nbInput fullWidth placeholder="RoomType Name"
+                 autocomplete="off"
+                 name="typeName"
+                 [(ngModel)]="roomType.typeName"
+                 required #typeName="ngModel"
+                 [status]="typeName.dirty ? (typeName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainRoomTypeForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>UPDATE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteRoomTypeDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this Room Type?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteRoomType()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

@@ -1,0 +1,40 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="container">
+
+    <div class="breadCrumbs">
+        <ul>
+            <li><a href="/">Home</a></li>
+            
+            <li><a href="" class="active">Error </a></li>
+        </ul>
+    </div>
+
+
+    <div class="row form thankYouPage h-100">
+
+
+        <div class="col-md-12">
+            <div>
+                @*<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" /><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" /></svg>*@
+                <h3>Error !</h3>
+                <p> Unfortunately we cannot process this request.</p>
+                <div class="adition mt-5">
+                    <a href="tel:@General.GetSettingsValue("business_phone")" class="btn btn-default call mb-3">Call us: @General.GetSettingsValue("business_phone")</a><br>
+                    <p>Email us for any enquiry to <a href="mailto:reservations@voye.in">reservations@voye.in</a></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+        $('header').addClass('noneBanner');
+</script>
+
+
+

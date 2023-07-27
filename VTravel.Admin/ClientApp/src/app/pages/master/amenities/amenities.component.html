@@ -1,0 +1,172 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-10">Amenities</div>
+      <div class="col-md-2">
+
+        <button type="submit" (click)="openAmenityNew(amenityDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+          <nb-icon icon="plus-outline"></nb-icon>ADD
+        </button>
+      </div>
+
+    </div>
+
+  </nb-card-header>
+  <nb-card-body>
+
+    <nb-card *ngFor="let item of amenities">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-10">{{item.amenityName}}</div>
+          <div class="col-md-1">
+            <button type="button" (click)="openAmenityDelete(deleteAmenityDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="trash-outline"></nb-icon>
+            </button>
+          </div>
+          <div class="col-md-1">
+            <button type="button" (click)="openAmenity(amenityDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+
+          <div class="col-md-8">
+            {{item.amenityName}}
+          </div>
+          <div class="col-md-4">
+            <img src="{{item.image1}}" alt="" width="100" height="100"
+                 onerror="this.src='assets/images/default.jpg'" />
+          </div>
+
+        </div>
+        
+      </nb-card-body>
+
+    </nb-card>
+  </nb-card-body>
+
+</nb-card>
+
+<ng-template #amenityDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onNewAmenitySubmit()" #mainNewAmenityForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">Amenity Name</label>
+          <input type="text" nbInput fullWidth placeholder="Amenity Name"
+                 autocomplete="off"
+                 name="amenityName"
+                 [(ngModel)]="amenity.amenityName"
+                 required #amenityName="ngModel"
+                 [status]="amenityName.dirty ? (amenityName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Icon URL</label>
+          <input type="text" nbInput fullWidth placeholder="Icon URL"
+                 autocomplete="off"
+                 name="image1"
+                 [(ngModel)]="amenity.image1"
+                 required #image1="ngModel"
+                 [status]="image1.dirty ? (image1.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewAmenityForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #amenityDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onAmenitySubmit()" #mainAmenityForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">Amenity Name</label>
+          <input type="text" nbInput fullWidth placeholder="Amenity Name"
+                 autocomplete="off"
+                 name="amenityName"
+                 [(ngModel)]="amenity.amenityName"
+                 required #amenityName="ngModel"
+                 [status]="amenityName.dirty ? (amenityName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Icon URL</label>
+          <input type="text" nbInput fullWidth placeholder="Icon URL"
+                 autocomplete="off"
+                 name="image1"
+                 [(ngModel)]="amenity.image1"
+                 required #image1="ngModel"
+                 [status]="image1.dirty ? (image1.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainAmenityForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>UPDATE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteAmenityDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this Amenity?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteAmenity()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

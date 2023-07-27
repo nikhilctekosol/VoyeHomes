@@ -1,0 +1,32 @@
+
+:host {
+  $auth-layout-padding: 2.5rem;
+
+  nb-card {
+    margin: 0;
+    height: calc(100vh - 2 * #{$auth-layout-padding});
+  }
+
+
+  [_nghost-kie-c0] .navigation[_ngcontent-kie-c0] .link[_ngcontent-kie-c0] {
+    color: #ab9258 !important;
+  }
+
+  .navigation .link {
+    text-decoration: none;
+    color: #ab9258 !important;
+
+    .icon {
+      font-size: 2rem;
+    }
+  }
+
+  nb-card-body {
+    display: flex;
+    width: 100%;
+  }
+
+  nb-auth-block {
+    margin: auto;
+  }
+}
