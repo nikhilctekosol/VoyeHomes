@@ -14,7 +14,7 @@
             "aot": true,
             "preserveSymlinks": true,
             "rebaseRootRelativeCssUrls": true,
-            "outputPath": "C:\\Users\\abdul\\OneDrive\\VOYE\\VoyeHomes\\VTravel\\VTravel.Admin\\bin\\Release\\net5.0\\publish\\ClientApp\\dist",
+            "outputPath": "C:\\Work\\VTravel\\VTravel.Admin\\bin\\Release\\net5.0\\publish\\ClientApp\\dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
@@ -183,5 +183,8 @@
     "@schematics/angular:directive": {
       "prefix": "ngx"
     }
+  },
+  "cli": {
+    "analytics": "01b09a2c-f78c-4857-8bee-9baf3108e68a"
   }
 }

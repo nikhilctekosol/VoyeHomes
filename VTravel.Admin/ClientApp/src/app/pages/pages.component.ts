@@ -62,10 +62,12 @@ export class PagesComponent {
             },
             {
               title: 'CMS',
+              "hidden": this.user.role != 'ADMIN' ? true : false,
               group: true,
             },
             {
               title: 'Catalog',
+              "hidden": this.user.role != 'ADMIN' ? true : false,
               icon: 'list-outline',
               children: [
 

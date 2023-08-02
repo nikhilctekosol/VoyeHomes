@@ -1,0 +1,4 @@
+ALTER TABLE `vtravel`.`reservation` 
+ADD COLUMN `advancepayment` FLOAT(18,2) NULL AFTER `res_status`,
+ADD COLUMN `partpayment` FLOAT(18,2) NULL AFTER `advancepayment`,
+ADD COLUMN `balancepayment` FLOAT(18,2) NULL AFTER `partpayment`;

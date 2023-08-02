@@ -184,8 +184,35 @@
                    autocomplete="off"
                    name="finalAmount"
                    [(ngModel)]="reservData.finalAmount"
-                   required #finalAmount="ngModel"
+                   required #finalAmount="ngModel" (change)="paymentchange()"
                    [status]="finalAmount.dirty ? (finalAmount.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+          <div class="col-6">
+            <label class="label">Advance Payment</label>
+            <input type="number" nbInput fullWidth placeholder="Advance Payment"
+                   autocomplete="off"
+                   name="advancepayment" value="0"
+                   [(ngModel)]="reservData.advancepayment"
+                   #advancepayment="ngModel" (change)="paymentchange()"
+                   [status]="advancepayment.dirty ? (advancepayment.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+          <div class="col-6">
+            <label class="label">Part Payment</label>
+            <input type="number" nbInput fullWidth placeholder="Part Payment"
+                   autocomplete="off"
+                   name="partpayment" value="0"
+                   [(ngModel)]="reservData.partpayment"
+                   #partpayment="ngModel" (change)="paymentchange()"
+                   [status]="partpayment.dirty ? (partpayment.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+          <div class="col-6">
+            <label class="label">Balance Payment</label>
+            <input type="number" nbInput fullWidth placeholder="Balance Payment"
+                   autocomplete="off"
+                   name="balancepayment" value="0" disabled
+                   [(ngModel)]="reservData.balancepayment"
+                   required #balancepayment="ngModel"
+                   [status]="balancepayment.dirty ? (balancepayment.invalid  ? 'danger' : 'success') : 'basic'">
           </div>
         </div>
 
@@ -342,6 +369,33 @@
                        [(ngModel)]="reservData.finalAmount"
                        required #finalAmount="ngModel"
                        [status]="finalAmount.dirty ? (finalAmount.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+              <div class="col-6">
+                <label class="label">Advance Payment</label>
+                <input type="number" nbInput fullWidth placeholder="Advance Payment"
+                       autocomplete="off"
+                       name="advancepayment" value="0"
+                       [(ngModel)]="reservData.advancepayment"
+                       #advancepayment="ngModel" (change)="paymentchange()"
+                       [status]="advancepayment.dirty ? (advancepayment.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+              <div class="col-6">
+                <label class="label">Part Payment</label>
+                <input type="number" nbInput fullWidth placeholder="Part Payment"
+                       autocomplete="off"
+                       name="partpayment" value="0"
+                       [(ngModel)]="reservData.partpayment"
+                       #partpayment="ngModel" (change)="paymentchange()"
+                       [status]="partpayment.dirty ? (partpayment.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+              <div class="col-6">
+                <label class="label">Balance Payment</label>
+                <input type="number" nbInput fullWidth placeholder="Balance Payment"
+                       autocomplete="off"
+                       name="balancepayment" value="0" disabled
+                       [(ngModel)]="reservData.balancepayment"
+                       required #balancepayment="ngModel"
+                       [status]="balancepayment.dirty ? (balancepayment.invalid  ? 'danger' : 'success') : 'basic'">
               </div>
             </div>
 
@@ -599,11 +653,11 @@
     <nb-card-body style="padding:.25rem .25rem;">
       <table class="table table-striped" style="font-size:12px; margin-bottom:.5rem;">
         <tr>
-          <td><label>Extra Bed Price</label></td>
+          <td><label>Extra Person Rate</label></td>
           <td><label id="lbl_ebp" name="ebp">{{modal.ebp | number:'1.2-2' }}</label></td>
         </tr>
         <tr>
-          <td><label>Child Price</label></td>
+          <td><label>Child Rate</label></td>
           <td><label id="lbl_cp" name="ebp">{{modal.cp | number:'1.2-2' }}</label></td>
         </tr>
       </table>

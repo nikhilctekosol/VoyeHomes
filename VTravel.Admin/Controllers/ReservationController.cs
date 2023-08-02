@@ -46,6 +46,7 @@ namespace VTravel.Admin.Controllers
 
                 var query = string.Format(@"select t1.id,t1.from_date,t1.to_date,t1.customer_id,t1.room_id,t1.property_id,t1.cust_name,t1.cust_email,t1.cust_phone,t1.booking_channel_id,t1.details
               ,t1.noOfRooms,t1.no_of_guests,t1.final_amount, t1.is_host_booking,t1.created_on,t1.updated_on,t1.enquiry_ref,t1.res_status,t2.user_name,t2.name_of_user ,t3.user_name AS updated_user_name,t3.name_of_user  AS updated_name_of_user
+                , t1.advancepayment, t1.partpayment, t1.balancepayment
                  FROM reservation t1 LEFT JOIN admin_user t2 ON t1.created_by=t2.id
                  LEFT JOIN admin_user t3 ON t1.updated_by=t3.id 
                WHERE t1.is_active='Y' AND t1.room_id={0} AND t1.property_id={1} AND t1.from_date > '{2}'  ORDER BY from_date"
@@ -134,11 +135,13 @@ namespace VTravel.Admin.Controllers
                         {
                             MySqlHelper sqlHelper = new MySqlHelper();
 
-                            var query = string.Format(@"INSERT INTO reservation(from_date,to_date,room_id,property_id,cust_name,cust_email,cust_phone,booking_channel_id,details,created_by,noOfRooms,no_of_guests,final_amount,enquiry_ref)
-                              VALUES('{0}','{1}',{2},{3},'{4}','{5}','{6}',{7},'{8}',{9},{10},{11},{12},'{13}');
-                                         SELECT LAST_INSERT_ID() AS id;",
+                            var query = string.Format(@"INSERT INTO reservation(from_date,to_date,room_id,property_id,cust_name,cust_email,cust_phone,booking_channel_id
+                                        ,details,created_by,noOfRooms,no_of_guests,final_amount,enquiry_ref, advancepayment, partpayment, balancepayment)
+                                        VALUES('{0}','{1}',{2},{3},'{4}','{5}','{6}',{7},'{8}',{9},{10},{11},{12},'{13}','{14}','{15}','{16}');
+                                        SELECT LAST_INSERT_ID() AS id;",
                                              model.fromDate.ToString("yyyy-MM-dd"), model.toDate.ToString("yyyy-MM-dd"), model.roomId, model.propertyId,
-                                             model.custName, model.custEmail, model.custPhone, model.bookingChannelId, model.details, userId, model.noOfRooms, model.noOfGuests, model.finalAmount, model.enquiry_ref);
+                                             model.custName, model.custEmail, model.custPhone, model.bookingChannelId, model.details, userId, model.noOfRooms, model.noOfGuests, model.finalAmount, model.enquiry_ref
+                                             , model.advancepayment, model.partpayment, model.balancepayment);
 
                             DataSet ds = sqlHelper.GetDatasetByMySql(query);
                             if (ds != null)
@@ -201,9 +204,12 @@ namespace VTravel.Admin.Controllers
 
 
 
-                    var query = string.Format(@"UPDATE reservation SET cust_name='{0}',cust_email='{1}',cust_phone='{2}',booking_channel_id={3},details='{4}',updated_by={5}, updated_on='{6}',no_of_guests={7},final_amount={8},enquiry_ref='{9}' WHERE id={10}",
-                                    model.custName, model.custEmail, model.custPhone, model.bookingChannelId,
-                                    model.details, userId, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),model.noOfGuests,model.finalAmount,model.enquiry_ref, id);
+                    var query = string.Format(@"UPDATE reservation SET cust_name='{0}',cust_email='{1}',cust_phone='{2}',booking_channel_id={3},details='{4}'
+                                    ,updated_by={5}, updated_on='{6}',no_of_guests={7},final_amount={8},enquiry_ref='{9}',advancepayment='{11}'
+                                    ,partpayment='{12}',balancepayment='{13}' WHERE id={10}",
+                                    model.custName, model.custEmail, model.custPhone, model.bookingChannelId, model.details, userId
+                                    , DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),model.noOfGuests,model.finalAmount,model.enquiry_ref, id
+                                    , model.advancepayment, model.partpayment, model.balancepayment);
 
                     var ds = sqlHelper.GetDatasetByMySql(query);
 

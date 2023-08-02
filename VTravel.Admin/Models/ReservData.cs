@@ -22,6 +22,9 @@ namespace VTravel.Admin.Models
         public string noOfRooms { get; set; }
         public int noOfGuests { get; set; }
         public float finalAmount { get; set; }
+        public float advancepayment { get; set; }
+        public float partpayment { get; set; }
+        public float balancepayment { get; set; }
         public string created_on { get; set; }
         public string updated_on { get; set; }
         public string created_by { get; set; }

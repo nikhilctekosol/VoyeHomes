@@ -149,6 +149,9 @@ export class ReservationComponent implements OnInit {
         this.reservData.toDate = selectInfo.endStr;
         this.reservData.roomId = this.room.id.toString();
         this.reservData.propertyId = this.property.id.toString();
+        this.reservData.advancepayment = 0;
+        this.reservData.partpayment = 0;
+        this.reservData.balancepayment = 0;
 
         this.dialogRef = this.dialogService.open(
           this.reserveDialogNew,
@@ -494,51 +497,56 @@ export class ReservationComponent implements OnInit {
   onNewReserveSubmit() {
 
     this.loadingSave = true;
+    
 
-    let headers = new HttpHeaders().set("Authorization", "Bearer " +
-      this.token).set("Content-Type", "application/json");
+    if (this.validate()) {
 
-    this.reservData.custPhone = this.reservData.custPhone.toString();
-    this.http.post('api/reservation/create'
-      , this.reservData, { headers: headers }).subscribe((res: any) => {
-        this.loadingSave = false;
-
-        if (res.actionStatus === 'SUCCESS') {
-
-          this.loadInventories();
-          
-         
-        this.toast('Success', 'Data saved successfully!', 'success');
-         this.dialogRef.close();
-        }
-        else {
-
+      this.reservData.custPhone = this.reservData.custPhone.toString();
+      let headers = new HttpHeaders().set("Authorization", "Bearer " +
+        this.token).set("Content-Type", "application/json");
+      this.http.post('api/reservation/create'
+        , this.reservData, { headers: headers }).subscribe((res: any) => {
           this.loadingSave = false;
-          this.toast('Error', 'Could not save data!', 'danger');
+
+          if (res.actionStatus === 'SUCCESS') {
+
+            this.loadInventories();
 
 
-        }
+          this.toast('Success', 'Data saved successfully!', 'success');
+           this.dialogRef.close();
+          }
+          else {
 
-      },
-        error => {
+            this.loadingSave = false;
+            this.toast('Error', 'Could not save data!', 'danger');
 
-          this.loadingSave = false;
-         
-          console.log('api/reservation/create', error);
-          if (error.status === 401) {
-            this.router.navigate(['auth/login']);
+
           }
 
-        });
+        },
+          error => {
+
+            this.loadingSave = false;
+
+            console.log('api/reservation/create', error);
+            if (error.status === 401) {
+              this.router.navigate(['auth/login']);
+            }
+
+          });
 
 
-
+    }
 
   }
 
   onReserveSubmit() {
 
     this.loadingSave = true;
+
+
+    this.validate();
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -737,6 +745,65 @@ export class ReservationComponent implements OnInit {
           }
         });
 
+  }
+
+  validate() {
+    let ct = this.channels.find(_ct => _ct.id == this.reservData.bookingChannelId);
+    if (ct.channelName == 'voyehomes.com') {
+      if (this.reservData.custEmail == '' || !this.reservData.custEmail
+        || this.reservData.custPhone == '' || !this.reservData.custPhone) {
+        this.loadingSave = false;
+        this.toast('Error', 'Email or Phone No should not be empty!', 'danger');
+        return false;
+      }
+      else {
+        const emailexp: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+        const emailresult: boolean = emailexp.test(this.reservData.custEmail);
+
+        if (!emailresult) {
+          this.loadingSave = false;
+          this.toast('Error', 'Enter a valid email id!', 'danger');
+          return false;
+        }
+
+        const phoneexp: RegExp = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+        const phoneresult: boolean = phoneexp.test(this.reservData.custPhone);
+
+        if (!phoneresult) {
+          this.loadingSave = false;
+          this.toast('Error', 'Enter a valid 10 digit phone number!', 'danger');
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  paymentchange() {
+    let famt = this.reservData.finalAmount;
+    let advance = this.reservData.advancepayment;
+    let part = this.reservData.partpayment;
+
+    if (famt.toString() == '' || !famt) {
+      famt = 0;
+    }
+    if (advance.toString() == '' || !advance) {
+      advance = 0;
+    }
+    if (part.toString() == '' || !part) {
+      part = 0;
+    }
+    if (advance + part > famt) {
+      advance = this.reservData.advancepayment = 0;
+      part = this.reservData.partpayment = 0;
+      this.reservData.balancepayment = famt;
+      this.toast('Error', 'Amount doesn\'t matches!', 'danger');
+      return;
+    }
+    else {
+      this.reservData.balancepayment = famt -
+        (advance + part);
+    }
   }
 
   private loadProperties() {
@@ -998,14 +1065,17 @@ class ReservData {
   roomId: string;
   propertyId: string;
   custName: string;
-  custEmail: string;
-  custPhone: string;
+  custEmail: string | undefined;
+  custPhone: string | undefined;
   bookingChannelId: string;
   details: string;
   maxAvailableQty: number;
   noOfRooms: string;
   noOfGuests: number;
-  finalAmount: number;
+  finalAmount: number | undefined;
+  advancepayment: number | undefined;
+  partpayment: number | undefined;
+  balancepayment: number | undefined;
   created_on: string;
   updated_on: string;
   created_by: string;

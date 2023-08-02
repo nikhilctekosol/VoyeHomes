@@ -362,7 +362,10 @@ function initAutocomplete() {
 
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
-        var autocomplete = new google.maps.places.Autocomplete(input, sessionToken);
+        const options = {
+            componentRestrictions: { country: "in" },
+        };
+        var autocomplete = new google.maps.places.Autocomplete(input, options, sessionToken);
        
         autocomplete.addListener("place_changed", () => {
            

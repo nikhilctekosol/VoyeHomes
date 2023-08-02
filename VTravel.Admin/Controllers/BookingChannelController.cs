@@ -116,6 +116,54 @@ namespace VTravel.Admin.Controllers
 
         }
 
+
+
+        [HttpGet, Route("get")]
+        public IActionResult Get(int id)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                BookingChannel channel = new BookingChannel();
+                MySqlHelper sqlHelper = new MySqlHelper();
+
+                var query = string.Format(@"select id,channel_name,sort_order 
+                 FROM booking_channel WHERE id={0} is_active='Y'", id);
+
+                DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+
+                    channel = new BookingChannel
+                    {
+                        id = Convert.ToInt32(r["id"].ToString()),
+                        channelName = r["channel_name"].ToString()
+                    };
+
+                }
+
+                response.Data = channel;
+                response.ActionStatus = "SUCCESS";
+
+
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
         [Authorize(Roles = "ADMIN")]
         [HttpPost, Route("create")]
         public IActionResult Create([FromBody] BookingChannel model)
