@@ -79,6 +79,9 @@ namespace VTravel.Admin.Controllers
                             isHostBooking = r["is_host_booking"].ToString(),
                             noOfGuests = String.IsNullOrEmpty(r["no_of_guests"].ToString()) ? 0 : int.Parse(r["no_of_guests"].ToString()),
                             finalAmount = String.IsNullOrEmpty(r["final_amount"].ToString()) ? 0 : float.Parse(r["final_amount"].ToString()),
+                            advancepayment = String.IsNullOrEmpty(r["advancepayment"].ToString()) ? 0 : float.Parse(r["advancepayment"].ToString()),
+                            partpayment = String.IsNullOrEmpty(r["partpayment"].ToString()) ? 0 : float.Parse(r["partpayment"].ToString()),
+                            balancepayment = String.IsNullOrEmpty(r["balancepayment"].ToString()) ? 0 : float.Parse(r["balancepayment"].ToString()),
                             created_on = String.IsNullOrEmpty(r["created_on"].ToString()) ? "" 
                             : TimeZoneInfo.ConvertTimeFromUtc(DateTime.Parse(r["created_on"].ToString()), timeZoneInfo).ToString("dd/MMM/yyyy HH:mm"),                            
                             updated_on = String.IsNullOrEmpty(r["updated_on"].ToString()) ? ""

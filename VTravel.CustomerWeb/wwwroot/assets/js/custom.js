@@ -38,7 +38,7 @@
         /*     alert('Room change');*/
 
         $('#roomName').val($("#roomId option:selected").text());
-        // loadPriceList();
+         loadPriceList();
     });
 
     //$('#roomType').on('change', function () {
@@ -132,7 +132,7 @@ $(function () {
         selectedStartDate = start;
         selectedEndDate = end;
 
-        // loadPriceList();
+         loadPriceList();
 
         $('#startDate').val(start.format('YYYY-MM-DD'));
         $('#endDate').val(end.format('YYYY-MM-DD'));
