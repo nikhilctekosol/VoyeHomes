@@ -13,7 +13,7 @@ import { CKEditorModule } from 'ng2-ckeditor';
 import { GoogleMapsModule } from '@angular/google-maps';
 
 @NgModule({
-  imports: [    
+  imports: [
     DragDropModule,
     ThemeModule,
     MasterRoutingModule,

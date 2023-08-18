@@ -12,6 +12,8 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using System.Security.Claims;
 using System.Linq;
+using ClosedXML.Excel;
+//using Microsoft.Extensions.Hosting;
 
 namespace VTravel.Admin.Controllers
 {
@@ -1468,6 +1470,60 @@ namespace VTravel.Admin.Controllers
 
         }
 
+        [HttpGet, Route("get-room")]
+        public IActionResult GetRoom(int propid, int id)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                List<Room> roomList = new List<Room>();
+                MySqlHelper sqlHelper = new MySqlHelper();
+
+                var query = string.Format(@"SELECT room.id,title,property_id,room_type_id,room.description,type_name FROM room INNER JOIN room_type ON room.room_type_id=room_type.id WHERE property_id={0} and room.id={1}
+                           ORDER BY room.sort_order, title", propid, id
+                                   );
+
+                DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+
+                    roomList.Add(
+                        new Room
+                        {
+                            id = Convert.ToInt32(r["id"].ToString()),
+                            title = r["title"].ToString(),
+                            roomTypeId = r["room_type_id"].ToString(),
+                            propertyId = Convert.ToInt32(r["property_id"]),
+                            description = r["description"].ToString(),
+                            typeName = r["type_name"].ToString()
+                        }
+                        );
+
+                }
+
+
+                response.Data = roomList;
+                response.ActionStatus = "SUCCESS";
+
+
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
         [Authorize(Roles = "ADMIN")]
         [HttpPost, Route("create-room")]
         public IActionResult CreateRoom([FromBody] Room model)
@@ -1624,6 +1680,97 @@ namespace VTravel.Admin.Controllers
 
 
         }
+
+
+
+        [HttpGet, Route("availability")]
+        public IActionResult GetAvailability(int propid, int room, DateTime fromdate)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                MySqlHelper sqlHelper = new MySqlHelper();
+
+                var query = string.Format(@"SELECT
+                            GROUP_CONCAT(DISTINCT CONCAT(
+                            'SUM(CASE WHEN inv_date = ""', inv_date, '"" THEN total_qty - booked_qty ELSE 0 END)AS ', DATE_FORMAT(inv_date, ""%M_%d_%Y"")
+                            )
+                            )
+                            INTO @sql
+                            FROM inventory where inv_date between '{0}' and '{1}';
+
+                            SET @sql = CONCAT('SELECT p.title property, r.title room, ', @sql, 
+                            ' FROM inventory i
+                            inner join property p on p.id = i.property_id
+                            inner join room r on r.id = i.room_id 
+                            where (i.property_id = {2} or {2} = 0) and (i.room_id = {3} or {3} = 0)
+                            GROUP BY p.title, r.title');
+  
+                            PREPARE stmt FROM @sql;
+                            EXECUTE stmt;
+                            DEALLOCATE PREPARE stmt;", Convert.ToDateTime(fromdate).ToString("yyyy-MM-dd"), Convert.ToDateTime(fromdate).AddDays(6).ToString("yyyy-MM-dd"), propid, room
+                );
+
+                DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+                var html = "";
+
+                html = html + "<thead>" +
+                    "<tr>" +
+                    "<th scope=\"col\">Property</th>" +
+                    "<th scope=\"col\">Room</th>" +
+                    "<th scope=\"col\">" + ds.Tables[0].Columns[2].ColumnName + "</th>" +
+                    "<th scope=\"col\">" + ds.Tables[0].Columns[3].ColumnName + "</th>" +
+                    "<th scope=\"col\">" + ds.Tables[0].Columns[4].ColumnName + "</th>" +
+                    "<th scope=\"col\">" + ds.Tables[0].Columns[5].ColumnName + "</th>" +
+                    "<th scope=\"col\">" + ds.Tables[0].Columns[6].ColumnName + "</th>" +
+                    "<th scope=\"col\">" + ds.Tables[0].Columns[7].ColumnName + "</th>" +
+                    "<th scope=\"col\">" + ds.Tables[0].Columns[8].ColumnName + "</th>" +
+                    "</tr>" +
+                    "</thead>";
+
+
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+
+
+                    html = html + "<tbody>" +
+                        "<tr>" +
+                        "<td scope=\"row\">" + r[0].ToString() + "</td  >" +
+                        "<td scope=\"row\">" + r[1].ToString() + "</td  >" +
+                        "<td scope=\"row\">" + r[2].ToString() + "</td  >" +
+                        "<td scope=\"row\">" + r[3].ToString() + "</td  >" +
+                        "<td scope=\"row\">" + r[4].ToString() + "</td  >" +
+                        "<td scope=\"row\">" + r[5].ToString() + "</td  >" +
+                        "<td scope=\"row\">" + r[6].ToString() + "</td  >" +
+                        "<td scope=\"row\">" + r[7].ToString() + "</td  >" +
+                        "<td scope=\"row\">" + r[8].ToString() + "</td  >" +
+                        "</tr>" +
+                        "</tbody>";
+
+                }
+
+
+                response.Data = html;
+                response.ActionStatus = "SUCCESS";
+
+
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
 
     }
 }

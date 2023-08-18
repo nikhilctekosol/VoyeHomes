@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -70,6 +71,7 @@ namespace VTravel.Admin
 
             //services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
             services.AddAntiforgery(options => options.HeaderName = "XSRF-TOKEN");
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

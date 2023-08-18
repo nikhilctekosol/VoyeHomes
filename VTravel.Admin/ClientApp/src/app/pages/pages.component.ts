@@ -125,11 +125,27 @@ export class PagesComponent {
             {
               title: 'Partner',
               "hidden": this.user.role != 'ADMIN' ? true : false,
-              icon: 'people-outline',
+              //icon: 'people-outline',
               children: [
                 {
                   title: 'Users',
                   link: '/pages/partner/users',
+                },
+              ],
+
+            },
+            {
+              title: 'REPORTS',
+              group: true ,
+            },
+            {
+              title: 'Reports',
+              //"hidden": this.user.role != 'ADMIN' ? true : false,
+              //icon: 'people-outline',
+              children: [
+                {
+                  title: 'Availability',
+                  link: '/pages/reports/availability',
                 },
               ],
 

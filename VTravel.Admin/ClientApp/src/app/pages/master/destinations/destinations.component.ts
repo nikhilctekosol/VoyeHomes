@@ -2,7 +2,9 @@ import { Component, OnInit, ChangeDetectorRef, TemplateRef, ContentChild } from 
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { NbAuthService, NbAuthJWTToken, NbAuthToken } from '@nebular/auth';
-import { NbDialogService, NbComponentStatus, NbToastrService} from '@nebular/theme';
+import { NbDialogService, NbComponentStatus, NbToastrService } from '@nebular/theme';
+import '../ckeditor.loader';
+import 'ckeditor';
 
 
 
@@ -261,15 +263,15 @@ export class DestinationsComponent implements OnInit  {
 
 class Destination {
   id: number;
-  title: string;
-  description: string;
-  short_desc: string;
-  thumbnail: string;
-  thumbnail_alt: string;
-  meta_title: string;
-  meta_keywords: string;
-  meta_description: string;
-
+  title: string ;
+  description: string ;
+  short_desc: string ;
+  thumbnail: string ;
+  thumbnail_alt: string ;
+  meta_title: string ;
+  meta_keywords: string ;
+  meta_description: string ;
+  footercontent: string ;
 
 }
 

@@ -1,0 +1,112 @@
+
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-4">
+            Weekend Availability
+
+          </div>
+
+
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+
+        <div class="row">
+          <div class="col-md-4">
+            <input #autoInput
+                   nbInput
+                   [(ngModel)]="selectedPropertyName"
+                   type="text"
+                   (input)="onChange()"
+                   placeholder="[SELECT PROPERTY]"
+                   [nbAutocomplete]="auto"
+                   [fullWidth]="true" />
+
+            <nb-autocomplete #auto (selectedChange)="onPropSelectionChange($event)">
+
+              <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+                {{ option.title }}
+              </nb-option>
+
+
+            </nb-autocomplete>
+          </div>
+          <div class="col-md-4">
+            <input #autoInput1
+                   nbInput
+                   [(ngModel)]="selectedRoomName"
+                   type="text"
+                   (input)="onRoomChange()"
+                   placeholder="[SELECT ROOM]"
+                   [nbAutocomplete]="auto1"
+                   [fullWidth]="true" />
+
+            <nb-autocomplete #auto1 (selectedChange)="onRoomSelectionChange($event)">
+
+              <nb-option *ngFor="let option of filteredRooms$ | async" [value]="option">
+                {{ option.title }}
+              </nb-option>
+
+
+            </nb-autocomplete>
+          </div>
+          <div class="col-md-3">
+            <input nbInput placeholder="Start Date" [nbDatepicker]="datepicker" [(ngModel)]="searchdata.fromDate" class="date-picker-box input-rectangle" [fullWidth]="true" readonly="readonly">
+            <nb-datepicker #datepicker></nb-datepicker>
+          </div>
+          <div class="col-md-1">
+            <a nbButton class="btn btn-sm btn-outline-primary" (click)="search()">
+              <nb-icon icon="search-outline"></nb-icon>
+            </a>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <nb-card style="overflow:auto;">
+      <nb-card-body style="max-width:75vw; max-height:80vh;">
+        <div class="row col-md-12">
+          <a nbButton class="btn btn-sm btn-outline-primary" (click)="exportToExcel()">
+            Export to excel
+          </a>
+        </div>
+        <table class="table table-striped custom-table" [innerHTML]="tabledata">
+          
+
+        </table>
+      </nb-card-body>
+      <!--<nb-card-footer>
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item" [ngClass]="{'disabled': page_no == 0}">
+              <a class="page-link" (click)="loadPrev()" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+
+            <li class="page-item" [ngClass]="{'active': page_no == (page_no_start+i)}"
+                *ngFor="let c of [].constructor(page_count_show);let i = index"><a class="page-link" (click)="loadPage(page_no_start+i)">{{page_no_start+i+1}}</a></li>
+
+            <li class="page-item" [ngClass]="{'disabled': page_no >= page_count}">
+              <a class="page-link" (click)="loadNext()" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </nb-card-footer>-->
+    </nb-card>
+
+
+  </div>
+
+</div>
