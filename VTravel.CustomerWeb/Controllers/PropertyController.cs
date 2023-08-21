@@ -192,6 +192,7 @@ namespace VTravel.CustomerWeb.Controllers
                 var short_desc = "";
                 var metaDescription = "";
                 var condition = "";
+                var long_desc = "";
 
                 var thumbnail = "";
 
@@ -239,7 +240,7 @@ namespace VTravel.CustomerWeb.Controllers
 
                     //get destination details
                     query = string.Format(@"SELECT id,image1, title,description,thumbnail,meta_title,meta_keywords,meta_description
-                                            , IFNULL(short_desc, '') short_desc    
+                                            , IFNULL(short_desc, '') short_desc , IFNULL(long_desc, '') long_desc    
                                             FROM destination WHERE  is_active='Y' AND id={0}",
                                            decodedId2);
 
@@ -265,6 +266,7 @@ namespace VTravel.CustomerWeb.Controllers
                                             description = r["description"].ToString(),
                                             short_desc = r["short_desc"].ToString(),
                                             banner_url = r["image1"].ToString(),
+                                            long_desc = r["long_desc"].ToString(),
 
                                         });
 
@@ -276,6 +278,7 @@ namespace VTravel.CustomerWeb.Controllers
                                     metaDescription = r["meta_description"].ToString();
                                     thumbnail = dest.thumbnail;
                                     propertyViewModel.banner_url = dest.banner_url;
+                                    long_desc = dest.long_desc;
 
                                     ViewData["CanonicalUrl"] = "destination/" + General.GetUrlSlug(dest.title) + "-" + encodedId2;
                                 }
@@ -404,6 +407,7 @@ namespace VTravel.CustomerWeb.Controllers
                 }
                 propertyViewModel.title = title;
                 propertyViewModel.short_desc = short_desc;
+                propertyViewModel.long_desc = long_desc;
 
 
 

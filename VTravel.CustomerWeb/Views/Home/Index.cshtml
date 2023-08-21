@@ -61,7 +61,7 @@
    @* <div id="destinations-div"></div>*@
 
     <!-- Destinations -->
-  @if (Model.destinationList.Count > 0)
+  @*@if (Model.destinationList.Count > 0)
     {
         <section class="destination" id="desitnations">
             <div class="header">Your Favourite Destinations<p>Voye Homes will be your best choice when you need privacy in a cosy home, the ambience of a fabulous vacation and the excellence of a hotel</p></div>
@@ -81,6 +81,30 @@
 
                 }
                 
+            </div>
+        </section>
+    }*@
+
+    @if (Model.destinationList.Count > 0)
+    {
+        <section class="destination" id="desitnations">
+            <div class="header">Your Favourite Destinations<p>Voye Homes will be your best choice when you need privacy in a cosy home, the ambience of a fabulous vacation and the excellence of a hotel</p></div>
+            <div class="desti-slider1">
+
+                @foreach (var destination in Model.destinationList)
+                {
+
+                    <div>
+                        <div class="img" style="text-align:center; margin :10px 0px; color : #09087E; font-weight:500;">
+                            <a href="destination/@General.GetUrlSlug(destination.title)-@General.EncodeString(destination.id.ToString())" style="display:flex;align-items:center;justify-content:center;">
+                                <img src="@destination.img_url" style="width:50%;" height="100"
+                                        alt="@destination.title" onerror="this.src='/assets/img/default.jpg'" />
+                            </a>
+                            <h7>@destination.title</h7>
+                        </div>
+                    </div>
+                }
+
             </div>
         </section>
     }

@@ -123,7 +123,7 @@ export const NB_CORE_PROVIDERS = [
         },
         resetPass: {
           endpoint: 'reset-pass',
-          resetPasswordTokenKey: "tokenKey",
+          resetPasswordTokenKey: 'tokenKey',
         },
         token: {
           class: NbAuthJWTToken,

@@ -17,39 +17,33 @@ import 'ckeditor';
 
 export class DestinationsComponent implements OnInit  {
 
- 
   isLoading = false;
-  loadingSave = false; 
-  
+  loadingSave = false;
   destinations: any[];
-  token: any;   
+  token: any;
   destination = new Destination();
   dialogRef: any;
 
-  constructor(private http: HttpClient, private authService: NbAuthService, 
+  constructor(private http: HttpClient, private authService: NbAuthService,
     private cd: ChangeDetectorRef, private router: Router,
     private r: ActivatedRoute, private dialogService: NbDialogService, private toastrService: NbToastrService) {
 
-  
     this.authService.getToken().subscribe((tokenData: NbAuthToken) => {
       this.token = tokenData.getValue();
 
-      
     });
-   
   }
 
   ngOnInit() {
 
     this.loadDestinations();
-  
   }
 
 
 
   private loadDestinations() {
 
-    this.isLoading = true;
+    this.isLoading = true ;
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
     this.http.get('api/destination/get-list'
@@ -60,7 +54,6 @@ export class DestinationsComponent implements OnInit  {
         if (res.actionStatus == 'SUCCESS') {
           if (res.data.length > 0) {
             this.destinations = res.data;
-           
           }
         }
 
@@ -72,7 +65,6 @@ export class DestinationsComponent implements OnInit  {
             this.router.navigate(['auth/login']);
           }
         });
-  
   }
 
   openDestinationNew(destinationDialogNew: TemplateRef<any>) {
@@ -92,7 +84,6 @@ export class DestinationsComponent implements OnInit  {
     this.destination = new Destination();
 
     this.destination.id = id;
-    
     this.destination.title = ct.title;
     this.destination.thumbnail = ct.thumbnail;
     this.destination.thumbnail_alt = ct.thumbnail_alt;
@@ -102,8 +93,9 @@ export class DestinationsComponent implements OnInit  {
     this.destination.meta_title = ct.meta_title;
     this.destination.meta_keywords = ct.meta_keywords;
     this.destination.meta_description = ct.meta_description;
+    this.destination.long_desc = ct.long_desc;
+    this.destination.img_url = ct.img_url;
 
-   
 
     this.dialogRef = this.dialogService.open(
       destinationDialog,
@@ -125,12 +117,11 @@ export class DestinationsComponent implements OnInit  {
 
   onNewDestinationSubmit() {
 
-    this.loadingSave = true;
+    this.loadingSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
 
-    
     this.http.post('api/destination/create'
       , this.destination, { headers: headers }).subscribe((res: any) => {
         this.loadingSave = false;
@@ -170,7 +161,7 @@ export class DestinationsComponent implements OnInit  {
 
   onDestinationSubmit() {
 
-    this.loadingSave = true;
+    this.loadingSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -215,7 +206,7 @@ export class DestinationsComponent implements OnInit  {
   deleteDestination() {
 
 
-    this.loadingSave = true;
+    this.loadingSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -266,12 +257,13 @@ class Destination {
   title: string ;
   description: string ;
   short_desc: string ;
+  img_url: string ;
   thumbnail: string ;
   thumbnail_alt: string ;
   meta_title: string ;
   meta_keywords: string ;
   meta_description: string ;
-  footercontent: string ;
+  long_desc: string ;
 
 }
 

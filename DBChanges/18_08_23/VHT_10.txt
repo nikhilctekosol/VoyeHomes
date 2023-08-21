@@ -1,0 +1,2 @@
+ALTER TABLE `vtravel`.`destination` 
+ADD COLUMN `long_desc` TEXT NULL AFTER `short_desc`;

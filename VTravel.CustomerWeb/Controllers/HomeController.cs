@@ -227,7 +227,7 @@ namespace VTravel.CustomerWeb.Controllers
                 }
 
 
-                query = string.Format(@"SELECT id, title,description,thumbnail  
+                query = string.Format(@"SELECT id, title,description,thumbnail, img_url
                                            FROM destination WHERE  is_active='Y' ORDER BY sort_order");
 
                 ds = null;
@@ -247,6 +247,7 @@ namespace VTravel.CustomerWeb.Controllers
                                     new Destination
                                     {
                                         id = Convert.ToInt32(r["id"].ToString()),
+                                        img_url = r["img_url"].ToString(),
                                         thumbnail = r["thumbnail"].ToString(),
                                         title = r["title"].ToString(),
                                         description = r["description"].ToString(),

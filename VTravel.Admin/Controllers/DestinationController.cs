@@ -81,7 +81,7 @@ namespace VTravel.Admin.Controllers
                 List<Destination> destinations = new List<Destination>();
                 MySqlHelper sqlHelper = new MySqlHelper();
 
-                var query = string.Format(@"select id,title,thumbnail,thumbnail_alt,description,meta_title,meta_keywords,meta_description, IFNULL(short_desc, '') short_desc   
+                var query = string.Format(@"select id,title,thumbnail,thumbnail_alt,description,meta_title,meta_keywords,meta_description, IFNULL(short_desc, '') short_desc, IFNULL(long_desc, '') long_desc, IFNULL(img_url, '') img_url   
                  FROM destination WHERE is_active='Y' ORDER BY sort_order,title"
                                    );
 
@@ -96,13 +96,15 @@ namespace VTravel.Admin.Controllers
                         {
                             id = Convert.ToInt32(r["id"].ToString()),
                             title = r["title"].ToString(),
+                            img_url = r["img_url"].ToString(),
                             thumbnail = r["thumbnail"].ToString(),
                             thumbnail_alt = r["thumbnail_alt"].ToString(),
                             description = r["description"].ToString(),
                             short_desc = r["short_desc"].ToString(),
                             meta_title = r["meta_title"].ToString(),
                             meta_keywords = r["meta_keywords"].ToString(),
-                            meta_description = r["meta_description"].ToString()
+                            meta_description = r["meta_description"].ToString(),
+                            long_desc = r["long_desc"].ToString()
                         }
                         );
 
@@ -138,7 +140,7 @@ namespace VTravel.Admin.Controllers
                 Destination destination = new Destination();
                 MySqlHelper sqlHelper = new MySqlHelper();
 
-                var query = string.Format(@"select id,title,thumbnail,thumbnail_alt,description,meta_title,meta_keywords,meta_description, IFNULL(short_desc, '') short_desc 
+                var query = string.Format(@"select id,title,thumbnail,thumbnail_alt,description,meta_title,meta_keywords,meta_description, IFNULL(short_desc, '') short_desc, IFNULL(long_desc, '') long_desc, IFNULL(img_url, '') img_url
                   FROM destination WHERE is_active='Y' AND id={0} ORDER BY sort_order", id);
 
                 DataSet ds = sqlHelper.GetDatasetByMySql(query);
@@ -151,13 +153,15 @@ namespace VTravel.Admin.Controllers
                     {
                         id = Convert.ToInt32(r["id"].ToString()),
                         title = r["title"].ToString(),
+                        img_url = r["img_url"].ToString(),
                         thumbnail = r["thumbnail"].ToString(),
                         thumbnail_alt = r["thumbnail_alt"].ToString(),
                         description = r["description"].ToString(),
                         short_desc = r["short_desc"].ToString(),
                         meta_title = r["meta_title"].ToString(),
                         meta_keywords = r["meta_keywords"].ToString(),
-                        meta_description = r["meta_description"].ToString()
+                        meta_description = r["meta_description"].ToString(),
+                        long_desc = r["long_desc"].ToString()
                     };
 
                 }
@@ -193,10 +197,10 @@ namespace VTravel.Admin.Controllers
 
                     MySqlHelper sqlHelper = new MySqlHelper();
 
-                    var query = string.Format(@"INSERT INTO destination(title,thumbnail,description,meta_title,meta_keywords,meta_description,thumbnail_alt, short_desc)
-                                     VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}');
+                    var query = string.Format(@"INSERT INTO destination(title,thumbnail,description,meta_title,meta_keywords,meta_description,thumbnail_alt, short_desc, long_desc, img_url)
+                                     VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');
                                          SELECT LAST_INSERT_ID() AS id;",
-                                     model.title, model.thumbnail,model.description, model.meta_title, model.meta_keywords, model.meta_description,model.thumbnail_alt, model.short_desc);
+                                     model.title, model.thumbnail,model.description, model.meta_title, model.meta_keywords, model.meta_description,model.thumbnail_alt, model.short_desc, model.long_desc, model.img_url);
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
                     if (ds != null)
@@ -245,8 +249,9 @@ namespace VTravel.Admin.Controllers
 
                     MySqlHelper sqlHelper = new MySqlHelper();
 
-                    var query = string.Format(@"UPDATE destination SET title='{0}',thumbnail='{1}',description='{2}',meta_title='{3}',meta_keywords='{4}',meta_description='{5}',thumbnail_alt='{6}',short_desc='{8}' WHERE id={7}",
-                                     model.title,model.thumbnail,model.description, model.meta_title, model.meta_keywords, model.meta_description, model.thumbnail_alt, id, model.short_desc);
+                    var query = string.Format(@"UPDATE destination SET title='{0}',thumbnail='{1}',description='{2}',meta_title='{3}',meta_keywords='{4}',meta_description='{5}'
+                                            ,thumbnail_alt='{6}',short_desc='{8}',long_desc='{9}',img_url='{10}' WHERE id={7}",
+                                     model.title,model.thumbnail,model.description, model.meta_title, model.meta_keywords, model.meta_description, model.thumbnail_alt, id, model.short_desc, model.long_desc, model.img_url);
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
                     response.ActionStatus = "SUCCESS";

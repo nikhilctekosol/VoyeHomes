@@ -60,6 +60,27 @@
         </div>
     </section>
 </div>
+<div class="container clearfix">
+    <section class="normListing inner">
+
+
+        @if (Model.long_desc != null)
+        {
+            <div class="about-property" style="margin:0px 20px; text-align:justify;">
+
+                @Html.Raw(Model.long_desc)
+
+            </div>
+            @if (Model.long_desc.Length > 200)
+            {
+                <div style="margin:0px 20px;">
+                    <a href="javascript:void(0);" class="see-more">See more...</a>
+                    <a href="javascript:void(0);" class="see-less">...See less</a>
+                </div>
+            }
+        }
+    </section>
+</div>
 
 
 

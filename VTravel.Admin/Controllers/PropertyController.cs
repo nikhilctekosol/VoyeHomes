@@ -12,7 +12,6 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using System.Security.Claims;
 using System.Linq;
-using ClosedXML.Excel;
 //using Microsoft.Extensions.Hosting;
 
 namespace VTravel.Admin.Controllers

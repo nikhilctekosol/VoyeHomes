@@ -13,6 +13,7 @@ namespace VTravel.CustomerWeb.Models
         public string description { get; set; }
         public string short_desc { get; set; }
         public string banner_url { get; set; }
+        public string long_desc { get; set; }
 
 
         public List<Property> propertyList { get; set; }
