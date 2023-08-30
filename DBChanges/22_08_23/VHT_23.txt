@@ -1,0 +1,3 @@
+ALTER TABLE `vtravel`.`hero_banner` 
+ADD COLUMN `destination` INT NULL AFTER `show_in_home`,
+ADD COLUMN `image_alt` VARCHAR(100) NULL AFTER `destination`;

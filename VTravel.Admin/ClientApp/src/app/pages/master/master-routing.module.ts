@@ -10,6 +10,7 @@ import { PropertyTypesComponent } from './property-types/property-types.componen
 import { RoomTypesComponent } from './room-types/room-types.component';
 import { BookingChannelsComponent } from './booking-channels/booking-channels.component';
 import { UsersComponent } from './users/users.component';
+import { BannersComponent } from './banners/banners.component';
 
 const routes: Routes = [{
   path: '',
@@ -46,8 +47,12 @@ const routes: Routes = [{
     {
       path: 'users',
       component: UsersComponent,
+    },
+    {
+      path: 'banners',
+      component: BannersComponent,
     }
-   //{
+   // {
   //    path: 'view-request/:id',
   //    component: ViewRequestComponent,
   //  }
@@ -69,5 +74,6 @@ export const routedComponents = [
   PropertyTypesComponent,
   RoomTypesComponent,
   BookingChannelsComponent,
-  UsersComponent
+  UsersComponent,
+  BannersComponent
 ];

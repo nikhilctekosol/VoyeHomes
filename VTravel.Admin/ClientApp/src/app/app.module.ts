@@ -35,7 +35,6 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 @NgModule({
   declarations: [AppComponent],
   imports: [
-   
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,

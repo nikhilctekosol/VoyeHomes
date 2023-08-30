@@ -13,6 +13,7 @@ namespace VTravel.CustomerWeb.Models
         public string title { get; set; }
         public string description { get; set; }
         public int property_id { get; set; }
+        public int destination { get; set; }
 
 
 

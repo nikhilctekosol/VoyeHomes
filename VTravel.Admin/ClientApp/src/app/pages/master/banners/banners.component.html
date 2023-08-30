@@ -1,0 +1,272 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-10">Banner List</div>
+      <div class="col-md-2">
+
+        <button type="submit" (click)="openBannerNew(bannerDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+          <nb-icon icon="plus-outline"></nb-icon>ADD
+        </button>
+      </div>
+
+    </div>
+
+  </nb-card-header>
+  <nb-card-body>
+    <nb-card *ngFor="let banner of bannerlist">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-8">{{banner.title}}</div>
+          <div class="col-md-2">
+            <button type="button" (click)="openDelete(deleteDialog,banner.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="trash-outline"></nb-icon> DE-ACTIVATE
+            </button>
+          </div>
+          <div class="col-md-2">
+            <button type="button" (click)="openBanner(bannerDialog,banner.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="edit-outline"></nb-icon> EDIT
+            </button>
+
+          </div>
+
+        </div>
+
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+
+          <div class="col-md-8">
+            {{banner.title}}
+          </div>
+          <div class="col-md-4">
+            <img src="{{banner.image_url}}" alt="" width="100" height="100"
+                 onerror="this.src='assets/images/default.jpg'" />
+          </div>
+
+        </div>
+
+      </nb-card-body>
+
+    </nb-card>
+  </nb-card-body>
+</nb-card>
+
+
+<ng-template #deleteDialog let-data let-ref="dialogRef">
+  <nb-card style="min-width : 25vw;">
+    <nb-card-header>
+      {{banner.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to de-activate this banner?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6" style="float:right;">
+          <button type="button" (click)="deleteBanner()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingDelete" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DE_ACTIVATE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #bannerDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onNewBannerSubmit()" #mainNewBannerForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <label class="label">Title</label>
+          <input type="text" nbInput fullWidth placeholder="Title"
+                 autocomplete="off"
+                 name="title"
+                 [(ngModel)]="banner.title"
+                 required #title="ngModel"
+                 [status]="title.dirty ? (title.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Description</label>
+          <input type="text" nbInput fullWidth placeholder="Description"
+                 autocomplete="off"
+                 name="description"
+                 [(ngModel)]="banner.description"
+                 required #description="ngModel"
+                 [status]="description.dirty ? (description.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Image</label>
+          <input type="text" nbInput fullWidth placeholder="Image"
+                 autocomplete="off"
+                 name="image_url"
+                 [(ngModel)]="banner.image_url"
+                 required #image_url="ngModel"
+                 [status]="image_url.dirty ? (image_url.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Image Alt. Text</label>
+          <input type="text" nbInput fullWidth placeholder="Image Alt. Text"
+                 autocomplete="off"
+                 name="image_alt"
+                 [(ngModel)]="banner.image_alt"
+                 required #image_alt="ngModel"
+                 [status]="image_alt.dirty ? (image_alt.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Destination</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="destination_id"
+                     [(ngModel)]="banner.destination_id"
+                     #destination_id="ngModel">
+            <nb-option value={{item.id}} *ngFor="let item of destinations">{{item.title}}</nb-option>
+
+
+          </nb-select>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Property</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="property_id"
+                     [(ngModel)]="banner.property_id"
+                     #property_id="ngModel">
+            <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
+
+
+          </nb-select>
+        </div>
+
+        <div class="form-group">
+          <nb-checkbox name="show_in_home" [ngModel]="banner.show_in_home=='Y'" [checked]="banner.show_in_home=='Y'" (change)="banner.show_in_home = $event.target.checked == true ? 'Y' : 'N'">
+            Show in home
+          </nb-checkbox>
+        </div>
+
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewBannerForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #bannerDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onBannerSubmit()" #mainBannerForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <label class="label">Title</label>
+          <input type="text" nbInput fullWidth placeholder="Title"
+                 autocomplete="off"
+                 name="title"
+                 [(ngModel)]="banner.title"
+                 required #title1="ngModel"
+                 [status]="title1.dirty ? (title1.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Description</label>
+          <input type="text" nbInput fullWidth placeholder="Description"
+                 autocomplete="off"
+                 name="description"
+                 [(ngModel)]="banner.description"
+                 required #description1="ngModel"
+                 [status]="description1.dirty ? (description1.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Image</label>
+          <input type="text" nbInput fullWidth placeholder="Image"
+                 autocomplete="off"
+                 name="image_url"
+                 [(ngModel)]="banner.image_url"
+                 required #image_url1="ngModel"
+                 [status]="image_url1.dirty ? (image_url1.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Image Alt. Text</label>
+          <input type="text" nbInput fullWidth placeholder="Image Alt. Text"
+                 autocomplete="off"
+                 name="image_alt"
+                 [(ngModel)]="banner.image_alt"
+                 required #image_alt1="ngModel"
+                 [status]="image_alt1.dirty ? (image_alt1.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Destination</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="destination_id"
+                     [(ngModel)]="banner.destination_id"
+                     #destination_id="ngModel">
+            <nb-option value={{item.id}} *ngFor="let item of destinations">{{item.title}}</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Property</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="property_id"
+                     [(ngModel)]="banner.property_id"
+                     #property_id="ngModel">
+            <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-group">
+          <nb-checkbox name="show_in_home" [ngModel]="banner.show_in_home=='Y'" #show_in_home="ngModel" [checked]="banner.show_in_home=='Y'" (change)="banner.show_in_home = $event.target.checked == true ? 'Y' : 'N'">
+            Show in home
+          </nb-checkbox>
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainBannerForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>UPDATE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>

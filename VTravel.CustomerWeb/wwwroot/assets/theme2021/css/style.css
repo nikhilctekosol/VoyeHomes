@@ -483,9 +483,9 @@ ul.slick-dots li {
         }
 
         .destination .box img {
-            width: 100%;
-            -webkit-transform: scale(1);
-            transform: scale(1);
+            width: 125%;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
             -webkit-transition: .3s ease-in-out;
             transition: .3s ease-in-out;
             height: 175px;
@@ -493,8 +493,8 @@ ul.slick-dots li {
         }
 
         .destination .box:hover img {
-            -webkit-transform: scale(1.2);
-            transform: scale(1.2);
+            -webkit-transform: scale(0.7);
+            transform: scale(0.7);
             -webkit-transition: .3s ease-in-out;
             opacity: 1;
             -webkit-animation: flash 1.5s;
@@ -2825,9 +2825,9 @@ textarea.form-control.message{
             font-size: 17px;
         }
 
-        .destination .slick-slide {
+        /*.destination .slick-slide {
             width: 170px;
-        }
+        }*/
 
         .destination .box {
             padding: 15px 10px;

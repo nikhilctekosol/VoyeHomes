@@ -169,24 +169,6 @@ $(document).ready(function () {
         arrows: true,
         slidesPerRow: 6,
         rows: 2,
-        responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 3,
-                    variableWidth: true,
-                    slidesToScroll: 1
-                }
-            },
-            {
-                breakpoint: 628,
-                settings: {
-                    slidesToShow: 3,
-                    variableWidth: true,
-                    slidesToScroll: 1
-                }
-            }
-        ],
         
     });
     $('.single-slider-auto').slick({

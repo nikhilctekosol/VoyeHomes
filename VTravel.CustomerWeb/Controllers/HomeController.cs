@@ -187,9 +187,12 @@ namespace VTravel.CustomerWeb.Controllers
 
                 }
 
-                query = string.Format(@"SELECT id, image_url,navigate_url,title,description,property_id  
-                                           FROM hero_banner WHERE property_id={0}  
-                                           AND is_active='Y'",
+                query = string.Format(@"SELECT b.id, b.image_url, b.navigate_url, IFNULL(b.title, '') title, IFNULL(b.description, '') description, IFNULL(b.property_id, 0) property_id, IFNULL(b.destination, 0) dest_id
+                                           , IFNULL(p.title, '') property, IFNULL(d.title, '') destination
+                                           FROM hero_banner b
+                                           left join property p on p.id = b.property_id
+                                           left join destination d on d.id = b.destination
+                                           where b.is_active='Y'",
                                  0);
 
                 ds = null;
@@ -210,10 +213,11 @@ namespace VTravel.CustomerWeb.Controllers
                                     {
                                         id = Convert.ToInt32(r["id"].ToString()),
                                         image_url = r["image_url"].ToString(),
-                                        navigate_url = r["navigate_url"].ToString(),
+                                        navigate_url = r["property_id"].ToString() == "0" ? (r["dest_id"].ToString() == "0" ? "" : "destination/"+@General.GetUrlSlug(r["destination"].ToString())+"-"+ @General.EncodeString(r["dest_id"].ToString())) : @General.GetUrlSlug(r["property"].ToString()) +"-"+@General.EncodeString(r["property_id"].ToString()),
                                         title = r["title"].ToString(),
                                         description = r["description"].ToString(),
-                                        property_id = Convert.ToInt32(r["property_id"].ToString())
+                                        property_id = Convert.ToInt32(r["property_id"].ToString()),
+                                        destination = Convert.ToInt32(r["dest_id"].ToString())
 
                                     });
 

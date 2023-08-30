@@ -119,6 +119,10 @@ export class PagesComponent {
                   title: 'Users',
                   link: '/pages/master/users',
                 },
+                {
+                  title: 'Banners',
+                  link: '/pages/master/banners',
+                },
               ],
 
             },
