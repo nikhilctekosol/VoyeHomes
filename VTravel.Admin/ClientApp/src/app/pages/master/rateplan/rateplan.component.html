@@ -1,0 +1,278 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-12">Rate Plan</div>
+
+    </div>
+
+</nb-card-header>
+  <nb-card-body>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nb-select placeholder="[SELECT PROPERTY]" [fullWidth]="true" (selectedChange)="onPropertySelected($event)" name="propertyId" [(ngModel)]="PropertyId" #propertyId="ngModel">
+          <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
+        </nb-select>
+      </div>
+      <div class="col-md-4">
+
+      </div>
+      <div class="col-md-2">
+
+        <button type="submit" (click)="openRateNew(rateDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+          <nb-icon icon="plus-outline"></nb-icon>ADD
+        </button>
+      </div>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-body>
+        <nb-tabset fullWidth>
+          <nb-tab tabTitle="Active Rateplans">
+            <nb-card>
+              <nb-card-body>
+                <div class="col-md-6">
+                  <table class="table table-striped custom-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Color</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Edit</th>
+                        <!--<th scope="col">Delete</th>-->
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of activerateplans">
+                        <td scope="row"><span style.background-color={{item.color}} style="width:14px; height:14px; margin-top:3px; float:left; margin-right:10px;"></span></td>
+                        <td scope="row">{{item.name}}</td>
+                        <td scope="row"><nb-icon icon="edit-outline" (click)="planedit(item.id, rateplanDialog, 1);"></nb-icon></td>
+                        <!--<td scope="row"><nb-icon icon="trash-outline" (click)="openRateplanDelete(item.id, deleteRateplanDialog);"></nb-icon></td>-->
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <nb-tab tabTitle="Inactive Rateplans">
+            <nb-card>
+              <nb-card-body>
+                <div class="col-md-6">
+                  <table class="table table-striped custom-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Color</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of inactiverateplans">
+                        <td scope="row"><span style.background-color={{item.color}} style="width:14px; height:14px; margin-top:3px; float:left; margin-right:10px;"></span></td>
+                        <td scope="row">{{item.name}}</td>
+                        <td scope="row"><nb-icon icon="edit-outline" (click)="planedit(item.id, rateplanDialog, 2);"></nb-icon></td>
+                        <td scope="row"><nb-icon icon="trash-outline" (click)="openRateplanDelete(item.id, deleteRateplanDialog);"></nb-icon></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+        </nb-tabset>
+        
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+<ng-template #rateDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onNewRatePlanSubmit()" #mainNewRateForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <label class="label">Rate PLan</label>
+          <input type="text" nbInput fullWidth placeholder="Name"
+                 autocomplete="off"
+                 name="name"
+                 [(ngModel)]="rateplan.name"
+                 #name="ngModel"
+                 [status]="name.dirty ? (name.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group" style="width:20vw;">
+          <label class="label">Color</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="color"
+                     [(ngModel)]="rateplan.color"
+                     required #color="ngModel"
+                     [status]="color.dirty ? (color.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value={{item.colorcode}} *ngFor="let item of colors"><span style.background-color={{item.colorcode}} style="width:14px; height:14px; margin-top:3px; float:left; margin-right:10px;"></span>{{item.colorname}}</nb-option>
+          </nb-select>
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewRateForm.invalid"
+                [nbSpinner]="loadingRatePlanSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #rateDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onRatePlanSubmit()" #mainRateForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <label class="label">Rate PLan</label>
+          <input type="text" nbInput fullWidth placeholder="Name"
+                 autocomplete="off"
+                 name="name"
+                 [(ngModel)]="rateplan.name"
+                 #name="ngModel"
+                 [status]="name.dirty ? (name.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group" style="width:20vw;">
+          <label class="label">Color</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="color"
+                     [(ngModel)]="rateplan.color"
+                     required #color="ngModel"
+                     [status]="color.dirty ? (color.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value={{item.colorcode}} *ngFor="let item of colors"><span style.background-color={{item.colorcode}} style="width:14px; height:14px; margin-top:3px; float:left; margin-right:10px;"></span>{{item.colorname}}</nb-option>
+          </nb-select>
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainRateForm.invalid"
+                [nbSpinner]="loadingRatePlanSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #rateplanDialog let-data let-ref="dialogRef">
+  <nb-card style="width:50vw; height: 65vh;">
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-1"><span style.background-color={{rateplan.color}} style="width:25px; height:25px; margin-top:10px; float:right;"></span></div><div class="col-md-9"><h3>{{rateplan.name}}    <nb-icon icon="edit-outline" (click)="edit(rateDialog);"></nb-icon></h3></div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier" style="max-height:65vh;">
+
+      <form (ngSubmit)="onPlanDetailsSubmit()" #mainplandetails="ngForm" novalidate>
+        <div class="form-group row">
+          <div class="col-md-6">
+            <label>Refer Rate plan</label>
+            <nb-select placeholder="[SELECT REFER PLAN]" [fullWidth]="true" (selectedChange)="onreferplan(0)" name="referplanid" [(ngModel)]="ReferPlanId" #referplanid="ngModel">
+              <nb-option value={{item.id}} *ngFor="let item of rateplans"><span style.background-color={{item.color}} style="width:25px; height:25px; margin-top:10px; float:right;"></span>  {{item.name}}</nb-option>
+            </nb-select>
+          </div>
+          <div class="col-md-3">
+            <label>Percentage</label>
+            <input type="text" nbInput placeholder="Percentage" autocomplete="off" name="percentage" #percentage="ngModel" [(ngModel)]="Percentage" (focusout)="onreferplan(1);" />
+          </div>
+          <div class="col-md-3">
+            <label>Amount</label>
+            <input type="text" nbInput placeholder="Amount" autocomplete="off" name="amount" #aomunt="ngModel" [(ngModel)]="Amount" (focusout)="onreferplan(2);" />
+          </div>
+        </div>
+        <table class="table table-striped custom-table">
+          <thead>
+            <tr>
+              <th>Room</th>
+              <th>Meal Plan</th>
+              <th>Occupancy</th>
+              <th>Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of rateplandetails">
+              <td>{{item.room}}</td>
+              <td>{{item.meal}}</td>
+              <td>{{item.occupancy}}</td>
+              <td>
+                <input type="text" nbInput fullWidth placeholder="Rate" autocomplete="off" name="rate{{item.roomid.toString() + item.mealid.toString() + item.occid.toString()}}" [(ngModel)]="item.rate" onchange="ratechange(item.roomid, item.mealid, item.occid)">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainplandetails.invalid"
+                [nbSpinner]="loadingplanDetailsSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteRateplanDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this Rateplan?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteRateplan()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

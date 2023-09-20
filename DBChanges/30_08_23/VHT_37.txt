@@ -1,0 +1,91 @@
+CREATE TABLE `vtravel`.`rateplans` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NULL,
+  `color` VARCHAR(10) NULL,
+  `property_id` INT NULL,
+  `is_active` ENUM('Y', 'N') NULL,
+  `created_by` INT NULL,
+  `created_on` DATETIME NULL,
+  `updated_by` INT NULL,
+  `updated_on` DATETIME NULL,
+  PRIMARY KEY (`id`));
+
+
+ALTER TABLE `vtravel`.`inventory` 
+ADD COLUMN `rateplan` INT NULL AFTER `child_price`;
+
+CREATE TABLE `vtravel`.`occupancy` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `occupancy` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `vtravel`.`room_occupancy` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `room_id` INT NOT NULL,
+  `occupancy` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `vtravel`.`color_codes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `color_name` VARCHAR(45) NOT NULL,
+  `color_code` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`));
+
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('red', '#ff0000');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('blue', '#0000ff');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('green', '#008000');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('pink', '#ee82ee');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('yellow', '#ffa500');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('purple', '#800080');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('gray', '#cbd6e2');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('maroon', '#800000');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('olive', '#808000');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('lime', '#00FF00');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('aqua', '#00FFFF');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('teal', '#008080');
+INSERT INTO `vtravel`.`color_codes` (`color_name`, `color_code`) VALUES ('navy', '#000080');
+
+
+CREATE TABLE `vtravel`.`mealplans` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `mealplan` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`));
+
+INSERT INTO `vtravel`.`mealplans` (`mealplan`) VALUES ('CP');
+
+
+CREATE TABLE `vtravel`.`rateplan_breakup` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `room_id` INT NOT NULL,
+  `rateplan` INT NOT NULL,
+  `mealplan` INT NOT NULL,
+  `occupancy` INT NOT NULL,
+  `rate` FLOAT(18,2) NOT NULL DEFAULT 0,
+  `created_by` INT NULL,
+  `created_on` DATETIME NULL,
+  `updated_by` INT NULL,
+  `updated_on` DATETIME NULL,
+  PRIMARY KEY (`id`));
+
+USE `vtravel`;
+DROP procedure IF EXISTS `insert_rateplan_details`;
+
+USE `vtravel`;
+DROP procedure IF EXISTS `vtravel`.`insert_rateplan_details`;
+;
+
+DELIMITER $$
+USE `vtravel`$$
+CREATE PROCEDURE `insert_rateplan_details`(IN roomid int, IN rate_plan int, IN meal_plan int, IN occupancy_id int, IN rate1 decimal(18,2), IN userid int)
+BEGIN
+	if exists(select 1 from rateplan_breakup where room_id = roomid and rateplan = rate_plan and mealplan = meal_plan and occupancy = occupancy_id)
+    then
+		update rateplan_breakup set rate = rate1, updated_by = userid, updated_on = CURDATE() where room_id = roomid and rateplan = rate_plan and mealplan = meal_plan and occupancy = occupancy_id;
+	else
+		insert into rateplan_breakup(room_id, rateplan, mealplan, occupancy, rate, created_by, created_on)
+        values (roomid, rate_plan, meal_plan, occupancy_id, rate1, userid, NOW());
+	end if;
+END$$
+DELIMITER ;
+
+

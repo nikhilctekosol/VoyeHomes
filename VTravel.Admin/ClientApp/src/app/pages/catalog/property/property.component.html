@@ -1093,6 +1093,19 @@
           </nb-select>
         </div>
 
+        <div class="form-group">
+          <label class="label">Occupancy</label>
+          <div *ngFor="let item of occupancylist1">
+            <!--<input type="checkbox" [checked]="item.checked" (checkedChange)="toggleoccupancy($event,item.id)" [(ngModel)]="item.checked">{{item.title}}-->
+
+            <nb-checkbox [checked]="item.check" (checkedChange)="toggleoccupancy($event,item.id)">
+              {{item.occupancy}}
+            </nb-checkbox>
+          </div>
+
+
+        </div>
+
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewRoomForm.invalid"
                 [nbSpinner]="loadingRoomSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
           <nb-icon icon="save-outline"></nb-icon>SAVE
@@ -1149,6 +1162,19 @@
                      [status]="roomTypeId.dirty ? (roomTypeId.invalid  ? 'danger' : 'success') : 'basic'">
             <nb-option value={{item.id}} *ngFor="let item of roomTypes">{{item.typeName}}</nb-option>
           </nb-select>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Occupancy</label>
+          <div *ngFor="let item of occupancylist1">
+            <!--<input type="checkbox" [checked]="item.checked" (checkedChange)="toggleoccupancy($event,item.id)" [(ngModel)]="item.checked">{{item.title}}-->
+
+            <nb-checkbox [checked]="item.check" (checkedChange)="toggleoccupancy($event,item.id)">
+              {{item.occupancy}}
+            </nb-checkbox>
+          </div>
+
+          
         </div>
 
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainRoomForm.invalid"

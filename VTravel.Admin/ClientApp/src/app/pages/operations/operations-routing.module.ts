@@ -6,6 +6,7 @@ import { ReservationComponent } from './reservation/reservation.component';
 import { InventoryComponent } from './inventory/inventory.component';
 import { EnquiriesComponent } from './enquiries/enquiries.component';
 import { EnquiryComponent } from './enquiry/enquiry.component';
+import { InventorynewComponent } from './inventorynew/inventorynew.component';
 
 
 const routes: Routes = [{
@@ -23,10 +24,14 @@ const routes: Routes = [{
       path: 'reservation',
       component: ReservationComponent,
     },
+    // {
+    //  path: 'inventory',
+    //  component: InventoryComponent,
+    // },
     {
       path: 'inventory',
-      component: InventoryComponent,
-    }, 
+      component: InventorynewComponent,
+    }
     ],
 }];
 
@@ -41,5 +46,6 @@ export const routedComponents = [
   ReservationComponent,
   InventoryComponent,
   EnquiriesComponent,
-  EnquiryComponent
+  EnquiryComponent,
+  InventorynewComponent
 ];

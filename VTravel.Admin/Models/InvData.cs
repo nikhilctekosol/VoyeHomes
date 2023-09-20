@@ -19,6 +19,7 @@ namespace VTravel.Admin.Models
         public double extraBedPrice { get; set; }
         public double childPrice { get; set; }
         public string mode { get; set; }
-        
+        public string occrates { get; set; }
+
     }
 }

@@ -1,0 +1,13 @@
+.month-calendar {
+  display: inline-block;
+  width: calc(33.33% - 10px); /* 3 calendars per row with a little margin */
+  margin: 5px;
+}
+:host::ng-deep .fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
+  min-height: 0em !important;
+}
+:host::ng-deep .clicked-day {
+  background-color: black !important;
+  color: white !important;
+}
+

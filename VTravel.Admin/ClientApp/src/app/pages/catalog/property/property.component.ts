@@ -56,25 +56,24 @@ export class PropertyComponent implements OnInit  {
   tags: any[];
   attributes: any[];
   attributesAll: any[];
-  token: any; 
-  propertyAbout: string;
+  token: any;
+  propertyAbout: string ;
   position = new Position();
   center = new Position();
 
   roomTypes: any[];
   rooms: any[];
+  occupancylist: any[];
+  occupancylist1: Occupancy[];
 
-  constructor(private http: HttpClient, private authService: NbAuthService, 
+  constructor(private http: HttpClient, private authService: NbAuthService,
     private cd: ChangeDetectorRef, private router: Router,
     private r: ActivatedRoute, private dialogService: NbDialogService, private toastrService: NbToastrService) {
 
-  
     this.authService.getToken().subscribe((tokenData: NbAuthToken) => {
       this.token = tokenData.getValue();
 
-     
     });
-   
   }
 
   ngOnInit() {
@@ -85,19 +84,47 @@ export class PropertyComponent implements OnInit  {
     this.loadDestinations();
     this.loadProperty();
     this.loadAttributesAll();
-    
-    
-    
+
+    // this.occupancylist = [
+    //  {
+    //    id: '1',
+    //    title: 'Single',
+    //    checked: false,
+    //  },
+    //  {
+    //    id: '2',
+    //    title: 'Double',
+    //    checked: false,
+    //  },
+    //  {
+    //    id: '3',
+    //    title: 'Triple',
+    //    checked: false,
+    //  },
+    //  {
+    //    id: '4',
+    //    title: 'Quad',
+    //    checked: false,
+    //  },
+    //  {
+    //    id: '5',
+    //    title: 'Five Person',
+    //    checked: false,
+    //  },
+    //  {
+    //    id: '6',
+    //    title: 'Six Person',
+    //    checked: false,
+    //  },
+    // ]
   }
   loadPropertyTypes() {
 
-   
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
     this.http.get('api/propertytype/get-list'
       , { headers: headers }).subscribe((res: any) => {
 
-       
 
         if (res.actionStatus == 'SUCCESS') {
           if (res.data.length > 0) {
@@ -108,7 +135,6 @@ export class PropertyComponent implements OnInit  {
 
       },
         error => {
-         
           console.log('api/propertytype/get-list', error)
           if (error.status === 401) {
             this.router.navigate(['auth/login']);
@@ -266,7 +292,6 @@ export class PropertyComponent implements OnInit  {
 
         if (res.actionStatus == 'SUCCESS') {
 
-          
 
           this.property = res.data;
           this.setMap();
@@ -282,7 +307,6 @@ export class PropertyComponent implements OnInit  {
 
       },
         error => {
-        
           console.log('api/property/get', error)
           if (error.status === 401) {
             this.router.navigate(['auth/login']);
@@ -314,7 +338,7 @@ export class PropertyComponent implements OnInit  {
         });
 
   }
-  
+
   loadAmenities() {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
@@ -449,7 +473,6 @@ export class PropertyComponent implements OnInit  {
             this.attributesAll = res.data;
 
           }
-          
         }
 
       },
@@ -481,7 +504,6 @@ export class PropertyComponent implements OnInit  {
         this.loadingStatusSave = false;
 
         if (res.actionStatus === 'SUCCESS') {
-         
           this.toast('Success', 'Data saved successfully!', 'success');
         }
         else {
@@ -561,7 +583,7 @@ export class PropertyComponent implements OnInit  {
     if (files.length === 0) {
       return;
     }
-    this.loadingPropertySave = true;
+    this.loadingPropertySave = true ;
 
     let fileToUpload = <File>files[0];
     const formData = new FormData();
@@ -573,9 +595,7 @@ export class PropertyComponent implements OnInit  {
     this.http.put('api/property/update-thumbnail?id=' + this.property.id
       , formData, { headers: headers }).subscribe((res: any) => {
         this.loadingPropertySave = false;
-     
         if (res.actionStatus === 'SUCCESS') {
-          
           this.thumbnailEditMode = false;
           this.loadProperty();
           this.toast('Success', 'Data saved successfully!', 'success');
@@ -607,14 +627,13 @@ export class PropertyComponent implements OnInit  {
       return;
     }
 
-    this.loadingImageSave = true;
+    this.loadingImageSave = true ;
 
     const formData = new FormData();
     for (let i = 0; i < files.length; i++){
       let fileToUpload = <File>files[i];
       formData.append('file'+i, fileToUpload, fileToUpload.name);
     }
-   
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token);
@@ -622,7 +641,7 @@ export class PropertyComponent implements OnInit  {
     this.http.put('api/property/add-image?id=' + this.property.id
       , formData, { headers: headers }).subscribe((res: any) => {
         this.loadingImageSave = false;
-       
+
         if (res.actionStatus === 'SUCCESS') {
 
           this.imageEditMode = false;
@@ -665,9 +684,8 @@ export class PropertyComponent implements OnInit  {
   }
   //
   updatePropertyAbout() {
-   
 
-    this.loadingAboutSave = true;
+    this.loadingAboutSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -681,12 +699,10 @@ export class PropertyComponent implements OnInit  {
           this.property.longDescription = this.propertyAbout;
           this.propertyAbout = '';
           this.aboutDialogRef.close();
-       
           this.toast('Success', 'Data saved successfully!', 'success');
         }
         else {
 
-        
           this.toast('Error', 'Could not save data!', 'danger');
 
 
@@ -710,7 +726,7 @@ export class PropertyComponent implements OnInit  {
   updatePropertyStatus(propertyStatus) {
 
 
-    this.loadingStatusSave = true;
+    this.loadingStatusSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -721,12 +737,11 @@ export class PropertyComponent implements OnInit  {
 
         if (res.actionStatus === 'SUCCESS') {
 
-          this.loadProperty();         
+          this.loadProperty();
           this.toast('Success', 'Data saved successfully!', 'success');
         }
         else {
 
-        
           this.toast('Error', 'Could not save data!', 'danger');
 
 
@@ -755,7 +770,7 @@ export class PropertyComponent implements OnInit  {
   deleteProperty() {
 
 
-    this.loadingDelete = true;
+    this.loadingDelete = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -795,8 +810,8 @@ export class PropertyComponent implements OnInit  {
 
   updateLocation() {
 
-    //console.log(JSON.stringify(this.position));
-    this.loadingPropertySave = true;
+    // console.log(JSON.stringify(this.position));
+    this.loadingPropertySave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -805,7 +820,7 @@ export class PropertyComponent implements OnInit  {
       , { "latitude": this.position.lat, "longitude": this.position.lng },
       { headers: headers }).subscribe((res: any) => {
         this.loadingPropertySave = false;
-        //console.log(JSON.stringify(res));
+        // console.log(JSON.stringify(res));
         if (res.actionStatus === 'SUCCESS') {
           this.center = this.position;
           this.toast('Success', 'Data saved successfully!', 'success');
@@ -856,7 +871,7 @@ export class PropertyComponent implements OnInit  {
   deleteAttribute() {
 
 
-    this.loadingDelete = true;
+    this.loadingDelete = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -870,7 +885,7 @@ export class PropertyComponent implements OnInit  {
           this.toast('Success', 'Attribute deleted successfully!', 'success');
           this.deleteDialogRef.close();
           this.loadAttributes();
-         
+
         }
         else {
 
@@ -898,7 +913,7 @@ export class PropertyComponent implements OnInit  {
   deletePrice() {
 
 
-    this.loadingDelete = true;
+    this.loadingDelete = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -937,7 +952,7 @@ export class PropertyComponent implements OnInit  {
 
   }
 
-  openAttribute(attributeDialog: TemplateRef<any>,id) {
+  openAttribute(attributeDialog: TemplateRef<any>, id) {
 
     let attr = this.attributes.find(_attr => _attr.id == id);
 
@@ -987,7 +1002,7 @@ export class PropertyComponent implements OnInit  {
   deleteImage(id) {
 
     if (confirm("Are you sure to delete?")) {
-      this.loadingImageDelete = true;
+      this.loadingImageDelete = true ;
 
       let headers = new HttpHeaders().set("Authorization", "Bearer " +
         this.token).set("Content-Type", "application/json");
@@ -1031,7 +1046,7 @@ export class PropertyComponent implements OnInit  {
 
   updateImageAlt() {
 
-    this.loadingImageAlt = true;
+    this.loadingImageAlt = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -1090,10 +1105,8 @@ export class PropertyComponent implements OnInit  {
 
   onBasicFormSubmit() {
 
-    
 
-    
-    this.loadingPropertySave = true;
+    this.loadingPropertySave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -1101,7 +1114,7 @@ export class PropertyComponent implements OnInit  {
     this.http.put('api/property/update?id=' + this.property.id
       , this.property, { headers: headers }).subscribe((res: any) => {
         this.loadingPropertySave = false;
-      
+
         if (res.actionStatus === 'SUCCESS') {
 
           this.loadingPropertySave = false;
@@ -1111,7 +1124,7 @@ export class PropertyComponent implements OnInit  {
 
           this.loadingPropertySave = false;
           this.toast('Error', 'Could not save data!', 'danger');
-         
+
 
         }
 
@@ -1138,7 +1151,7 @@ export class PropertyComponent implements OnInit  {
 
 
 
-    this.loadingPropertySave = true;
+    this.loadingPropertySave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -1181,9 +1194,7 @@ export class PropertyComponent implements OnInit  {
   onMetaFormSubmit() {
 
 
-
-
-    this.loadingPropertySave = true;
+    this.loadingPropertySave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -1225,12 +1236,12 @@ export class PropertyComponent implements OnInit  {
 
   onNewAttributeSubmit() {
 
-    this.loadingAttributeSave = true;
+    this.loadingAttributeSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
 
-    this.propertyAttribute.propertyId = this.property.id;   
+    this.propertyAttribute.propertyId = this.property.id;
     this.http.post('api/property/create-property-attribute'
       , this.propertyAttribute, { headers: headers }).subscribe((res: any) => {
         this.loadingAttributeSave = false;
@@ -1270,7 +1281,7 @@ export class PropertyComponent implements OnInit  {
 
   onNewPriceSubmit() {
 
-    this.loadingPriceSave = true;
+    this.loadingPriceSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -1315,11 +1326,11 @@ export class PropertyComponent implements OnInit  {
 
   onAttributeSubmit() {
 
-    this.loadingAttributeSave = true;
+    this.loadingAttributeSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    
+
     this.http.put('api/property/update-property-attribute?id=' + this.propertyAttribute.id
       , this.propertyAttribute, { headers: headers }).subscribe((res: any) => {
         this.loadingAttributeSave = false;
@@ -1359,7 +1370,7 @@ export class PropertyComponent implements OnInit  {
 
   onPriceSubmit() {
 
-    this.loadingPriceSave = true;
+    this.loadingPriceSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -1401,31 +1412,33 @@ export class PropertyComponent implements OnInit  {
 
   }
 
-  toast(title, message, status: NbComponentStatus) {    
+  toast(title, message, status: NbComponentStatus) {
     this.toastrService.show(title, message, { status });
   }
 
 
   mapClick(event: google.maps.MouseEvent) {
-    //console.log(JSON.stringify(event));
-    //this.position = { lat: event.latLng.lat(), lng: event.latLng.lng() };
+    // console.log(JSON.stringify(event));
+    // this.position = { lat: event.latLng.lat(), lng: event.latLng.lng() };
 
     this.position = new Position();
     this.position.lat = event.latLng.lat();
     this.position.lng = event.latLng.lng();
-    
+
   }
 
   setMap() {
     this.position = new Position();
     this.position.lat = this.property.latitude;
-    this.position.lng = this.property.longitude;  
+    this.position.lng = this.property.longitude;
     this.center = this.position;
   }
 
   openRoomNew(roomDialogNew: TemplateRef<any>) {
 
     this.room = new Room();
+    this.room.id = 0;
+    this.loadRoomOccupancy();
     this.roomDialogRef = this.dialogService.open(
       roomDialogNew,
       { context: { title: 'Add Room' } });
@@ -1442,7 +1455,8 @@ export class PropertyComponent implements OnInit  {
     this.room.title = obj.title;
     this.room.description = obj.description;
     this.room.roomTypeId = obj.roomTypeId;
-   
+
+    this.loadRoomOccupancy();
 
     this.roomDialogRef = this.dialogService.open(
       roomDialog,
@@ -1450,6 +1464,31 @@ export class PropertyComponent implements OnInit  {
 
 
   }
+
+  loadRoomOccupancy() {
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/property/get-room-occupancy?id=' + this.room.id
+      , { headers: headers }).subscribe((res: any) => {
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.occupancylist1 = res.data;
+          }
+        }
+
+      },
+        error => {
+
+          console.log('api/property/get-room-occupancy', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
+  }
+
+
   openRoomDelete(deleteRoomDialog: TemplateRef<any>, id) {
 
     this.room = new Room();
@@ -1461,7 +1500,7 @@ export class PropertyComponent implements OnInit  {
   }
   onNewRoomSubmit() {
 
-    this.loadingRoomSave = true;
+    this.loadingRoomSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -1472,6 +1511,11 @@ export class PropertyComponent implements OnInit  {
         this.loadingRoomSave = false;
 
         if (res.actionStatus === 'SUCCESS') {
+
+          this.http.put('api/property/update-room-occupancy?id=' + this.room.id
+            , this.occupancylist1, { headers: headers }).subscribe((res: any) => {
+
+            });
 
           this.loadRooms();
           this.loadingRoomSave = false;
@@ -1505,16 +1549,21 @@ export class PropertyComponent implements OnInit  {
   }
   onRoomSubmit() {
 
-    this.loadingRoomSave = true;
+    this.loadingRoomSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
 
     this.http.put('api/property/update-room?id=' + this.room.id
       , this.room, { headers: headers }).subscribe((res: any) => {
-        this.loadingRoomSave = false;
+        // this.loadingRoomSave = false;
 
         if (res.actionStatus === 'SUCCESS') {
+
+          this.http.put('api/property/update-room-occupancy?id=' + this.room.id
+            , this.occupancylist1, { headers: headers }).subscribe((res: any) => {
+
+            });
 
           this.loadRooms();
           this.loadingRoomSave = false;
@@ -1546,10 +1595,22 @@ export class PropertyComponent implements OnInit  {
 
 
   }
+
+  toggleoccupancy(checked: boolean, id) {
+    let attr = this.occupancylist1.find(_attr => _attr.id == id);
+
+    if (checked) {
+      attr.check = 'true' ;
+    }
+    else {
+      attr.check = 'false';
+    }
+
+  }
   deleteRoom() {
 
 
-    this.loadingDelete = true;
+    this.loadingDelete = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -1587,38 +1648,37 @@ export class PropertyComponent implements OnInit  {
         });
 
   }
- 
 }
 
 class Property {
- 
+
   id: number;
-  propertyTypeId: string;
-  destinationId: string;
-  title: string; 
-  thumbnail: string;
-  address: string;
-  city: string;
-  propertyStatus: string;
+  propertyTypeId: string ;
+  destinationId: string ;
+  title: string ;
+  thumbnail: string ;
+  address: string ;
+  city: string ;
+  propertyStatus: string ;
   sortOrder: number;
-  shortDescription: string;
-  longDescription: string;
+  shortDescription: string ;
+  longDescription: string ;
   latitude: number;
   longitude: number;
-  state: string;
-  country: string;
+  state: string ;
+  country: string ;
   displayRadius: number;
   maxOccupancy: number;
   roomCount: number;
   bathroomCount: number;
-  metaTitle: string;
-  metaKeywords: string;
-  metaDescription: string;
-  phone: string;
-  email: string;
-  reserveAlert: string;
-  reserveAllowed: string;
-  userName: string;
+  metaTitle: string ;
+  metaKeywords: string ;
+  metaDescription: string ;
+  phone: string ;
+  email: string ;
+  reserveAlert: string ;
+  reserveAllowed: string ;
+  userName: string ;
 }
 
 class PropertyAmenity {
@@ -1638,17 +1698,17 @@ class PropertyTag {
 class PropertyAttribute {
 
   id: number;
-  attributeId: string;
+  attributeId: string ;
   propertyId: number;
-  attributeName: string;
-  longDescription: string;
+  attributeName: string ;
+  longDescription: string ;
 }
 
 class PropertyPrice {
 
-  id: number;  
+  id: number;
   propertyId: number;
-  priceName: string;
+  priceName: string ;
   mrp: number;
   price: number;
 }
@@ -1657,25 +1717,35 @@ class Position {
 
   lat = 10.0889;
   lng = 77.0595;
-  
+
 }
 
 
 class Room {
 
   id: number;
-  roomTypeId: string;
+  roomTypeId: string ;
   propertyId: number;
-  title: string;
-  description: string;
-  typeName: string;
+  title: string ;
+  description: string ;
+  typeName: string ;
+  // occupancy: Occupancy;
+}
+
+class Occupancy {
+
+  id: number ;
+  room_id: number;
+  occupancy: string ;
+  check: string ;
+
 }
 
 class PropertyImage {
 
   id: number;
   url: number;
-  image_alt: string;
- 
+  image_alt: string ;
+
 }
 

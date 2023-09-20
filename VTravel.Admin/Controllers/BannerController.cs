@@ -37,7 +37,7 @@ namespace VTravel.Admin.Controllers
                 List<BannerList> bannerlist = new List<BannerList>();
                 MySqlHelper sqlHelper = new MySqlHelper();
 
-                var query = string.Format(@"select b.id, image_url, image_alt, b.title, b.description, b.navigate_url, b.is_active, show_in_home, IFNULL(b.property_id, 0) property_id
+                var query = string.Format(@"select b.id, image_url, image_alt, b.title, b.description, IFNULL(b.navigate_url, '') navigate_url, b.is_active, show_in_home, IFNULL(b.property_id, 0) property_id
                                             , IFNULL(b.destination,0) destination_id, IFNULL(p.title, '') property, IFNULL(d.title, '') destination 
                                             from hero_banner b
                                             left join property p on p.id = b.property_id
@@ -160,10 +160,10 @@ namespace VTravel.Admin.Controllers
                     IEnumerable<Claim> claims = User.Claims;
                     var userId = claims.Where(c => c.Type == "id").FirstOrDefault().Value;
 
-                    var query = string.Format(@"INSERT INTO hero_banner(title, description, image_url, image_alt, property_id, destination, is_active, show_in_home, create_by, created_on)
-                                        VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');
+                    var query = string.Format(@"INSERT INTO hero_banner(title, description, image_url, image_alt, property_id, destination, is_active, show_in_home, create_by, created_on, navigate_url)
+                                        VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}', '{10}');
                                         SELECT LAST_INSERT_ID() AS id;",
-                                     model.title, model.description, model.image_url, model.image_alt, model.property_id, model.destination_id, 'Y', model.show_in_home, userId, DateTime.Today.ToString("yyyy-MM-dd"));
+                                     model.title, model.description, model.image_url, model.image_alt, model.property_id, model.destination_id, 'Y', model.show_in_home, userId, DateTime.Today.ToString("yyyy-MM-dd"), model.navigate_url);
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
                     if (ds != null)
@@ -215,8 +215,8 @@ namespace VTravel.Admin.Controllers
                     var userId = claims.Where(c => c.Type == "id").FirstOrDefault().Value;
 
                     var query = string.Format(@"UPDATE hero_banner SET title='{0}',description='{1}',image_url='{2}',image_alt='{3}',property_id='{4}',destination='{5}'
-                                            ,show_in_home='{6}',updated_by='{7}',updated_on='{8}' WHERE id={9}",
-                                     model.title, model.description, model.image_url, model.image_alt, model.property_id, model.destination_id, model.show_in_home, userId, DateTime.Today.ToString("yyyy-MM-dd"), id);
+                                            ,show_in_home='{6}',updated_by='{7}',updated_on='{8}', navigate_url = '{10}' WHERE id={9}",
+                                     model.title, model.description, model.image_url, model.image_alt, model.property_id, model.destination_id, model.show_in_home, userId, DateTime.Today.ToString("yyyy-MM-dd"), id, model.navigate_url);
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
                     response.ActionStatus = "SUCCESS";

@@ -126,6 +126,7 @@ export class BannersComponent implements OnInit {
     this.banner.description = ct.description;
     this.banner.image_url = ct.image_url;
     this.banner.image_alt = ct.image_alt;
+    this.banner.navigate_url = ct.navigate_url;
     this.banner.destination_id = ct.destination_id;
     this.banner.property_id = ct.property_id;
     this.banner.show_in_home = ct.show_in_home;

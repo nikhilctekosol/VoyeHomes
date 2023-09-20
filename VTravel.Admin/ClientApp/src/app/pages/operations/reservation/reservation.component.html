@@ -658,14 +658,17 @@
     </nb-card-header>
     <nb-card-body style="padding:.25rem .25rem;">
       <table class="table table-striped" style="font-size:12px; margin-bottom:.5rem;">
-        <tr>
+        <tr *ngFor="let part of modal.occrate.split(',')">
+          <td *ngFor="let p of part.split('-')">{{p}}</td>
+        </tr>
+        <!--<tr>
           <td><label>Extra Person Rate</label></td>
           <td><label id="lbl_ebp" name="ebp">{{modal.ebp | number:'1.2-2' }}</label></td>
         </tr>
         <tr>
           <td><label>Child Rate</label></td>
           <td><label id="lbl_cp" name="ebp">{{modal.cp | number:'1.2-2' }}</label></td>
-        </tr>
+        </tr>-->
       </table>
     </nb-card-body>
   </nb-card>

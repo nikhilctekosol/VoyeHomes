@@ -123,6 +123,10 @@ export class PagesComponent {
                   title: 'Banners',
                   link: '/pages/master/banners',
                 },
+                {
+                  title: 'Rate Plan',
+                  link: '/pages/master/rateplan',
+                },
               ],
 
             },

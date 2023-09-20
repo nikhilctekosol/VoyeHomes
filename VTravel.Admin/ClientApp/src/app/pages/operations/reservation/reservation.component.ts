@@ -1,10 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef, TemplateRef, ContentChild, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef,
+  TemplateRef, ContentChild, ViewChild
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { NbAuthService, NbAuthJWTToken, NbAuthToken } from '@nebular/auth';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NbDialogService, NbToastrService, NbComponentStatus, NbDialogContainerComponent  } from '@nebular/theme';
-import { CalendarOptions, FullCalendarComponent, EventClickArg, EventApi, DateSelectArg, EventHoveringArg, EventContentArg } from '@fullcalendar/angular';
+import {
+  CalendarOptions, FullCalendarComponent, EventClickArg, EventApi,
+  DateSelectArg, EventHoveringArg, EventContentArg
+} from '@fullcalendar/angular';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -49,25 +55,25 @@ export class ReservationComponent implements OnInit {
   @ViewChild('reserveDialog') reserveDialog: TemplateRef<any>;
   @ViewChild('eventtooltip') eventtooltip: TemplateRef<any>;
 
-  //autocomplete
+  // autocomplete
   options: any[];
   filteredOptions$: Observable<any[]>;
   defaultValue: any;
-  selectedPropertyName: string;
+  selectedPropertyName: string ;
 
   @ViewChild('autoInput') input;
 
-  //ngOnInit() {
+  // ngOnInit() {
   //  this.options = ['Option 1', 'Option 2', 'Option 3'];
   //  this.filteredOptions$ = of(this.options);
-  //}
+  // }
 
-  private filter(value: string): any[] {
+  private filter(value: string ): any[] {
     const filterValue = value.toLowerCase();
     return this.options.filter(optionValue => optionValue.title.toLowerCase().includes(filterValue));
   }
 
-  getFilteredOptions(value: string): Observable<any[]> {
+  getFilteredOptions(value: string ): Observable<any[]> {
     return of(value).pipe(
       map(filterString => this.filter(filterString)),
     );
@@ -75,13 +81,13 @@ export class ReservationComponent implements OnInit {
 
   onChange() {
 
-    //this.input.nativeElement.setAttribute("area-expanded", "true");
+    // this.input.nativeElement.setAttribute("area-expanded", "true");
     this.filteredOptions$ = this.getFilteredOptions(this.input.nativeElement.value);
   }
 
   onSelectionChange($event) {
 
-    //console.log(JSON.stringify($event));
+    // console.log(JSON.stringify($event));
 
     this.defaultPropertyId=$event.id;
     this.selectedPropertyName = $event.title.toString().trim();
@@ -90,7 +96,7 @@ export class ReservationComponent implements OnInit {
     this.loadProperty();
     this.filteredOptions$ = this.getFilteredOptions(this.selectedPropertyName);
   }
-  //end autocomplete
+  // end autocomplete
 
 
   calendarOptions: CalendarOptions = {
@@ -102,27 +108,24 @@ export class ReservationComponent implements OnInit {
       center: 'title',
       right: ''
     },
-    
     views: {
       dayGridMonth: { // name of view
         titleFormat: { year: 'numeric', month: 'short' },
-       
         // other view-specific options here
       }
     },
     initialDate: new Date(),
-    //validRange: {
+    // validRange: {
     //  start: new Date(),
-    //},
+    // },
     navLinks: false, // can click day/week names to navigate views
-    selectable: true,
-    selectMirror: true,
+    selectable: true ,
+    selectMirror: true ,
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
-    editable: true,
-    dayMaxEvents: true, // allow "more" link when too many events
-    
+    editable: true ,
+    dayMaxEvents: true , // allow "more" link when too many events
     events: [
     ]
   };
@@ -132,13 +135,12 @@ export class ReservationComponent implements OnInit {
     var check = this.formatDate(selectInfo.startStr);
     var today = this.formatDate(new Date());
 
-  
     if (check >= today) {
 
-      //check if there is a reservation already
+      // check if there is a reservation already
       var maxAvailableQty = this.checkIfInventory(selectInfo.startStr, selectInfo.endStr);
       if (maxAvailableQty>0) {
-        //const cust_name = prompt('Please enter customer name');
+        // const cust_name = prompt('Please enter customer name');
         const calendarApi = selectInfo.view.calendar;
 
         calendarApi.unselect(); // clear date selection
@@ -157,35 +159,32 @@ export class ReservationComponent implements OnInit {
           this.reserveDialogNew,
           { context: { title: 'Create Reservation' } });
 
-        //this.reservData.custName = cust_name;
-        //this.reservData.custEmail = "nasar@gmail.com";
-        //this.reservData.custPhone = "12345";
+        // this.reservData.custName = cust_name;
+        // this.reservData.custEmail = "nasar@gmail.com";
+        // this.reservData.custPhone = "12345";
 
 
        // if (cust_name) {
 
-         
 
          // this.createReservation();
 
-          //calendarApi.addEvent({
+          // calendarApi.addEvent({
           //  title,
           //  start: selectInfo.startStr,
           //  end: selectInfo.endStr,
           //  allDay: selectInfo.allDay
-          //});
+          // });
        // }
       }
 
-     
     }
 
- 
   }
 
   handleEventClick(clickInfo: EventClickArg) {
 
-    //console.log(JSON.stringify(clickInfo));
+    // console.log(JSON.stringify(clickInfo));
     if (this.displayMode == 'BOOKINGS') {
       this.reservData = this.reservations.find(_obj => _obj.id == clickInfo.event.id);
 
@@ -205,7 +204,13 @@ export class ReservationComponent implements OnInit {
     else if (this.displayMode == 'INVENTORY') {
       this.dialogRef = this.dialogService.open(
         this.eventtooltip,
-        { context: { ebp: clickInfo.event.extendedProps.ExtraBed, cp: clickInfo.event.extendedProps.Child } });
+        {
+          context: {
+            ebp: clickInfo.event.extendedProps.ExtraBed,
+            cp: clickInfo.event.extendedProps.Child,
+            occrate: clickInfo.event.extendedProps.OccRate
+          }
+        });
     }
   }
 
@@ -244,14 +249,13 @@ export class ReservationComponent implements OnInit {
       if (((startDate >= resFromDate) && (startDate < resToDate))
         || ((endDate > resFromDate) && (endDate <= resToDate)))
       {
-        return true;
+        return true ;
       }
       else if (((resFromDate >= startDate) && (resFromDate < endDate ))
         || ((resToDate > startDate) && (resToDate <= endDate ))) {
-        return true;
+        return true ;
       }
     }
-   
     return false;
   }
 
@@ -263,20 +267,17 @@ export class ReservationComponent implements OnInit {
     var date1Tmp = new Date(startDate);
     var date2Tmp = new Date(endDate);
 
-   
 
     var minQty = this.getAvailableQty(date1Tmp);
     date1Tmp.setDate(date1Tmp.getDate() + 1);
     while (date1Tmp < date2Tmp) {
-      
       var minQtyTmp = this.getAvailableQty(date1Tmp);
       if (minQtyTmp < minQty) {
         minQty = minQtyTmp;
       }
       date1Tmp.setDate(date1Tmp.getDate() + 1);
-     } 
+     }
 
-    
 
     return minQty;
   }
@@ -285,10 +286,9 @@ export class ReservationComponent implements OnInit {
     for (let i = 0; i < this.inventories.length; i++) {
 
       var invDate = new Date(this.inventories[i].invDate);
-      //console.log(dateTmp);
-      //console.log(invDate);
+      // console.log(dateTmp);
+      // console.log(invDate);
       if (this.formatDate(dateTmp) == this.formatDate(invDate)) {
-       
         return this.inventories[i].totalQty - this.inventories[i].bookedQty;
       }
     }
@@ -312,10 +312,8 @@ export class ReservationComponent implements OnInit {
   ngOnInit() {
 
     if (localStorage["default-reservation-property"]) {
-      //this.defaultPropertyId = localStorage["default-reservation-property"];
-      //this.selectedPropertyName = localStorage["default-property-name"];
-
-      
+      // this.defaultPropertyId = localStorage["default-reservation-property"];
+      // this.selectedPropertyName = localStorage["default-property-name"];
      // this.input.nativeElement.setAttribute("area-expanded", "false");
 
     }
@@ -332,7 +330,6 @@ export class ReservationComponent implements OnInit {
   }
 
   selectRoom(item) {
-  
     this.room = item;
     this.calendarOptions.events = [];
     this.loadInventories();
@@ -344,7 +341,6 @@ export class ReservationComponent implements OnInit {
       this.displayMode = 'BOOKINGS';
       this.loadReservations();
     } else {
-      
     }
   }
 
@@ -361,7 +357,7 @@ export class ReservationComponent implements OnInit {
 
     this.reservations = [];
     this.displayReservations();
-    this.isLoadingReservations = true;
+    this.isLoadingReservations = true ;
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
     this.http.get('api/reservation/get-list?propertyId=' + this.property.id+'&roomId='+this.room.id
@@ -372,7 +368,6 @@ export class ReservationComponent implements OnInit {
         if (res.actionStatus == 'SUCCESS') {
           if (res.data.length > 0) {
             this.reservations = res.data;
-            
           }
           if (this.displayMode == 'INVENTORY') {
             this.displayInventories();
@@ -426,24 +421,21 @@ export class ReservationComponent implements OnInit {
 
   loadInventories() {
 
-   
-    this.isLoadingInventories = true;
+    this.isLoadingInventories = true ;
 
     this.inventories = [];
 
-    
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
     this.http.get('api/inventory/get-list-room?propertyId=' + this.property.id
-      + '&roomId=' + this.room.id 
+      + '&roomId=' + this.room.id
       , { headers: headers }).subscribe((res: any) => {
 
-        //console.log(JSON.stringify(res));
+        // console.log(JSON.stringify(res));
 
         if (res.actionStatus == 'SUCCESS') {
           if (res.data.length > 0) {
             this.inventories = res.data;
-            
           }
 
           this.loadReservations();
@@ -471,6 +463,7 @@ export class ReservationComponent implements OnInit {
           title: this.inventories[i].totalQty - this.inventories[i].bookedQty + " Rooms",
           ExtraBed: this.inventories[i].extraBedPrice,
           Child: this.inventories[i].childPrice,
+          OccRate: this.inventories[i].occrates,
           start: this.inventories[i].invDate,
           end: this.inventories[i].invDate,
           allDay: false,
@@ -483,21 +476,19 @@ export class ReservationComponent implements OnInit {
           title: "RS " + this.inventories[i].price,
           ExtraBed: this.inventories[i].extraBedPrice,
           Child: this.inventories[i].childPrice,
+          OccRate: this.inventories[i].occrates,
           start: this.inventories[i].invDate,
           end: this.inventories[i].invDate,
           allDay: false,
           editable: false
         });
-   
-     
     }
     this.calendarOptions.events = events;
   }
 
   onNewReserveSubmit() {
 
-    this.loadingSave = true;
-    
+    this.loadingSave = true ;
 
     if (this.validate()) {
 
@@ -543,7 +534,7 @@ export class ReservationComponent implements OnInit {
 
   onReserveSubmit() {
 
-    this.loadingSave = true;
+    this.loadingSave = true ;
 
 
     this.validate();
@@ -591,7 +582,7 @@ export class ReservationComponent implements OnInit {
 
   onReserveStatusSubmit() {
     if (confirm("Are you sure to complete?")) {
-      this.loadingStatusSave = true;
+      this.loadingStatusSave = true ;
 
       let headers = new HttpHeaders().set("Authorization", "Bearer " +
         this.token).set("Content-Type", "application/json");
@@ -646,7 +637,7 @@ export class ReservationComponent implements OnInit {
   deleteReservation() {
 
 
-    this.loadingDelete = true;
+    this.loadingDelete = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
@@ -687,8 +678,7 @@ export class ReservationComponent implements OnInit {
 
   loadRooms() {
 
-    
-    this.isLoadingRooms = true;
+    this.isLoadingRooms = true ;
     let headers = new HttpHeaders ().set ("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
 
@@ -715,14 +705,12 @@ export class ReservationComponent implements OnInit {
 
   }
   onPropertySelected(event) {
-   
     localStorage["default-reservation-property"] = this.defaultPropertyId;
     this.loadProperty();
   }
 
   loadProperty() {
 
-    
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
     this.http.get('api/property/get?id=' + this.defaultPropertyId
@@ -776,7 +764,7 @@ export class ReservationComponent implements OnInit {
         }
       }
     }
-    return true;
+    return true ;
   }
 
   paymentchange() {
@@ -808,7 +796,7 @@ export class ReservationComponent implements OnInit {
 
   private loadProperties() {
 
-    this.loadingSave = true;
+    this.loadingSave = true ;
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
     this.http.get('api/property/get-list-sorted-by-name'
@@ -838,19 +826,18 @@ export class ReservationComponent implements OnInit {
 
   private loadBookingChannels() {
 
-    this.isLoading = true;
+    this.isLoading = true ;
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
     this.http.get('api/bookingchannel/get-list'
       , { headers: headers }).subscribe((res: any) => {
 
-       
         this.isLoading = false;
 
         if (res.actionStatus == 'SUCCESS') {
           if (res.data.length > 0) {
             this.channels = res.data;
-            //console.log(JSON.stringify(this.channels));
+            // console.log(JSON.stringify(this.channels));
           }
         }
 
@@ -867,7 +854,7 @@ export class ReservationComponent implements OnInit {
 
   private loadDocTypes() {
 
-    this.isLoading = true;
+    this.isLoading = true ;
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
     this.http.get('api/doctype/get-list'
@@ -879,7 +866,7 @@ export class ReservationComponent implements OnInit {
         if (res.actionStatus == 'SUCCESS') {
           if (res.data.length > 0) {
             this.doctypes = res.data;
-            //console.log(JSON.stringify(this.channels));
+            // console.log(JSON.stringify(this.channels));
           }
         }
 
@@ -897,10 +884,10 @@ export class ReservationComponent implements OnInit {
   private loadDocs() {
 
     this.resdocs = [];
-    this.isLoading = true;
+    this.isLoading = true ;
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    this.http.get('api/reservation/get-doc-list?resid=' + this.reservData.id 
+    this.http.get('api/reservation/get-doc-list?resid=' + this.reservData.id
       , { headers: headers }).subscribe((res: any) => {
 
 
@@ -929,7 +916,7 @@ export class ReservationComponent implements OnInit {
       return;
     }
 
-    this.loadingDocSave = true;
+    this.loadingDocSave = true ;
 
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
@@ -946,7 +933,7 @@ export class ReservationComponent implements OnInit {
         this.loadingDocSave = false;
 
         if (res.actionStatus === 'SUCCESS') {
-          this.docfiles = '';        
+          this.docfiles = '';
           this.loadDocs();
           this.toast('Success', 'Data saved successfully!', 'success');
         }
@@ -975,7 +962,7 @@ export class ReservationComponent implements OnInit {
   deleteFile(id) {
 
     if (confirm("Are you sure to delete?")) {
-      this.loadingDocSave = true;
+      this.loadingDocSave = true ;
       let headers = new HttpHeaders().set("Authorization", "Bearer " +
         this.token);
       this.http.delete('api/reservation/delete-doc?id=' + id
@@ -1008,7 +995,6 @@ export class ReservationComponent implements OnInit {
 
           });
     }
-  
   }
 
   toast(title, message, status: NbComponentStatus) {
@@ -1019,82 +1005,82 @@ export class ReservationComponent implements OnInit {
 
 class Property {
 
-  id: string;
-  propertyTypeId: string;
-  destinationId: string;
-  title: string;
-  thumbnail: string;
-  address: string;
-  city: string;
-  propertyStatus: string;
+  id: string ;
+  propertyTypeId: string ;
+  destinationId: string ;
+  title: string ;
+  thumbnail: string ;
+  address: string ;
+  city: string ;
+  propertyStatus: string ;
   sortOrder: number;
-  shortDescription: string;
-  longDescription: string;
+  shortDescription: string ;
+  longDescription: string ;
   latitude: number;
   longitude: number;
-  state: string;
-  country: string;
+  state: string ;
+  country: string ;
   displayRadius: number;
   maxOccupancy: number;
   roomCount: number;
   bathroomCount: number;
-  metaTitle: string;
-  metaKeywords: string;
-  metaDescription: string;
-  phone: string;
-  email: string;
-  reserveAlert: string;
-  reserveAllowed: string;
+  metaTitle: string ;
+  metaKeywords: string ;
+  metaDescription: string ;
+  phone: string ;
+  email: string ;
+  reserveAlert: string ;
+  reserveAllowed: string ;
 }
 
 class Room {
 
   id: number;
-  roomTypeId: string;
+  roomTypeId: string ;
   propertyId: number;
-  title: string;
-  description: string;
-  typeName: string;
+  title: string ;
+  description: string ;
+  typeName: string ;
 }
 
 class ReservData {
 
-  id: number;  
-  fromDate: string;
-  toDate: string;
-  roomId: string;
-  propertyId: string;
-  custName: string;
+  id: number;
+  fromDate: string ;
+  toDate: string ;
+  roomId: string ;
+  propertyId: string ;
+  custName: string ;
   custEmail: string | undefined;
   custPhone: string | undefined;
-  bookingChannelId: string;
-  details: string;
+  bookingChannelId: string ;
+  details: string ;
   maxAvailableQty: number;
-  noOfRooms: string;
+  noOfRooms: string ;
   noOfGuests: number;
   finalAmount: number | undefined;
   advancepayment: number | undefined;
   partpayment: number | undefined;
   balancepayment: number | undefined;
-  created_on: string;
-  updated_on: string;
-  created_by: string;
-  updated_by: string;
-  enquiry_ref: string;
-  res_status: string;
+  created_on: string ;
+  updated_on: string ;
+  created_by: string ;
+  updated_by: string ;
+  enquiry_ref: string ;
+  res_status: string ;
 }
 class BookingChannel {
-  id: string;
-  channelName: string;
+  id: string ;
+  channelName: string ;
 }
 class InvData {
 
   id: number;
-  invDate: string;
+  invDate: string ;
   totalQty: number;
   bookedQty: number;
-  roomId: string;
-  propertyId: string;
+  roomId: string ;
+  propertyId: string ;
   price: number;
   extraBedPrice: number;
   childPrice: number;

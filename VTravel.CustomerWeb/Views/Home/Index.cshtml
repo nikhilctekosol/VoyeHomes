@@ -18,18 +18,20 @@
         @foreach (var banner in Model.bannerList)
         {
             <div class="item">
-                <div class="highlightMessage">
-                    <h2 class="stylish">@banner.title</h2>
-                    <h1>@banner.description</h1>
-                </div>
-                <picture>
-                    <source media="(max-width: 320px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_320,c_scale/")">
-                    <source media="(max-width: 375px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_375,c_scale/")">
-                    <source media="(max-width: 414px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_414,c_scale/")">
-                    <source media="(max-width: 480px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_480,c_scale/")">
-                    <source media="(max-width: 600px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_600,c_scale/")">
-                    <a href="@banner.navigate_url"><img src="@banner.image_url.Replace("/image/upload/", "/image/upload/w_1920,c_scale/")" alt="Voye Homes" onerror="this.src='/assets/img/default.jpg'"></a>
-                </picture>
+                <a href="@banner.navigate_url">
+                    <div class="highlightMessage">
+                        <h2 class="stylish">@banner.title</h2>
+                        <h1>@banner.description</h1>
+                    </div>
+                    <picture>
+                        <source media="(max-width: 320px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_320,c_scale/")">
+                        <source media="(max-width: 375px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_375,c_scale/")">
+                        <source media="(max-width: 414px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_414,c_scale/")">
+                        <source media="(max-width: 480px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_480,c_scale/")">
+                        <source media="(max-width: 600px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_600,c_scale/")">
+                        <img src="@banner.image_url.Replace("/image/upload/", "/image/upload/w_1920,c_scale/")" alt="Voye Homes" onerror="this.src='/assets/img/default.jpg'">
+                    </picture>
+                </a>
             </div>
 
         }

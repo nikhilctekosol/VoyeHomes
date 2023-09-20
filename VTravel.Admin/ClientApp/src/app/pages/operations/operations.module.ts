@@ -15,8 +15,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { FullCalendarModule } from '@fullcalendar/angular';
 
 @NgModule({
-  imports: [    
-    
+  imports: [
     ThemeModule,
     OperationsRoutingModule,
     NbActionsModule,
@@ -29,9 +28,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
     NbDialogModule,
     NbTabsetModule,
     NbIconModule,
-   
     NbCheckboxModule,
-    
     NbToastrModule,
     FullCalendarModule,
     NbDatepickerModule,

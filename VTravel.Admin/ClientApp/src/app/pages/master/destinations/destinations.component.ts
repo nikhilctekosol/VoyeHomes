@@ -236,7 +236,7 @@ export class DestinationsComponent implements OnInit  {
           this.loadingSave = false;
           this.toast('Error', 'Could not delete!', 'danger');
 
-          console.log('api/destination/update', error);
+          console.log('api/destination/delete', error);
           if (error.status === 401) {
             this.router.navigate(['/auth/login']);
           }

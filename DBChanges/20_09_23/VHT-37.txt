@@ -1,0 +1,11 @@
+ALTER TABLE `vtravel`.`occupancy` 
+ADD COLUMN `is_default` CHAR(1) NULL AFTER `occupancy`;
+
+INSERT INTO `vtravel`.`occupancy` (`occupancy`, `is_default`) VALUES ('Extra Bed Price', 'Y');
+INSERT INTO `vtravel`.`occupancy` (`occupancy`, `is_default`) VALUES ('Child Price', 'Y');
+UPDATE `vtravel`.`occupancy` SET `is_default` = 'N' WHERE (`id` = '1');
+UPDATE `vtravel`.`occupancy` SET `is_default` = 'N' WHERE (`id` = '2');
+UPDATE `vtravel`.`occupancy` SET `is_default` = 'N' WHERE (`id` = '3');
+UPDATE `vtravel`.`occupancy` SET `is_default` = 'N' WHERE (`id` = '4');
+UPDATE `vtravel`.`occupancy` SET `is_default` = 'N' WHERE (`id` = '5');
+UPDATE `vtravel`.`occupancy` SET `is_default` = 'N' WHERE (`id` = '6');

@@ -1,0 +1,93 @@
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-4">
+            Inventory
+          </div>
+          <div class="col-md-8">
+            <nb-select placeholder="[SELECT PROPERTY]" [fullWidth]="true" (selectedChange)="onPropertySelected($event)"
+                       name="propertyId"
+                       [(ngModel)]="defaultPropertyId">
+              <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
+
+            </nb-select>
+          </div>
+        </div>
+      </nb-card-header>
+    </nb-card>
+  </div>
+</div>
+<div class="row" *ngIf="defaultPropertyId!='0'">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-body>
+        <!--div class="col-md-12">
+    <div class="d-flex justify-content-between align-items-center" style="float:right;">
+    </div>
+  </div>-->
+
+        <div class="col-md-12" style="margin-bottom:1em; border:1px solid lightgray;">
+          <div class="col-md-2" style="display:inline-block;" *ngFor="let item of activerateplans">
+            <span style.background-color={{item.color}} style="width:14px; height:14px; margin-top:3px; float:left; margin-right:10px;"></span>  {{item.name}}
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <button style="display:inline-block;" class="btn btn-sm btn-primary" id="previousBtn" (click)="yearchange(-1)"><<</button>
+              <button disabled="" style="display:inline-block;" class="btn btn-sm btn-primary" type="button">{{currentYear}}</button>
+              <button style="display:inline-block;" class="btn btn-sm btn-primary" id="nextBtn" (click)="yearchange(1)">>></button>
+            </div>
+            <button class="btn btn-sm btn-danger" id="clearBtn" (click)="clear()">Clear</button>
+          </div>
+        </div>
+
+        <div *ngFor="let calendarOptions of calendarOptionsArray" class="month-calendar">
+          <full-calendar [options]="calendarOptions"></full-calendar>
+        </div>
+
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+
+<ng-template #rateplanDialogNew let-data let-ref="dialogRef">
+  <nb-card style="width:20vw;">
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-8">{{data.title}}</div>
+        <div class="col-md-4">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary pop-close-btn" style="float:right;">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onInventorySubmit()" #mainInventory="ngForm" novalidate>
+        <label>{{datestring(fromdate)}} - {{datestring(todate)}}</label>
+        <div class="form-group">
+          <label class="label">Rateplans</label>
+          <div *ngFor="let rp of activerateplans">
+            <label>
+              <input type="radio"
+                     name="radioGroup"
+                     [value]="rp.id" [(ngModel)]="selectedrate" />
+              <span style.background-color={{rp.color}} style="width:14px; height:14px; margin-top:3px; float:left; margin-right:10px;"></span>  {{ rp.name }}
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainInventory.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>

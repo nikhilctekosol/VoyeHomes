@@ -187,7 +187,7 @@ namespace VTravel.CustomerWeb.Controllers
 
                 }
 
-                query = string.Format(@"SELECT b.id, b.image_url, b.navigate_url, IFNULL(b.title, '') title, IFNULL(b.description, '') description, IFNULL(b.property_id, 0) property_id, IFNULL(b.destination, 0) dest_id
+                query = string.Format(@"SELECT b.id, b.image_url, b.navigate_url, IFNULL(b.title, '') title, IFNULL(b.navigate_url, '') navigate_url, IFNULL(b.description, '') description, IFNULL(b.property_id, 0) property_id, IFNULL(b.destination, 0) dest_id
                                            , IFNULL(p.title, '') property, IFNULL(d.title, '') destination
                                            FROM hero_banner b
                                            left join property p on p.id = b.property_id
@@ -213,7 +213,9 @@ namespace VTravel.CustomerWeb.Controllers
                                     {
                                         id = Convert.ToInt32(r["id"].ToString()),
                                         image_url = r["image_url"].ToString(),
-                                        navigate_url = r["property_id"].ToString() == "0" ? (r["dest_id"].ToString() == "0" ? "" : "destination/"+@General.GetUrlSlug(r["destination"].ToString())+"-"+ @General.EncodeString(r["dest_id"].ToString())) : @General.GetUrlSlug(r["property"].ToString()) +"-"+@General.EncodeString(r["property_id"].ToString()),
+                                        navigate_url = r["navigate_url"].ToString() == "" ? (r["property_id"].ToString() == "0" ? (r["dest_id"].ToString() == "0" ? "" : 
+                                        "destination/"+@General.GetUrlSlug(r["destination"].ToString())+"-"+ @General.EncodeString(r["dest_id"].ToString())) 
+                                        : @General.GetUrlSlug(r["property"].ToString()) +"-"+@General.EncodeString(r["property_id"].ToString())) : r["navigate_url"].ToString(),
                                         title = r["title"].ToString(),
                                         description = r["description"].ToString(),
                                         property_id = Convert.ToInt32(r["property_id"].ToString()),

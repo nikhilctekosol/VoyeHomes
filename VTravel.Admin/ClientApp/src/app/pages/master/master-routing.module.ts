@@ -11,6 +11,7 @@ import { RoomTypesComponent } from './room-types/room-types.component';
 import { BookingChannelsComponent } from './booking-channels/booking-channels.component';
 import { UsersComponent } from './users/users.component';
 import { BannersComponent } from './banners/banners.component';
+import { RateplanComponent } from './rateplan/rateplan.component';
 
 const routes: Routes = [{
   path: '',
@@ -51,6 +52,10 @@ const routes: Routes = [{
     {
       path: 'banners',
       component: BannersComponent,
+    },
+    {
+      path: 'rateplan',
+      component: RateplanComponent,
     }
    // {
   //    path: 'view-request/:id',
@@ -75,5 +80,6 @@ export const routedComponents = [
   RoomTypesComponent,
   BookingChannelsComponent,
   UsersComponent,
-  BannersComponent
+  BannersComponent,
+  RateplanComponent
 ];

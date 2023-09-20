@@ -16,8 +16,8 @@ import { CalendarOptions, FullCalendarComponent, EventClickArg, EventApi, DateSe
 
 export class InventoryComponent implements OnInit {
 
-  dateRange:any;
-  channels: any[]; 
+  dateRange: any;
+  channels: any[];
   deleteDialogRef: any;
   invDialogRef: any;
   dialogRef: any;
