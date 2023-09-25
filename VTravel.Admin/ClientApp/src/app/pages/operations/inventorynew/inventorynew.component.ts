@@ -8,6 +8,8 @@ import {
 } from '@nebular/theme';
 import { CalendarOptions, Calendar, DateSelectArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-inventorynew',
@@ -37,6 +39,10 @@ export class InventorynewComponent implements OnInit {
   activerateplans: any[];
   assignedplans: any[];
   rpData = new RPData();
+  filteredOptions$: Observable<any[]>;
+  selectedPropertyName: string ;
+
+  @ViewChild('autoInput') input;
 
   constructor(private http: HttpClient, private authService: NbAuthService,
     private cd: ChangeDetectorRef, private router: Router, private renderer: Renderer2,
@@ -50,10 +56,11 @@ export class InventorynewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (localStorage["default-inventory-property"]) {
-      this.defaultPropertyId = localStorage["default-inventory-property"];
-    }
     this.loadProperties();
+    // if (localStorage["default-inventory-property"]) {
+    //  this.defaultPropertyId = localStorage["default-inventory-property"];
+    //  this.selectedPropertyName = localStorage["default-property-name"];
+    // }
 
     this.currentYear = new Date().getFullYear().toString();
     this.loadcalendar();
@@ -84,7 +91,9 @@ export class InventorynewComponent implements OnInit {
         initialDate: `${this.currentYear}-${String(i).padStart(2, '0')}-01`,
         fixedWeekCount: false,
         selectable: true ,
-        select: this.handleDateSelect.bind(this)
+        select: this.handleDateSelect.bind(this),
+        validRange: this.calculateValidRange(
+          new Date(parseInt(this.currentYear), i - 1 , 1))
       };
       this.calendarOptionsArray.push(calendarOptions);
 
@@ -92,10 +101,22 @@ export class InventorynewComponent implements OnInit {
 
   }
 
+  calculateValidRange(month: Date) {
+    const startOfMonth = new Date(month.getFullYear(), month.getMonth(), 1);
+    const endOfMonth = new Date(month.getFullYear(), month.getMonth() + 1, 1);
+
+    return {
+      start: startOfMonth,
+      end: endOfMonth
+    };
+  }
+
   yearchange(count) {
     this.currentYear = parseInt(this.currentYear) + count;
 
     this.loadcalendar();
+    this.loadactiverateplans();
+    this.getassignedrateplans();
   }
 
   clear() {
@@ -139,7 +160,6 @@ export class InventorynewComponent implements OnInit {
           this.todate = check;
           const dayElement = document.querySelector(`.fc-day[data-date="${this.todate}"]`);
           dayElement.classList.add('clicked-day');
-          this.loadactiverateplans();
 
           this.dialogRef = this.dialogService.open(
             this.rateplanDialogNew,
@@ -193,6 +213,7 @@ export class InventorynewComponent implements OnInit {
         if (res.actionStatus == 'SUCCESS') {
           if (res.data.length > 0) {
             this.properties = res.data;
+            this.filteredOptions$ = of(this.properties);
           }
         }
 
@@ -217,7 +238,7 @@ export class InventorynewComponent implements OnInit {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    this.http.get('api/rateplan/get-list?id=' + this.defaultPropertyId
+    this.http.get('api/rateplan/get-list?id=' + this.property.id
       , { headers: headers }).subscribe((res: any) => {
 
         if (res.actionStatus == 'SUCCESS') {
@@ -251,6 +272,8 @@ export class InventorynewComponent implements OnInit {
           this.room = new Room();
           this.loadRooms();
           // this.loadInventories();
+          this.loadactiverateplans();
+          this.getassignedrateplans();
         }
 
       },
@@ -262,8 +285,6 @@ export class InventorynewComponent implements OnInit {
           }
         });
 
-    this.loadactiverateplans();
-    this.getassignedrateplans();
 
   }
 
@@ -299,10 +320,12 @@ export class InventorynewComponent implements OnInit {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
+
     this.rpData.fromDate = this.formatDate((new Date(this.fromdate)).toString());
     this.rpData.toDate = this.formatDate((new Date(this.todate)).toString());
-    this.rpData.propertyId = this.defaultPropertyId.toString();
+    this.rpData.propertyId = this.property.id.toString();
     this.rpData.rateplan = this.selectedrate;
+
 
     this.http.post('api/rateplan/assign-rateplan'
       , this.rpData, { headers: headers }).subscribe((res: any) => {
@@ -318,6 +341,7 @@ export class InventorynewComponent implements OnInit {
 
           this.toast('Success', 'Data saved successfully!', 'success');
           this.dialogRef.close();
+          this.loadcalendar();
           this.getassignedrateplans();
         }
         else {
@@ -345,18 +369,21 @@ export class InventorynewComponent implements OnInit {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    this.http.get('api/rateplan/get-assignedplan-list?id=' + this.defaultPropertyId
+    this.http.get('api/rateplan/get-assignedplan-list?id=' + this.property.id
       , { headers: headers }).subscribe((res: any) => {
 
         if (res.actionStatus == 'SUCCESS') {
           this.assignedplans = res.data;
 
           for (let i = 0; i < this.assignedplans.length; i++) {
-            const dayElement = document.querySelector(`.fc-day[data-date="${this.assignedplans[i].invDate}"]`);
-            if (dayElement) {
+            const dayElements = document.querySelectorAll(`.fc-day[data-date="${this.assignedplans[i].invDate}"]`);
+            dayElements.forEach((dayElement) => {
               this.renderer.setStyle(dayElement, 'background-color', this.assignedplans[i].rp_color);
               this.renderer.setStyle(dayElement, 'color', this.getContrastingTextColor(this.assignedplans[i].rp_color));
-            }
+              this.renderer.setAttribute(dayElement, 'title', this.assignedplans[i].rp_name);
+
+
+            });
           }
 
         }
@@ -392,6 +419,34 @@ export class InventorynewComponent implements OnInit {
     dayElements.forEach((dayElement) => {
       this.renderer.removeClass(dayElement, className);
     });
+  }
+
+  onSelectionChange($event) {
+
+    // console.log(JSON.stringify($event));
+    this.defaultPropertyId = $event.id;
+    this.selectedPropertyName = $event.title.toString().trim();
+    localStorage["default-inventory-property"] = this.defaultPropertyId;
+    localStorage["default-property-name"] = this.selectedPropertyName;
+    this.loadProperty();
+    this.filteredOptions$ = this.getFilteredOptions(this.selectedPropertyName);
+  }
+
+  private filter(value: string ): any[] {
+    const filterValue = value.toLowerCase();
+    return this.properties.filter(optionValue => optionValue.title.toLowerCase().includes(filterValue));
+  }
+
+  getFilteredOptions(value: string ): Observable<any[]> {
+    return of(value).pipe(
+      map(filterString => this.filter(filterString)),
+    );
+  }
+
+  onChange() {
+
+    // this.input.nativeElement.setAttribute("area-expanded", "true");
+    this.filteredOptions$ = this.getFilteredOptions(this.input.nativeElement.value);
   }
 
   toast(title, message, status: NbComponentStatus) {

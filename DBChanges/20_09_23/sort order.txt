@@ -1,0 +1,7 @@
+UPDATE `vtravel`.`destination` SET `sort_order` = '9971' WHERE (`id` = '4');
+UPDATE `vtravel`.`destination` SET `sort_order` = '9972' WHERE (`id` = '5');
+UPDATE `vtravel`.`destination` SET `sort_order` = '9975' WHERE (`id` = '18');
+UPDATE `vtravel`.`destination` SET `sort_order` = '9976' WHERE (`id` = '3');
+UPDATE `vtravel`.`destination` SET `sort_order` = '9977' WHERE (`id` = '11');
+UPDATE `vtravel`.`destination` SET `sort_order` = '9979' WHERE (`id` = '9');
+UPDATE `vtravel`.`destination` SET `sort_order` = '9980' WHERE (`id` = '15');

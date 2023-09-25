@@ -10,9 +10,23 @@
 
     <div class="row">
       <div class="col-md-6">
-        <nb-select placeholder="[SELECT PROPERTY]" [fullWidth]="true" (selectedChange)="onPropertySelected($event)" name="propertyId" [(ngModel)]="PropertyId" #propertyId="ngModel">
-          <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
-        </nb-select>
+        <!--<nb-select placeholder="[SELECT PROPERTY]" [fullWidth]="true" (selectedChange)="onPropertySelected($event)" name="propertyId" [(ngModel)]="PropertyId" #propertyId="ngModel">
+    <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
+  </nb-select>-->
+        <input #autoInput
+               nbInput
+               [(ngModel)]="selectedPropertyName"
+               type="text"
+               (input)="onChange()"
+               placeholder="[SELECT PROPERTY]"
+               [nbAutocomplete]="auto"
+               [fullWidth]="true" />
+        <nb-autocomplete #auto (selectedChange)="onSelectionChange($event)">
+          <!--<nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>-->
+          <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+            {{ option.title }}
+          </nb-option>
+        </nb-autocomplete>
       </div>
       <div class="col-md-4">
 

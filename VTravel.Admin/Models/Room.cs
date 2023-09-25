@@ -13,7 +13,8 @@ namespace VTravel.Admin.Models
         public string title { get; set; }
         public string description { get; set; }
         public string typeName { get; set; }
-        
+        public int noofrooms { get; set; }
+
 
     }
   

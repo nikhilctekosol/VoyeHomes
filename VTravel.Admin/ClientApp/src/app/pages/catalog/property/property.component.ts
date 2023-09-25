@@ -1455,6 +1455,7 @@ export class PropertyComponent implements OnInit  {
     this.room.title = obj.title;
     this.room.description = obj.description;
     this.room.roomTypeId = obj.roomTypeId;
+    this.room.noofrooms = obj.noofrooms;
 
     this.loadRoomOccupancy();
 
@@ -1512,7 +1513,7 @@ export class PropertyComponent implements OnInit  {
 
         if (res.actionStatus === 'SUCCESS') {
 
-          this.http.put('api/property/update-room-occupancy?id=' + this.room.id
+            this.http.put('api/property/update-room-occupancy?id=' + res.message
             , this.occupancylist1, { headers: headers }).subscribe((res: any) => {
 
             });
@@ -1729,6 +1730,7 @@ class Room {
   title: string ;
   description: string ;
   typeName: string ;
+  noofrooms: number;
   // occupancy: Occupancy;
 }
 

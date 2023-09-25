@@ -227,15 +227,6 @@ nav.navbar.navbar-default.navbar-me.fixed-me form.navbar-form .form-control {
     float: left;
 }
 
-.normListing h1, .normListing h2, .normListing h3{
-    font-size: 20px;
-    font-weight: 600;
-}
-.normListing h4{
-    font-size: 20px;
-    font-weight: 400;
-}
-
 form.navbar-form {
     float: left;
     position: relative;
@@ -391,8 +382,6 @@ ul.slick-dots {
     bottom: 15px;
 }
 
-
-
 .propertySlide ul.slick-dots {
     bottom: -7px;
 }
@@ -419,83 +408,40 @@ ul.slick-dots li {
     }
 
 
-    .master-slider ul.slick-dots{
-        left: auto;
-        right: 35px;
-        bottom: 100px;
-        display: grid !important;
-        top: auto;
-        max-height: 200px;
-    }
-    .master-slider ul.slick-dots li {
-        list-style: none;
-        display: inline-block;
-        margin: 0px 4px;
-        height: 17px;
-    }
-    .master-slider ul.slick-dots li button {
-        border: 0px;
-        width: 8px !important;
-        height: 8px;
-        border-radius: 40px;
-        background: rgb(255 255 255 / 41%);
-        text-indent: -9999px;
-        outline: none;
-        padding: 3px;
-    }
-    .master-slider ul.slick-dots li.slick-active button {
-        padding: 6px;
-    }
+
 
 .values {
     text-align: center;
-    padding: 0px 0px 50px;
-    margin-top: -70px;
+    padding: 60px 0px;
 }
 
     .values img {
         display: inline-block;
-        max-height: 49px!important;
     }
 
     .values p {
         color: #09087E;
-        font-weight: 400;
+        font-weight: 500;
         max-width: 75%;
-        text-align: left;
+        text-align: center;
         line-height: 130%;
-        padding-top: 5px;
+        padding-top: 15px;
         margin: 0 auto;
-        padding-left: 15px;
-    }
-    .values .slick-slide {
-        padding: 30px 15px;
-    }
-    .values .box{
-        box-shadow: 0px 0px 27px rgb(9 8 126 / 23%);
-        border-radius: 10px;
-        display: flex !important;
-        background: #fff;
-        display: flex !important;
-        padding: 10px 20px;
     }
 
 .destination {
-    padding: 0px 0px 30px;
+    padding: 20px 0px 30px;
 }
 
     .destination .slick-slider {
         margin-left: -15px;
         margin-right: -15px;
-        max-width: 800px;
-        margin: 0 auto;
     }
 
     .destination .header {
         font-size: 20px;
         font-weight: 600;
-        text-align: center;
-        padding-bottom: 30px;
+        padding-right: 80px;
     }
 
         .destination .header p {
@@ -505,16 +451,9 @@ ul.slick-dots li {
             color: #a0a0a0;
             margin-bottom: 10px;
         }
-        .destination .header p {
-            margin-bottom: 0px;
-            margin-top: 2px;
-        }
-        .destination .header h5 {
-            
-        }
 
     .destination .box {
-        padding: 0px 15px;
+        padding: 15px;
     }
 
         .destination .box h4 {
@@ -540,25 +479,22 @@ ul.slick-dots li {
         .destination .box .img {
             position: relative;
             overflow: hidden;
-            display: inline-block;
             border-radius: 15px;
         }
 
         .destination .box img {
-            max-width: 100%;
-            max-height: 60px;
-        }
-        .destination .box a {
-            min-height: 70px;
-            margin-bottom: 2px;
-        }
-        .destination .box h7{
-            font-weight: 400;
+            width: 125%;
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+            -webkit-transition: .3s ease-in-out;
+            transition: .3s ease-in-out;
+            height: 175px;
+            object-fit: cover;
         }
 
         .destination .box:hover img {
-            -webkit-transform: scale(0.9);
-            transform: scale(0.9);
+            -webkit-transform: scale(0.7);
+            transform: scale(0.7);
             -webkit-transition: .3s ease-in-out;
             opacity: 1;
             -webkit-animation: flash 1.5s;
@@ -996,17 +932,6 @@ footer {
 .normListing .slick-slide {
     width: 300px;
 }
-.master-slider .slick-slide .item picture{
-    position: relative;
-}
-.master-slider .slick-slide .item picture:after {
-    content: "";
-    position: absolute;
-    background: rgb(0 0 0 / 40%);
-    width: 100%;
-    height: 100%;
-    top: 0;
-}
 @media (min-width: 998px) {
     .master-slider .slick-slide .item{
         height: 100vh; 
@@ -1147,33 +1072,6 @@ footer {
     top: -0.5em;
 }
 
-.desti-slider1 button.slick-prev.slick-arrow {
-    position: absolute;
-    top: -20px;
-    right: 0;
-    left: auto;
-    width: 30px;
-    height: 30px;
-    padding: 7px;
-    border: 1px solid #c3c3c3;
-    right: 40px !important;
-    border-right: 0px;
-    border-radius: 20px 0px 0px 20px;
-}
-.desti-slider1 button.slick-next.slick-arrow{
-    width: 30px;
-    height: 30px;
-    padding: 7px;
-    border: 1px solid #c3c3c3;
-    border-radius: 0px 20px 20px 0px;
-    top: -20px;
-    right: 10px;
-}
-.desti-slider1.slick-slider .slick-arrow.slick-prev:before, .desti-slider1.slick-slider .slick-arrow.slick-next:before {
-    font-size: 14px;
-    color: #a0a0a0;
-    font-weight: 900;
-}
 
 
 #sidebar-wrapper {
@@ -2689,9 +2587,6 @@ textarea.form-control.message{
     .header-right-menu .navbar-nav {
         display: none;
     }
-    .master-slider ul.slick-dots{
-        display: none !important;
-    }
 .normListing .box .wrapper .img img {
         height: 160px;
 }
@@ -2752,7 +2647,7 @@ textarea.form-control.message{
     }
 
     .highlightMessage {
-        top: 100px;
+        top: 150px;
         max-width: 90%;
     }
     .listing-slider.slick-slider .slick-arrow.slick-prev, .listing-slider.slick-slider .slick-arrow.slick-next{
@@ -2775,11 +2670,9 @@ textarea.form-control.message{
         right: 40px !important;
     }
     .destination .box img{
-        max-width: 80%;
+        height: 125px;
     }
-    .destination .box a {
-        min-height: 55px;
-    }
+
         .highlightMessage .btn-primary {
             display: none;
         }
@@ -2867,11 +2760,8 @@ textarea.form-control.message{
     }
 
     .highlightMessage .stylish {
-        font-size: 9px;
-        letter-spacing: 5px;
-    }
-    .about-property {
-        height: auto !important;
+        font-size: 25px;
+        display: none;
     }
 
     .highlightMessage h1 {
@@ -2895,16 +2785,11 @@ textarea.form-control.message{
     }
 
     .values .slick-slide {
-        width: auto;
+        width: 110px;
     }
-    .values .box{
-        max-width: 300px;
-    }
-    .values img {
-        max-height: 35px!important;
-    }
+
     .values {
-        padding: 5px 0px 10px;
+        padding: 30px 0px 10px;
         margin-left: -15px;
         margin-right: -15px;
     }
@@ -2920,7 +2805,7 @@ textarea.form-control.message{
         }
 
     .destination {
-        padding: 0px 0px 0px;
+        padding: 20px 0px 0px;
     }
 
         .destination .box .img {
@@ -2935,16 +2820,9 @@ textarea.form-control.message{
         .destination .header p {
             display: none;
         }
-        .destination .header h5{
-            border: 0px;
-            padding: 0px;
-            margin: 0px;
-            font-size: 17px;
-        }
+
         .destination .header {
             font-size: 17px;
-            padding-bottom: 10px;
-            text-align: left;
         }
 
         /*.destination .slick-slide {
@@ -2952,7 +2830,7 @@ textarea.form-control.message{
         }*/
 
         .destination .box {
-            padding: 0px 10px;
+            padding: 15px 10px;
         }
 
             .destination .box h4 {
@@ -3322,8 +3200,7 @@ textarea.form-control.message{
         .quickMob.fluid {
             width: 100%;
             padding: 0px;
-            height: auto;            
-            z-index: 9999;
+            height: auto;
         }
 
             .quickMob.fluid .content {
@@ -3505,7 +3382,6 @@ textarea.form-control.message{
     .mainListing {
         margin-left: -5px;
         margin-right: -5px;
-        min-height: 550px;
     }
 
     .normListing .mainListing .box {
@@ -3863,13 +3739,6 @@ textarea.form-control.message{
     }
     .sk-fading-circle{
         top: 40%;
-    }
-    .destination .slick-slider .slick-list.draggable {
-        width: 90% !important;
-        overflow: inherit;
-    }
-    .destination .slick-slide .box {
-        width: 33.3% !important;
     }
 }
 

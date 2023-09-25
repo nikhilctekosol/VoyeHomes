@@ -142,6 +142,7 @@
                      name="destination_id"
                      [(ngModel)]="banner.destination_id"
                      #destination_id="ngModel">
+            <nb-option value="0">--Select Destination--</nb-option>
             <nb-option value={{item.id}} *ngFor="let item of destinations">{{item.title}}</nb-option>
 
 
@@ -154,6 +155,7 @@
                      name="property_id"
                      [(ngModel)]="banner.property_id"
                      #property_id="ngModel">
+            <nb-option value="0" >--Select Property--</nb-option>
             <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
 
 
@@ -250,6 +252,7 @@
                      name="destination_id"
                      [(ngModel)]="banner.destination_id"
                      #destination_id="ngModel">
+            <nb-option value="0">--Select Destination--</nb-option>
             <nb-option value={{item.id}} *ngFor="let item of destinations">{{item.title}}</nb-option>
           </nb-select>
         </div>
@@ -260,6 +263,7 @@
                      name="property_id"
                      [(ngModel)]="banner.property_id"
                      #property_id="ngModel">
+            <nb-option value="0">--Select Property--</nb-option>
             <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
           </nb-select>
         </div>

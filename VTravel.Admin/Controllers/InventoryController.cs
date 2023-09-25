@@ -95,13 +95,14 @@ namespace VTravel.Admin.Controllers
 
                 //var query = string.Format(@"select id,inv_date,room_id,property_id,	total_qty,booked_qty,price,extra_bed_price,child_price  FROM inventory WHERE is_active='Y' AND property_id={0} AND room_id={1} AND inv_date >= '{2}'  ORDER BY inv_date"
                 //                  , propertyId, roomId, DateTime.Today.ToString("yyyy-MM-dd")); 
-                var query = string.Format(@"select i.id,i.inv_date,i.room_id,i.property_id,	i.total_qty,i.booked_qty,i.price price1,i.extra_bed_price,i.child_price, IFNULL(rb.rate, 0) price, rb.rateplan,
-											GROUP_CONCAT(concat(o.occupancy, ' - ', rb1.rate)) AS occ_rates FROM inventory i
+                var query = string.Format(@"select i.id,i.inv_date,i.room_id,i.property_id,	IFNULL(r.noofrooms,0) total_qty,i.booked_qty,i.price price1,i.extra_bed_price,i.child_price, IFNULL(rb.rate, 0) price, rb.rateplan,
+                                            GROUP_CONCAT(concat(o.occupancy, ' - ', rb1.rate)) AS occ_rates FROM inventory i
                                             left join rateplan_breakup rb on rb.rateplan =  i.rateplan and rb.room_id = i.room_id and rb.occupancy = 2
                                             left join rateplan_breakup rb1 on rb1.rateplan =  i.rateplan and rb1.room_id = i.room_id 
                                             left join occupancy o on o.id = rb1.occupancy
+                                            left join room r on i.room_id = r.id
                                             WHERE i.is_active='Y' AND i.property_id={0} AND i.room_id={1} AND i.inv_date >= '{2}'
-                                            group by i.id, i.inv_date, i.room_id, i.property_id, i.total_qty, i.booked_qty, i.price, i.extra_bed_price, i.child_price, rb.rate, rb.rateplan 
+                                            group by i.id, i.inv_date, i.room_id, i.property_id, r.noofrooms, i.booked_qty, i.price, i.extra_bed_price, i.child_price, rb.rate, rb.rateplan 
                                             ORDER BY i.inv_date;"
                                   , propertyId, roomId, DateTime.Today.ToString("yyyy-MM-dd"));
 
