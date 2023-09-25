@@ -124,7 +124,7 @@ export class ReservationComponent implements OnInit {
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
-    editable: true ,
+    editable: false ,
     dayMaxEvents: true , // allow "more" link when too many events
     events: [
     ]
@@ -491,8 +491,7 @@ export class ReservationComponent implements OnInit {
     this.loadingSave = true ;
 
     if (this.validate()) {
-
-      this.reservData.custPhone = this.reservData.custPhone.toString();
+      this.reservData.custPhone = this.reservData.custPhone?.toString();
       let headers = new HttpHeaders().set("Authorization", "Bearer " +
         this.token).set("Content-Type", "application/json");
       this.http.post('api/reservation/create'

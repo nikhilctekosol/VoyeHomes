@@ -12,6 +12,7 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using System.Security.Claims;
 using System.Linq;
+using MySql.Data.MySqlClient;
 //using Microsoft.Extensions.Hosting;
 
 namespace VTravel.Admin.Controllers
@@ -1429,7 +1430,7 @@ namespace VTravel.Admin.Controllers
                 List<Room> roomList = new List<Room>();
                 MySqlHelper sqlHelper = new MySqlHelper();
 
-                var query = string.Format(@"SELECT room.id,title,room_type_id,room.description,type_name FROM room INNER JOIN room_type ON room.room_type_id=room_type.id WHERE property_id={0}
+                var query = string.Format(@"SELECT room.id,title,room_type_id,room.description,type_name, IFNULL(noofrooms, 0) noofrooms FROM room INNER JOIN room_type ON room.room_type_id=room_type.id WHERE property_id={0}
                            ORDER BY room.sort_order, title", id
                                    );
 
@@ -1446,7 +1447,8 @@ namespace VTravel.Admin.Controllers
                             title = r["title"].ToString(),
                             roomTypeId = r["room_type_id"].ToString(),
                             description = r["description"].ToString(),
-                            typeName = r["type_name"].ToString()
+                            typeName = r["type_name"].ToString(),
+                            noofrooms = Convert.ToInt32(r["noofrooms"].ToString())
                         }
                         );
 
@@ -1590,13 +1592,37 @@ namespace VTravel.Admin.Controllers
 
                     MySqlHelper sqlHelper = new MySqlHelper();
                     string query = string.Empty; ;
+                    IEnumerable<Claim> claims = User.Claims;
+                    var userId = claims.Where(c => c.Type == "id").FirstOrDefault().Value;
 
-                    query = string.Format(@"INSERT INTO room(property_id,room_type_id,title,description)
-                      VALUES({0},{1},'{2}','{3}')",
-                        model.propertyId, model.roomTypeId, model.title, model.description);
+                    //query = string.Format(@"INSERT INTO room(property_id,room_type_id,title,description, noofrooms)
+                    //  VALUES({0},{1},'{2}','{3}', {4})",
+                    //    model.propertyId, model.roomTypeId, model.title, model.description, model.noofrooms);
 
 
-                    DataSet ds = sqlHelper.GetDatasetByMySql(query);
+                    //DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+
+                    sqlHelper.AddSetParameterToMySqlCommand("propertyId", MySqlDbType.Int32, Convert.ToInt32(model.propertyId));
+                    sqlHelper.AddSetParameterToMySqlCommand("roomTypeId", MySqlDbType.Int32, Convert.ToInt32(model.roomTypeId));
+                    sqlHelper.AddSetParameterToMySqlCommand("title1", MySqlDbType.String, model.title.ToString());
+                    sqlHelper.AddSetParameterToMySqlCommand("description1", MySqlDbType.String, model.description.ToString());
+                    sqlHelper.AddSetParameterToMySqlCommand("noofrooms1", MySqlDbType.Int32, Convert.ToInt32(model.noofrooms));
+                    sqlHelper.AddSetParameterToMySqlCommand("userid", MySqlDbType.Int32, Convert.ToInt32(userId));
+
+                    DataSet ds = sqlHelper.GetDatasetByCommand("insert_room");
+
+                    if (ds != null)
+                    {
+                        if (ds.Tables.Count > 0)
+                        {
+                            if (ds.Tables[0].Rows.Count > 0)
+                            {
+                                response.Message = ds.Tables[0].Rows[0][0].ToString();
+                            }
+                        }
+                    }
+
                     response.ActionStatus = "SUCCESS";
 
                 }
@@ -1633,8 +1659,8 @@ namespace VTravel.Admin.Controllers
                     MySqlHelper sqlHelper = new MySqlHelper();
                     string query = string.Empty; ;
 
-                    query = string.Format(@"UPDATE room SET title='{0}', description='{1}',room_type_id={2} WHERE id={3}",
-                        model.title, model.description, model.roomTypeId, id);
+                    query = string.Format(@"UPDATE room SET title='{0}', description='{1}',room_type_id={2}, noofrooms = {4} WHERE id={3}",
+                        model.title, model.description, model.roomTypeId, id, model.noofrooms);
 
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
@@ -1682,7 +1708,7 @@ namespace VTravel.Admin.Controllers
                         if (model[i].check == "true")
                         {
                             query = string.Format(@"INSERT INTO room_occupancy(room_id, occupancy) VALUES({0}, {1})",
-                            model[i].roomid, model[i].id);
+                            id, model[i].id);
 
                             ds = sqlHelper.GetDatasetByMySql(query);
                         }

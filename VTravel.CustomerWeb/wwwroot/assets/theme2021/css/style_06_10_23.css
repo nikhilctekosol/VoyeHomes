@@ -3848,10 +3848,6 @@ textarea.form-control.message{
     .sk-fading-circle{
         top: 40%;
     }
-    .destination .slick-slider .slick-list.draggable {
-        width: 90% !important;
-        overflow: inherit;
-    }
     .destination .slick-slide .box {
         width: 33.3% !important;
     }

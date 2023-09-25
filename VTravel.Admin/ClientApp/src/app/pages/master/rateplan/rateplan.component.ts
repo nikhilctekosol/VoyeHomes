@@ -1,8 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, TemplateRef, ContentChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, TemplateRef, ContentChild, ViewChild, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { NbAuthService, NbAuthJWTToken, NbAuthToken } from '@nebular/auth';
 import { NbDialogService, NbComponentStatus, NbToastrService } from '@nebular/theme';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-rateplan',
@@ -38,9 +40,14 @@ export class RateplanComponent implements OnInit {
   planid: string = "0";
   nameedit: string ;
   coloredit: string ;
+
+  filteredOptions$: Observable<any[]>;
+  selectedPropertyName: string ;
+
+  @ViewChild('autoInput') input;
   constructor(private http: HttpClient, private authService: NbAuthService, private router: Router
     , private cd: ChangeDetectorRef, private r: ActivatedRoute, private dialogService: NbDialogService
-    , private toastrService: NbToastrService) {
+    , private toastrService: NbToastrService, private renderer: Renderer2) {
 
     this.authService.getToken().subscribe((tokenData: NbAuthToken) => {
       this.token = tokenData.getValue();
@@ -49,9 +56,14 @@ export class RateplanComponent implements OnInit {
   ngOnInit(): void {
     // if (localStorage["default-inventory-property"]) {
     //  this.PropertyId = localStorage["default-inventory-property"];
+    //  this.selectedPropertyName = localStorage["default-property-name"];
+    //  this.loadProperty();
+    //  this.loadrateplans();
+    //  this.loadactiverateplans();
+    //  this.loadinactiverateplans();
     // }
     this.loadProperties();
-    this.rateplan.propertyId = '0';
+    this.rateplan.propertyid = '0';
   }
 
   private loadProperties() {
@@ -65,6 +77,7 @@ export class RateplanComponent implements OnInit {
         if (res.actionStatus == 'SUCCESS') {
           if (res.data.length > 0) {
             this.properties = res.data;
+            this.filteredOptions$ = of(this.properties);
 
           }
         }
@@ -81,14 +94,12 @@ export class RateplanComponent implements OnInit {
 
   onPropertySelected(event) {
 
-    // localStorage["default-inventory-property"] = this.PropertyId;
+    localStorage["default-inventory-property"] = this.PropertyId;
     this.loadProperty();
-    this.loadrateplans();
-    this.loadactiverateplans();
-    this.loadinactiverateplans();
 
   }
   loadProperty() {
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
     this.http.get('api/property/get?id=' + this.PropertyId
@@ -97,6 +108,9 @@ export class RateplanComponent implements OnInit {
         if (res.actionStatus == 'SUCCESS') {
 
           this.property = res.data;
+          this.loadrateplans();
+          this.loadactiverateplans();
+          this.loadinactiverateplans();
         }
 
       },
@@ -140,7 +154,7 @@ export class RateplanComponent implements OnInit {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    this.http.get('api/rateplan/get-list?id=' + this.PropertyId
+    this.http.get('api/rateplan/get-list?id=' + this.property.id
       , { headers: headers }).subscribe((res: any) => {
 
         if (res.actionStatus == 'SUCCESS') {
@@ -163,7 +177,7 @@ export class RateplanComponent implements OnInit {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    this.http.get('api/rateplan/get-activelist?id=' + this.PropertyId
+    this.http.get('api/rateplan/get-activelist?id=' + this.property.id
       , { headers: headers }).subscribe((res: any) => {
 
         if (res.actionStatus == 'SUCCESS') {
@@ -186,7 +200,7 @@ export class RateplanComponent implements OnInit {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    this.http.get('api/rateplan/get-inactivelist?id=' + this.PropertyId
+    this.http.get('api/rateplan/get-inactivelist?id=' + this.property.id
       , { headers: headers }).subscribe((res: any) => {
 
         if (res.actionStatus == 'SUCCESS') {
@@ -217,7 +231,7 @@ export class RateplanComponent implements OnInit {
 
     this.rateplan.id = rp.id;
     this.rateplan.name = rp.name;
-    this.rateplan.propertyId = this.PropertyId;
+    this.rateplan.propertyid = this.property.id;
     this.rateplan.color = rp.color;
 
 
@@ -302,6 +316,7 @@ export class RateplanComponent implements OnInit {
   edit(rateDialog: TemplateRef<any>) {
 
     this.loadColors();
+    this.rateplan.propertyid = this.property.id.toString();
     this.dialogRef = this.dialogService.open(
       rateDialog,
       { context: { title: "Update Rate Plan" } });
@@ -316,12 +331,12 @@ export class RateplanComponent implements OnInit {
   }
 
   openRateNew(rateDialogNew: TemplateRef<any>) {
-    if (this.PropertyId == "0") {
+    if (this.property.id == "0") {
       this.toast('Error', 'Please select a property!', 'warning');
     }
     else {
       this.loadColors();
-      this.rateplan.propertyId = this.PropertyId;
+      this.rateplan.propertyid = this.property.id.toString();
       this.dialogRef = this.dialogService.open(
         rateDialogNew,
         { context: { title: 'Add Rate Plan' } });
@@ -329,6 +344,7 @@ export class RateplanComponent implements OnInit {
   }
 
   onNewRatePlanSubmit() {
+
     this.loadingRatePlanSave = true ;
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
@@ -336,6 +352,7 @@ export class RateplanComponent implements OnInit {
 
     this.http.post('api/rateplan/create-rateplan'
       , this.rateplan, { headers: headers }).subscribe((res: any) => {
+
         this.loadingRatePlanSave = false;
 
         if (res.actionStatus === 'SUCCESS') {
@@ -355,17 +372,17 @@ export class RateplanComponent implements OnInit {
         }
 
       },
-        error => {
+      error => {
 
-          this.loadingRatePlanSave = false;
-          this.toast('Error', 'Could not save data!', 'danger');
+        this.loadingRatePlanSave = false;
+        this.toast('Error', 'Could not save data!', 'danger');
 
-          console.log('api/rateplan/create-rateplans', error);
-          if (error.status === 401) {
-            this.router.navigate(['auth/login']);
-          }
+        console.log('api/rateplan/create-rateplans', error);
+        if (error.status === 401) {
+          this.router.navigate(['auth/login']);
+        }
 
-        });
+      });
 
   }
 
@@ -385,6 +402,7 @@ export class RateplanComponent implements OnInit {
           this.loadingRatePlanSave = false;
           this.toast('Success', 'Data saved successfully!', 'success');
           this.dialogRef.close();
+          this.loadrateplans();
           this.loadactiverateplans();
           this.loadinactiverateplans();
         }
@@ -500,6 +518,35 @@ export class RateplanComponent implements OnInit {
         });
   }
 
+  onSelectionChange($event) {
+
+    // console.log(JSON.stringify($event));
+
+    this.PropertyId = $event.id;
+    this.selectedPropertyName = $event.title.toString().trim();
+    localStorage["default-inventory-property"] = this.PropertyId;
+    localStorage["default-property-name"] = this.selectedPropertyName;
+    this.loadProperty();
+    this.filteredOptions$ = this.getFilteredOptions(this.selectedPropertyName);
+  }
+
+  private filter(value: string ): any[] {
+    const filterValue = value.toLowerCase();
+    return this.properties.filter(optionValue => optionValue.title.toLowerCase().includes(filterValue));
+  }
+
+  getFilteredOptions(value: string ): Observable<any[]> {
+    return of(value).pipe(
+      map(filterString => this.filter(filterString)),
+    );
+  }
+
+  onChange() {
+
+    // this.input.nativeElement.setAttribute("area-expanded", "true");
+    this.filteredOptions$ = this.getFilteredOptions(this.input.nativeElement.value);
+  }
+
   toast(title, message, status: NbComponentStatus) {
     this.toastrService.show(title, message, { status });
   }
@@ -508,8 +555,8 @@ class Rateplan {
 
   id: number;
   name: string ;
-  propertyId: string ;
   color: string ;
+  propertyid: string ;
   active: string ;
 }
 class Property {

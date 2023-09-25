@@ -1058,7 +1058,7 @@
         </div>
       </div>
     </nb-card-header>
-    <nb-card-body>
+    <nb-card-body class="res-card-contaier">
 
       <form (ngSubmit)="onNewRoomSubmit()" #mainNewRoomForm="ngForm" novalidate>
 
@@ -1091,6 +1091,16 @@
                      [status]="roomTypeId.dirty ? (roomTypeId.invalid  ? 'danger' : 'success') : 'basic'">
             <nb-option value={{item.id}} *ngFor="let item of roomTypes">{{item.typeName}}</nb-option>
           </nb-select>
+        </div>
+
+        <div class="form-group">
+          <label class="label">No. of rooms</label>
+          <input type="number" nbInput fullWidth placeholder="No. of rooms"
+                 autocomplete="off"
+                 name="noofrooms"
+                 [(ngModel)]="room.noofrooms"
+                 required #noofrooms="ngModel"
+                 [status]="noofrooms.dirty ? (noofrooms.invalid  ? 'danger' : 'success') : 'basic'">
         </div>
 
         <div class="form-group">
@@ -1129,7 +1139,7 @@
         </div>
       </div>
     </nb-card-header>
-    <nb-card-body>
+    <nb-card-body class="res-card-contaier">
 
       <form (ngSubmit)="onRoomSubmit()" #mainRoomForm="ngForm" novalidate>
 
@@ -1165,6 +1175,16 @@
         </div>
 
         <div class="form-group">
+          <label class="label">No. of rooms</label>
+          <input type="number" nbInput fullWidth placeholder="No. of rooms"
+                 autocomplete="off"
+                 name="noofrooms"
+                 [(ngModel)]="room.noofrooms"
+                 required #noofrooms="ngModel"
+                 [status]="noofrooms.dirty ? (noofrooms.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
           <label class="label">Occupancy</label>
           <div *ngFor="let item of occupancylist1">
             <!--<input type="checkbox" [checked]="item.checked" (checkedChange)="toggleoccupancy($event,item.id)" [(ngModel)]="item.checked">{{item.title}}-->
@@ -1174,7 +1194,7 @@
             </nb-checkbox>
           </div>
 
-          
+
         </div>
 
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainRoomForm.invalid"

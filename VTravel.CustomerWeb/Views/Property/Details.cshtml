@@ -50,14 +50,14 @@
                     </div>
                     <div class="col-md-6 text-right">
                         
-                        @if (Model.property.priceList != null)
+                        @*@if (Model.property.priceList != null)
                         {
                         @if (Model.property.priceList.Length > 0)
                        {
                         <h3 class="float-left text-right">
                             Price ₹@Model.property.priceList[0].price
                             <span class="gray location">@Model.property.priceList[0].priceName</span>
-                        </h3>}}
+                        </h3>}}*@
 
                         
                         @{
@@ -65,37 +65,40 @@
                             var btnClass = "btn-default";
                         }
                         @if(Model.property.sellOnline=="Y"){
-                        if (Model.property.bookingUrl !=null)
-                        {
-                           @if (Model.property.bookingUrl.Trim().Length > 50)
-                        {
+                            if (Model.property.bookingUrl !=null)
+                            {
+                               @if (Model.property.bookingUrl.Trim().Length > 50)
+                                {
                                
                                     callBackLabel = "Request Call Back";
                                     btnClass = "btn-primary";
                                     <br />
 
+                                }
+                            }
                         }
-                        }}
 
                           <a href="./reservation/@General.GetUrlSlug(@Model.property.perma_title)-@General.EncodeString(@Model.property.id.ToString())" class="btn @btnClass">@callBackLabel</a>
                       
                        
 
                     </div>
-                     @if(Model.property.sellOnline=="Y"){
-                     if (Model.property.bookingUrl !=null)
+                     @if(Model.property.sellOnline=="Y")
+                     {
+                        if (Model.property.bookingUrl !=null)
                         {
                            @if (Model.property.bookingUrl.Trim().Length > 50)
-                        {
+                            {
                                 
                                 <div class="col-md-12">
-                       <a href="@Model.property.bookingUrl" class="btn btn-default" style="float: right;margin-top: 10px;" target="_blank" >Book Now</a>
+                                    <a href="@Model.property.bookingUrl" class="btn btn-default" style="float: right;margin-top: 10px;" target="_blank" >Book Now</a>
 
 
                                 </div>
 
+                            }
                         }
-                        }}
+                    }
                     <div class="col-md-12">
                         <div class="priceNote">*Including taxes and other charges</div>
                     </div>

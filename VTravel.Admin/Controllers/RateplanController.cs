@@ -502,12 +502,12 @@ namespace VTravel.Admin.Controllers
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);////////////get room list///////////
 
-                    DateTime from = model.fromDate;
-
                     foreach (DataRow r in ds.Tables[0].Rows)
                     {
 
                         model.roomId = r["id"].ToString();
+
+                        DateTime from = model.fromDate;
 
                         while (from <= model.toDate)
                         {

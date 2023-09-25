@@ -421,8 +421,7 @@
                        autocomplete="off"
                        name="custEmail"
                        [(ngModel)]="reservData.custEmail"
-                       #custEmail="ngModel"
-                       [status]="custEmail.dirty ? (custEmail.invalid  ? 'danger' : 'success') : 'basic'">
+                       #custEmail="ngModel">
               </div>
 
               <div class="col-6">
@@ -431,8 +430,7 @@
                        autocomplete="off"
                        name="custPhone"
                        [(ngModel)]="reservData.custPhone"
-                       #custPhone="ngModel"
-                       [status]="custPhone.dirty ? (custPhone.invalid  ? 'danger' : 'success') : 'basic'">
+                       #custPhone="ngModel">
               </div>
             </div>
 
