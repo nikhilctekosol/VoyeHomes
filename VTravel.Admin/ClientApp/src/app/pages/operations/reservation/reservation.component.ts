@@ -798,7 +798,7 @@ export class ReservationComponent implements OnInit {
     this.loadingSave = true ;
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    this.http.get('api/property/get-list-sorted-by-name'
+    this.http.get('api/property/get-active-list'
       , { headers: headers }).subscribe((res: any) => {
 
         this.loadingSave = false;

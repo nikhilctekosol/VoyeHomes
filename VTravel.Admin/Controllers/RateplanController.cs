@@ -436,30 +436,30 @@ namespace VTravel.Admin.Controllers
 
                     IEnumerable<Claim> claims = User.Claims;
                     var userId = claims.Where(c => c.Type == "id").FirstOrDefault().Value;
+                    MySqlHelper sqlHelper = new MySqlHelper();
 
-                    DataSet ds;
+                    var query = string.Format(@"DELETE from rateplan_breakup where rateplan = {0}",id);
+
+
+                    DataSet ds = sqlHelper.GetDatasetByMySql(query);
 
                     for (int i = 0; i < model.Count; i++)
                     {
-                        MySqlHelper sqlHelper = new MySqlHelper();
-                        sqlHelper.AddSetParameterToMySqlCommand("roomid", MySqlDbType.Int32, Convert.ToInt32(model[i].roomid));
-                        sqlHelper.AddSetParameterToMySqlCommand("rate_plan", MySqlDbType.Int32, Convert.ToInt32(id));
-                        sqlHelper.AddSetParameterToMySqlCommand("meal_plan", MySqlDbType.Int32, Convert.ToInt32(model[i].mealid));
-                        sqlHelper.AddSetParameterToMySqlCommand("occupancy_id", MySqlDbType.Int32, Convert.ToInt32(model[i].occid));
-                        sqlHelper.AddSetParameterToMySqlCommand("rate1", MySqlDbType.Decimal, Convert.ToDecimal(model[i].rate));
-                        sqlHelper.AddSetParameterToMySqlCommand("userid", MySqlDbType.Int32, Convert.ToInt32(userId));
+                        MySqlHelper sqlHelper1 = new MySqlHelper();
+                        sqlHelper1.AddSetParameterToMySqlCommand("roomid", MySqlDbType.Int32, Convert.ToInt32(model[i].roomid));
+                        sqlHelper1.AddSetParameterToMySqlCommand("rate_plan", MySqlDbType.Int32, Convert.ToInt32(id));
+                        sqlHelper1.AddSetParameterToMySqlCommand("meal_plan", MySqlDbType.Int32, Convert.ToInt32(model[i].mealid));
+                        sqlHelper1.AddSetParameterToMySqlCommand("occupancy_id", MySqlDbType.Int32, Convert.ToInt32(model[i].occid));
+                        sqlHelper1.AddSetParameterToMySqlCommand("rate1", MySqlDbType.Decimal, Convert.ToDecimal(model[i].rate));
+                        sqlHelper1.AddSetParameterToMySqlCommand("userid", MySqlDbType.Int32, Convert.ToInt32(userId));
 
-                        ds = sqlHelper.GetDatasetByCommand("insert_rateplan_details");
+                        ds = sqlHelper1.GetDatasetByCommand("insert_rateplan_details");
 
-                        sqlHelper.Dispose();
+                        sqlHelper1.Dispose();
                     }
+                    sqlHelper.Dispose();
 
-                    //query = string.Format(@"INSERT INTO rateplan_breakup(room_id, rateplan, mealplan, occupancy, rate, created_by, created_on)
-                    //  VALUES({0},{1},{2},{3},{4},{5}, {6}, '{7})",
-                    //    model.roomid, id, model.mealid, model.occid, model.rate, userId, DateTime.Today.ToString("yyyy-MM-dd"));
-
-
-                    //DataSet ds = sqlHelper.GetDatasetByMySql(query);
+                    
                     response.ActionStatus = "SUCCESS";
 
                 }

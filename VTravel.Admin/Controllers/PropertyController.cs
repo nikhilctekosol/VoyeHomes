@@ -127,6 +127,118 @@ namespace VTravel.Admin.Controllers
 
         }
 
+
+        [HttpGet, Route("get-active-list")]
+        public IActionResult GetActiveList()
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                List<Property> properties = new List<Property>();
+                MySqlHelper sqlHelper = new MySqlHelper();
+
+                var query = string.Format(@"select id,title,thumbnail,address,city,property_status,sort_order 
+                 FROM property WHERE is_active='Y' and property_status!='SUSPENDED' ORDER BY sort_order"
+                                   );
+
+                DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+
+                    properties.Add(
+                        new Property
+                        {
+                            id = Convert.ToInt32(r["id"].ToString()),
+                            title = r["title"].ToString(),
+                            thumbnail = r["thumbnail"].ToString(),
+                            address = r["address"].ToString(),
+                            city = r["city"].ToString(),
+                            propertyStatus = r["property_status"].ToString(),
+                            sortOrder = Convert.ToInt32(r["sort_order"].ToString())
+                        }
+                        );
+
+                }
+
+
+                response.Data = properties;
+                response.ActionStatus = "SUCCESS";
+
+
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
+
+        [HttpGet, Route("get-inactive-list")]
+        public IActionResult GetInactiveList()
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                List<Property> properties = new List<Property>();
+                MySqlHelper sqlHelper = new MySqlHelper();
+
+                var query = string.Format(@"select id,title,thumbnail,address,city,property_status,sort_order 
+                 FROM property WHERE is_active='Y' and property_status='SUSPENDED' ORDER BY sort_order"
+                                   );
+
+                DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+
+                    properties.Add(
+                        new Property
+                        {
+                            id = Convert.ToInt32(r["id"].ToString()),
+                            title = r["title"].ToString(),
+                            thumbnail = r["thumbnail"].ToString(),
+                            address = r["address"].ToString(),
+                            city = r["city"].ToString(),
+                            propertyStatus = r["property_status"].ToString(),
+                            sortOrder = Convert.ToInt32(r["sort_order"].ToString())
+                        }
+                        );
+
+                }
+
+
+                response.Data = properties;
+                response.ActionStatus = "SUCCESS";
+
+
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
         [HttpGet, Route("get-list-sorted-by-name")]
         public IActionResult GetListSortName()
         {

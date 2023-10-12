@@ -32,34 +32,64 @@
 
 <div class="row">
   <div class="col-lg-6 col-md-6 col-sm-12">
-    <!--<div>-->
-      <input type="text" nbInput fullWidth placeholder="Filter by property name" (keyup)="propertySearch()" [(ngModel)]="searchValue">
-    <!--</div>-->
-    <nb-list cdkDropList (cdkDropListDropped)="drop($event)" class="product-list">
-      <nb-list-item cdkDrag class="product-box row" *ngFor="let item of properties"
-                     (dblclick)="loadProperty(item.id)">
+    <nb-tabset fullWidth>
+      <nb-tab tabTitle="Active Properties">
+        <!--<div>-->
+        <input type="text" nbInput fullWidth placeholder="Filter by property name" (keyup)="propertySearch()" [(ngModel)]="searchValue">
+        <!--</div>-->
+        <nb-list cdkDropList (cdkDropListDropped)="drop($event, 1)" class="product-list">
+          <nb-list-item cdkDrag class="product-box row" *ngFor="let item of properties"
+                        (dblclick)="loadProperty(item.id)">
 
-        <div class="icon col-sm-3 col-lg-3 col-md-3">
-          <img src="{{item.thumbnail!=null?item.thumbnail:''}}"
-               width="40" height="40"
-               onerror="this.src='assets/images/default.jpg'"
-               alt="{{item.title}}">
-        </div>
+            <div class="icon col-sm-3 col-lg-3 col-md-3">
+              <img src="{{item.thumbnail!=null?item.thumbnail:''}}"
+                   width="40" height="40"
+                   onerror="this.src='assets/images/default.jpg'"
+                   alt="{{item.title}}">
+            </div>
 
-        <div class="details col-sm-9 col-md-9 col-lg-9">
-          <div class="title"> {{item.title}}</div>
-          <div class="status paragraph-2">{{ item.city }}</div>
-          <div class="status paragraph-2">{{ item.propertyStatus }}</div>
+            <div class="details col-sm-9 col-md-9 col-lg-9">
+              <div class="title"> {{item.title}}</div>
+              <div class="status paragraph-2">{{ item.city }}</div>
+              <div class="status paragraph-2">{{ item.propertyStatus }}</div>
 
-        </div>
+            </div>
 
-      
 
-      </nb-list-item>
-      
-    </nb-list>
 
-    
+          </nb-list-item>
+
+        </nb-list>
+      </nb-tab>
+      <nb-tab tabTitle="Suspended Properties">
+        <!--<div>-->
+        <input type="text" nbInput fullWidth placeholder="Filter by property name" (keyup)="propertySuspendedSearch()" [(ngModel)]="searchValue">
+        <!--</div>-->
+        <nb-list cdkDropList (cdkDropListDropped)="drop($event, 2)" class="product-list">
+          <nb-list-item cdkDrag class="product-box row" *ngFor="let item of propertiessusp"
+                        (dblclick)="loadProperty(item.id)">
+
+            <div class="icon col-sm-3 col-lg-3 col-md-3">
+              <img src="{{item.thumbnail!=null?item.thumbnail:''}}"
+                   width="40" height="40"
+                   onerror="this.src='assets/images/default.jpg'"
+                   alt="{{item.title}}">
+            </div>
+
+            <div class="details col-sm-9 col-md-9 col-lg-9">
+              <div class="title"> {{item.title}}</div>
+              <div class="status paragraph-2">{{ item.city }}</div>
+              <div class="status paragraph-2">{{ item.propertyStatus }}</div>
+
+            </div>
+
+
+
+          </nb-list-item>
+
+        </nb-list>
+      </nb-tab>
+    </nb-tabset>
   </div>
 </div>
 

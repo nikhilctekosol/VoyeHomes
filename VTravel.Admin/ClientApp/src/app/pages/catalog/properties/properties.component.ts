@@ -23,7 +23,9 @@ export class PropertiesComponent implements OnInit  {
   alertMessage = '';
   alertStatus = '';
   properties: any[];
-  propertiesAll: any[];
+  propertiessusp: any[];
+  propertiesActive: any[];
+  propertiesInactive: any[];
   stores: any[];
   propertyTypes: any[];
   subCategories: any[];
@@ -47,35 +49,49 @@ export class PropertiesComponent implements OnInit  {
 
   ngOnInit() {
     this.loadProperties();
+    this.loadSuspendedProperties();
     this.loadPropertyTypes();
   }
 
   propertySearch() {
     if (this.searchValue != null) {
-      
-      this.properties = this.propertiesAll.filter((item)=>{
+
+      this.properties = this.propertiesActive.filter((item) => {
         return item.title.toLowerCase().indexOf(this.searchValue.toLowerCase()) != -1;
       });
 
     } else {
-      this.properties = this.propertiesAll;
+      this.properties = this.propertiesActive;
     }
-   
+
   }
-  
+
+  propertySuspendedSearch() {
+    if (this.searchValue != null) {
+
+      this.propertiessusp = this.propertiesInactive.filter((item) => {
+        return item.title.toLowerCase().indexOf(this.searchValue.toLowerCase()) != -1;
+      });
+
+    } else {
+      this.propertiessusp = this.propertiesInactive;
+    }
+
+  }
+
   private loadProperties() {
 
     this.loadingSave = true;
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    this.http.get('api/property/get-list'
+    this.http.get('api/property/get-active-list'
       , { headers: headers }).subscribe((res: any) => {
 
         this.loadingSave = false;
 
         if (res.actionStatus == 'SUCCESS') {
           if (res.data.length > 0) {
-            this.propertiesAll = res.data;
+            this.propertiesActive = res.data;
             this.propertySearch();
           }
         }
@@ -89,6 +105,34 @@ export class PropertiesComponent implements OnInit  {
           }
         });
   
+  }
+
+  private loadSuspendedProperties() {
+
+    this.loadingSave = true ;
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/property/get-inactive-list'
+      , { headers: headers }).subscribe((res: any) => {
+
+        this.loadingSave = false;
+
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.propertiesInactive = res.data;
+            this.propertySuspendedSearch();
+          }
+        }
+
+      },
+        error => {
+          this.loadingSave = false;
+          console.log('api/property/get-list', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
   }
 
   private loadPropertyTypes() {
@@ -127,12 +171,21 @@ export class PropertiesComponent implements OnInit  {
 
   
 
-  drop(event: CdkDragDrop<string[]>) {
-    var property = this.properties[event.previousIndex];
-    var propertyReplace = this.properties[event.currentIndex];
+  drop(event: CdkDragDrop<string[]>, mode) {
 
-   
+    if (mode == 1) {
+      var property = this.properties[event.previousIndex];
+      var propertyReplace = this.properties[event.currentIndex];
+
       moveItemInArray(this.properties, event.previousIndex, event.currentIndex);
+    }
+    else {
+      var property = this.propertiessusp[event.previousIndex];
+      var propertyReplace = this.propertiessusp[event.currentIndex];
+
+      moveItemInArray(this.propertiessusp, event.previousIndex, event.currentIndex);
+    }
+
       // sort in backend
 
       var sortData = new SortData();
