@@ -436,7 +436,8 @@ namespace VTravel.HostWeb.Controllers
                 {
                     //check inventory for the day
                     hasInventory = false;
-                    var query = string.Format(@"select id,inv_date,room_id,property_id,	total_qty,booked_qty  FROM inventory WHERE is_active='Y' AND property_id={0} AND room_id={1} AND inv_date='{2}'"
+                    var query = string.Format(@"select i.id,i.inv_date,i.room_id,i.property_id, r.noofrooms	total_qty,i.booked_qty  FROM inventory i
+                                                left join room r on r.id = i.room_id WHERE i.is_active='Y' AND i.property_id={0} AND i.room_id={1} AND i.inv_date='{2}'"
                                   , propertyId, roomId, startDate.ToString("yyyy-MM-dd"));
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
@@ -485,7 +486,8 @@ namespace VTravel.HostWeb.Controllers
                 {
                     //check inventory for the day
                     hasInventory = false;
-                    var query = string.Format(@"select id,inv_date,room_id,property_id,	total_qty,booked_qty  FROM inventory WHERE is_active='Y' AND property_id={0} AND room_id={1} AND inv_date='{2}'"
+                    var query = string.Format(@"select i.id,i.inv_date,i.room_id,i.property_id, r.noofrooms	total_qty,i.booked_qty  FROM inventory i
+                                                left join room r on r.id = i.room_id WHERE i.is_active='Y' AND i.property_id={0} AND i.room_id={1} AND i.inv_date='{2}'"
                                   , propertyId, roomId, startDate.ToString("yyyy-MM-dd"));
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
