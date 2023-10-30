@@ -19,5 +19,6 @@ namespace VTravel.Admin.Models
         public string destination { get; set; }
         public string show_in_home { get; set; }
         public string active { get; set; }
+        public int sort_order { get; set; }
     }
 }

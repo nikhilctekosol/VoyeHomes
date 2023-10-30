@@ -11,5 +11,6 @@ namespace VTravel.Admin.Models
         public int roomid { get; set; }
         public string occupancy { get; set; }
         public string check { get; set; }
+        public int occcount { get; set; }
     }
 }

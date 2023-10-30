@@ -541,7 +541,7 @@ export class ReservationComponent implements OnInit {
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
 
-    this.reservData.custPhone = this.reservData.custPhone.toString();
+    this.reservData.custPhone = this.reservData.custPhone?.toString();
     this.http.put('api/reservation/update?id=' + this.reservData.id
       , this.reservData, { headers: headers }).subscribe((res: any) => {
         this.loadingSave = false;

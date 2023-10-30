@@ -38,10 +38,10 @@ namespace VTravel.Admin.Controllers
                 MySqlHelper sqlHelper = new MySqlHelper();
 
                 var query = string.Format(@"select b.id, image_url, image_alt, b.title, b.description, IFNULL(b.navigate_url, '') navigate_url, b.is_active, show_in_home, IFNULL(b.property_id, 0) property_id
-                                            , IFNULL(b.destination,0) destination_id, IFNULL(p.title, '') property, IFNULL(d.title, '') destination 
+                                            , IFNULL(b.destination,0) destination_id, IFNULL(p.title, '') property, IFNULL(d.title, '') destination, b.sort_order 
                                             from hero_banner b
                                             left join property p on p.id = b.property_id
-                                            left join destination d on d.id = b.destination where b.is_active = 'Y'"
+                                            left join destination d on d.id = b.destination where b.is_active = 'Y' order by b.sort_order"
                                    );
 
                 DataSet ds = sqlHelper.GetDatasetByMySql(query);
@@ -64,7 +64,8 @@ namespace VTravel.Admin.Controllers
                             property_id = r["property_id"]== DBNull.Value ? "0" : r["property_id"].ToString(),
                             destination_id = r["destination_id"] == DBNull.Value ? "0" : r["destination_id"].ToString(),
                             property = r["property"].ToString(),
-                            destination = r["destination"].ToString()
+                            destination = r["destination"].ToString(),
+                            sort_order = Convert.ToInt32(r["sort_order"])
                         }
                         );
 
@@ -160,8 +161,9 @@ namespace VTravel.Admin.Controllers
                     IEnumerable<Claim> claims = User.Claims;
                     var userId = claims.Where(c => c.Type == "id").FirstOrDefault().Value;
 
-                    var query = string.Format(@"INSERT INTO hero_banner(title, description, image_url, image_alt, property_id, destination, is_active, show_in_home, create_by, created_on, navigate_url)
-                                        VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}', '{10}');
+                    var query = string.Format(@"SELECT MAX(sort_order) INTO @sortorder FROM hero_banner;
+                                        INSERT INTO hero_banner(title, description, image_url, image_alt, property_id, destination, is_active, show_in_home, create_by, created_on, navigate_url, sort_order)
+                                        VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}', '{10}', @sortorder + 1);
                                         SELECT LAST_INSERT_ID() AS id;",
                                      model.title, model.description, model.image_url, model.image_alt, model.property_id, model.destination_id, 'Y', model.show_in_home, userId, DateTime.Today.ToString("yyyy-MM-dd"), model.navigate_url);
 
@@ -264,6 +266,63 @@ namespace VTravel.Admin.Controllers
                 else
                 {
                     return BadRequest("Invalid banner details");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpPost, Route("sort")]
+        public IActionResult Sort([FromBody] newSortData model)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                if (model != null)
+                {
+
+                    MySqlHelper sqlHelper = new MySqlHelper();
+
+                    var query = "";
+                    if (model.cursortOrder > model.presortOrder)
+                    {
+                        query = string.Format(@"UPDATE hero_banner SET sort_order=sort_order - 1 WHERE sort_order>{1} and sort_order <= {2} ;  
+                                                    UPDATE hero_banner SET sort_order={2} WHERE id={3}", model.pushDownValue,
+                                                    model.presortOrder, model.cursortOrder, model.itemId);
+                    }
+                    else
+                    {
+                        query = string.Format(@"UPDATE hero_banner SET sort_order=sort_order + 1 WHERE sort_order < {1} and sort_order >= {2} ;  
+                                                    UPDATE hero_banner SET sort_order={2} WHERE id={3}", model.pushDownValue,
+                                                    model.presortOrder, model.cursortOrder, model.itemId);
+                    }
+
+                  //  query = string.Format(@"UPDATE hero_banner SET sort_order=sort_order+{0} WHERE sort_order>={1};  
+                  //UPDATE hero_banner SET sort_order={2} WHERE id={3}", model.pushDownValue,
+                  //                   model.presortOrder, model.cursortOrder, model.itemId);
+
+                    DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+
+
+                    response.ActionStatus = "SUCCESS";
+                    response.Message = "banners sorted";
+                }
+                else
+                {
+                    return BadRequest("Invalid sort banner");
                 }
 
             }

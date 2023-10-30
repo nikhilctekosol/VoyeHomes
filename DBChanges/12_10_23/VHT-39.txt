@@ -1,0 +1,41 @@
+ALTER TABLE `vtravel_uat`.`room` 
+ADD COLUMN `normal_occupancy` INT NULL DEFAULT 0 AFTER `noofrooms`,
+ADD COLUMN `max_adults` INT NULL DEFAULT 0 AFTER `normal_occupancy`,
+ADD COLUMN `max_children` INT NULL DEFAULT 0 AFTER `max_adults`,
+
+
+
+USE `vtravel_uat`;
+DROP procedure IF EXISTS `insert_room`;
+
+USE `vtravel_uat`;
+DROP procedure IF EXISTS `vtravel_uat`.`insert_room`;
+;
+
+DELIMITER $$
+USE `vtravel_uat`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_room`(IN `propertyId` INT, IN `roomTypeId` INT, IN `title1` VARCHAR(50), IN `description1` VARCHAR(50), IN `noofrooms1` INT,
+ IN `normalocc` INT, IN `maxadults` INT, IN `maxchildren` INT, IN `years_06` INT, IN `years_612` INT, IN `years_12` INT, IN `userid` INT)
+BEGIN
+	DECLARE rid int DEFAULT 0;
+    DECLARE other_room int;
+    
+    select id into other_room from room where property_id = propertyId and is_active = 'Y' order by id limit 1;
+    
+	INSERT INTO room(property_id,room_type_id,title,description, noofrooms, normal_occupancy, max_adults, max_children)
+                      VALUES(propertyId,roomTypeId,title1,description1, noofrooms1, normalocc, maxadults, maxchildren);
+                      
+    set rid = LAST_INSERT_ID();
+    
+    if(rid > 0) then
+			insert into inventory(room_id, property_id, inv_date, total_qty, booked_qty, is_active, created_on, created_by, price, extra_bed_price, child_price, rateplan)
+			select rid, property_id, inv_date, 0, 0, is_active, NOW(), userid, 0, 0, 0, rateplan 
+			from inventory where room_id = other_room;
+    end if;
+     
+    select rid;
+END$$
+
+DELIMITER ;
+;
+

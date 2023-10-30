@@ -13,41 +13,44 @@
 
   </nb-card-header>
   <nb-card-body>
-    <nb-card *ngFor="let banner of bannerlist">
-      <nb-card-header>
-        <div class="row">
-          <div class="col-md-8">{{banner.title}}</div>
-          <div class="col-md-2">
-            <button type="button" (click)="openDelete(deleteDialog,banner.id)" nbButton class="btn btn-sm btn-outline-secondary">
-              <nb-icon icon="trash-outline"></nb-icon> DE-ACTIVATE
-            </button>
-          </div>
-          <div class="col-md-2">
-            <button type="button" (click)="openBanner(bannerDialog,banner.id)" nbButton class="btn btn-sm btn-outline-secondary">
-              <nb-icon icon="edit-outline"></nb-icon> EDIT
-            </button>
+    <nb-list cdkDropList (cdkDropListDropped)="drop($event)">
+      <nb-list-item cdkDrag *ngFor="let banner of bannerlist">
+        <nb-card>
+          <nb-card-header>
+            <div class="row">
+              <div class="col-md-8">{{banner.title}}</div>
+              <div class="col-md-2">
+                <button type="button" (click)="openDelete(deleteDialog,banner.id)" nbButton class="btn btn-sm btn-outline-secondary">
+                  <nb-icon icon="trash-outline"></nb-icon> DE-ACTIVATE
+                </button>
+              </div>
+              <div class="col-md-2">
+                <button type="button" (click)="openBanner(bannerDialog,banner.id)" nbButton class="btn btn-sm btn-outline-secondary">
+                  <nb-icon icon="edit-outline"></nb-icon> EDIT
+                </button>
 
-          </div>
+              </div>
 
-        </div>
+            </div>
 
-      </nb-card-header>
-      <nb-card-body>
-        <div class="row">
+          </nb-card-header>
+          <nb-card-body>
+            <div class="row">
 
-          <div class="col-md-8">
-            {{banner.title}}
-          </div>
-          <div class="col-md-4">
-            <img src="{{banner.image_url}}" alt="" width="100" height="100"
-                 onerror="this.src='assets/images/default.jpg'" />
-          </div>
+              <div class="col-md-8">
+                {{banner.title}}
+              </div>
+              <div class="col-md-4">
+                <img src="{{banner.image_url}}" alt="" width="100" height="100"
+                     onerror="this.src='assets/images/default.jpg'" />
+              </div>
 
-        </div>
+            </div>
 
-      </nb-card-body>
-
-    </nb-card>
+          </nb-card-body>
+        </nb-card>
+      </nb-list-item>
+    </nb-list>
   </nb-card-body>
 </nb-card>
 
@@ -102,8 +105,7 @@
                  autocomplete="off"
                  name="title"
                  [(ngModel)]="banner.title"
-                 required #title="ngModel"
-                 [status]="title.dirty ? (title.invalid  ? 'danger' : 'success') : 'basic'">
+                 #title="ngModel">
         </div>
 
         <div class="form-group">
@@ -112,8 +114,7 @@
                  autocomplete="off"
                  name="description"
                  [(ngModel)]="banner.description"
-                 required #description="ngModel"
-                 [status]="description.dirty ? (description.invalid  ? 'danger' : 'success') : 'basic'">
+                 #description="ngModel">
         </div>
 
         <div class="form-group">
@@ -212,8 +213,7 @@
                  autocomplete="off"
                  name="title"
                  [(ngModel)]="banner.title"
-                 required #title1="ngModel"
-                 [status]="title1.dirty ? (title1.invalid  ? 'danger' : 'success') : 'basic'">
+                 #title1="ngModel">
         </div>
 
         <div class="form-group">
@@ -222,8 +222,7 @@
                  autocomplete="off"
                  name="description"
                  [(ngModel)]="banner.description"
-                 required #description1="ngModel"
-                 [status]="description1.dirty ? (description1.invalid  ? 'danger' : 'success') : 'basic'">
+                 #description1="ngModel">
         </div>
 
         <div class="form-group">

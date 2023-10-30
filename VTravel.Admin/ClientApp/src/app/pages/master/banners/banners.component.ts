@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { NbAuthService, NbAuthJWTToken, NbAuthToken } from '@nebular/auth';
 import { NbDialogService, NbComponentStatus, NbToastrService } from '@nebular/theme';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'ngx-banners',
@@ -21,6 +22,9 @@ export class BannersComponent implements OnInit {
   dialogRef: any;
   destinations: any[];
   properties: any[];
+  isAlert = false;
+  alertMessage = '';
+  alertStatus = '';
   constructor(private http: HttpClient, private authService: NbAuthService, private router: Router
     , private cd: ChangeDetectorRef, private r: ActivatedRoute, private dialogService: NbDialogService
     , private toastrService: NbToastrService) {
@@ -265,6 +269,83 @@ export class BannersComponent implements OnInit {
 
   }
 
+
+
+  drop(event: CdkDragDrop<string[]>) {
+
+    var banner = this.bannerlist[event.previousIndex];
+    var bannerReplace = this.bannerlist[event.currentIndex];
+
+    moveItemInArray(this.bannerlist, event.previousIndex, event.currentIndex);
+
+    // sort in backend
+
+    var sortData = new SortData();
+
+    sortData.itemId = banner.id;
+    sortData.presortOrder = banner.sort_order;
+    sortData.cursortOrder = bannerReplace.sort_order;
+    sortData.pushDownValue = banner.sort_order >= bannerReplace.sort_order ? -1 : 1;
+    // sortData.pushDownValue = event.previousIndex - event.currentIndex;
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+
+
+    this.http.post('api/banner/sort'
+      , sortData, { headers: headers }).subscribe((res: any) => {
+        this.loadingSave = false;
+        if (res.actionStatus === 'SUCCESS') {
+
+          this.loadingSave = false;
+          this.isAlert = true;
+          this.alertStatus = 'success';
+          this.alertMessage = "Data sorted successfully!";
+          setTimeout(() => {
+            this.isAlert = false;
+            this.alertMessage = '';
+          }, 3000);
+          this.loadBanners();
+        }
+        else {
+
+          this.loadingSave = false;
+          this.isAlert = true;
+          this.alertStatus = 'danger';
+          this.alertMessage = "Could not sort data!";
+
+          setTimeout(() => {
+            this.isAlert = false;
+            this.alertMessage = '';
+
+          }, 3000);
+
+        }
+
+      },
+        error => {
+
+          this.loadingSave = false;
+          this.isAlert = true;
+          this.alertStatus = 'danger';
+          this.alertMessage = "Could not import data!";
+
+          setTimeout(() => {
+            this.isAlert = false;
+            this.alertMessage = '';
+
+          }, 3000);
+
+          console.log('api/banner/sort', error);
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+
+        });
+
+
+  }
+
   toast(title, message, status: NbComponentStatus) {
     this.toastrService.show(title, message, { status });
   }
@@ -283,4 +364,10 @@ class BannerList {
   show_in_home: string ;
   active: string ;
 
+}
+class SortData {
+  itemId: number;
+  presortOrder: number;
+  cursortOrder: number;
+  pushDownValue: number;
 }

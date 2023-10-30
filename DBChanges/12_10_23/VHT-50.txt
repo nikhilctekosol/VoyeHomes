@@ -1,0 +1,16 @@
+ALTER TABLE `vtravel_uat`.`hero_banner` 
+ADD COLUMN `sort_order` INT NULL DEFAULT 10000100 AFTER `image_alt`;
+
+
+
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000100' WHERE (`id` = '60');
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000101' WHERE (`id` = '61');
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000102' WHERE (`id` = '62');
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000103' WHERE (`id` = '63');
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000104' WHERE (`id` = '64');
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000105' WHERE (`id` = '65');
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000106' WHERE (`id` = '66');
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000107' WHERE (`id` = '67');
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000108' WHERE (`id` = '68');
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000109' WHERE (`id` = '69');
+UPDATE `vtravel_uat`.`hero_banner` SET `sort_order` = '10000110' WHERE (`id` = '70');
