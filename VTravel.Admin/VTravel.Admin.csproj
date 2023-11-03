@@ -90,6 +90,6 @@
     </ItemGroup>
   </Target>
 
-  <ProjectExtensions><VisualStudio><UserProperties clientapp_4dist_4default_x007E_catalog-catalog-module_x007E_master-master-module_x007E_partner-partner-module-es5_1js_1map__JsonSchema="" clientapp_4dist_4scripts_1js_1map__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties clientapp_4dist_4app-auth-auth-module-es5_1js_1map__JsonSchema="" clientapp_4dist_4default_x007E_catalog-catalog-module_x007E_master-master-module_x007E_partner-partner-module-es5_1js_1map__JsonSchema="" clientapp_4dist_4scripts_1js_1map__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

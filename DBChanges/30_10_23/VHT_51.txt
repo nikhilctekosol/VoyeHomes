@@ -1,0 +1,2 @@
+ALTER TABLE `vtravel_uat`.`property` 
+ADD COLUMN `hide_property` VARCHAR(5) NULL DEFAULT 0 AFTER `booking_url`;

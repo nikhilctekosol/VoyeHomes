@@ -34,6 +34,7 @@ namespace VTravel.Admin.Models
 
         public string reserveAllowed { get; set; }
         public string reserveAlert { get; set; }
+        public string hideProperty { get; set; }
         public string userName { get; set; }
     }
 

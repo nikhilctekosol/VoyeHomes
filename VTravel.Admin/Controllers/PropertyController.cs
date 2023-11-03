@@ -310,7 +310,7 @@ namespace VTravel.Admin.Controllers
                 var query = string.Format(@"select id,title,reserve_alert,reserve_allowed,destination_id,thumbnail,address,city,property_status,sort_order 
                  ,short_description,long_description,latitude,longitude,state,country,property_type_id
                  ,display_radius,meta_title,meta_keywords,meta_description,email,phone,max_occupancy  
-                 ,room_count,bathroom_count,user_name FROM property WHERE is_active='Y' AND id={0} ORDER BY sort_order", id);
+                 ,room_count,bathroom_count,user_name, hide_property FROM property WHERE is_active='Y' AND id={0} ORDER BY sort_order", id);
 
                 DataSet ds = sqlHelper.GetDatasetByMySql(query);
 
@@ -348,6 +348,7 @@ namespace VTravel.Admin.Controllers
                         reserveAlert = r["reserve_alert"].ToString(),
                         reserveAllowed = r["reserve_allowed"].ToString(),
                         userName = r["user_name"].ToString(),
+                        hideProperty = r["hide_property"].ToString(),
 
                     };
 
@@ -442,12 +443,12 @@ namespace VTravel.Admin.Controllers
                     var query = string.Format(@"UPDATE property SET title='{0}',property_type_id={1},short_description='{2}'
                            ,address='{3}',country='{4}',state='{5}',city='{6}',display_radius={7}
                            ,max_occupancy={8} ,room_count={9} ,bathroom_count={10},destination_id={11}
-                            ,reserve_allowed='{12}',reserve_alert='{13}',user_name='{14}',updated_on='{15}',updated_by={16} WHERE id={17}",
+                            ,reserve_allowed='{12}',reserve_alert='{13}', hide_property='{18}',user_name='{14}',updated_on='{15}',updated_by={16} WHERE id={17}",
                                      model.title, model.propertyTypeId, model.shortDescription
                                      , model.address, model.country, model.state, model.city
                                      , model.displayRadius,model.maxOccupancy, model.roomCount
                                      , model.bathroomCount,model.destinationId, model.reserveAllowed,model.reserveAlert,model.userName,
-                                     DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),userId,id);
+                                     DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),userId,id, model.hideProperty);
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
                     response.ActionStatus = "SUCCESS";
@@ -1542,8 +1543,10 @@ namespace VTravel.Admin.Controllers
                 List<Room> roomList = new List<Room>();
                 MySqlHelper sqlHelper = new MySqlHelper();
 
-                var query = string.Format(@"SELECT room.id,title,room_type_id,room.description,type_name, IFNULL(noofrooms, 0) noofrooms FROM room INNER JOIN room_type ON room.room_type_id=room_type.id WHERE property_id={0}
-                           ORDER BY room.sort_order, title", id
+                var query = string.Format(@"SELECT room.id,title,room_type_id,room.description,type_name, IFNULL(noofrooms, 0) noofrooms 
+                            ,normal_occupancy, max_adults, max_children
+                            FROM room INNER JOIN room_type ON room.room_type_id=room_type.id WHERE property_id={0}
+                            ORDER BY room.sort_order, title", id
                                    );
 
                 DataSet ds = sqlHelper.GetDatasetByMySql(query);
@@ -1560,7 +1563,14 @@ namespace VTravel.Admin.Controllers
                             roomTypeId = r["room_type_id"].ToString(),
                             description = r["description"].ToString(),
                             typeName = r["type_name"].ToString(),
-                            noofrooms = Convert.ToInt32(r["noofrooms"].ToString())
+                            noofrooms = Convert.ToInt32(r["noofrooms"].ToString()),
+                            normalocc = Convert.ToInt32(r["normal_occupancy"].ToString()),
+                            maxadults = Convert.ToInt32(r["max_adults"].ToString()),
+                            maxchildren = Convert.ToInt32(r["max_children"].ToString())
+                            //,
+                            //years06 = Convert.ToInt32(r["years06"].ToString()),
+                            //years612 = Convert.ToInt32(r["years612"].ToString()),
+                            //years12 = Convert.ToInt32(r["years12"].ToString())
                         }
                         );
 
@@ -1596,7 +1606,7 @@ namespace VTravel.Admin.Controllers
                 List<RoomOccupancy> roomList = new List<RoomOccupancy>();
                 MySqlHelper sqlHelper = new MySqlHelper();
 
-                var query = string.Format(@"select o.id, IFNULL(ro.room_id, {0}) room_id, o.occupancy, case when ro.id is null then 'false' else 'true' end checked from occupancy o
+                var query = string.Format(@"select o.id, IFNULL(ro.room_id, {0}) room_id, o.occupancy, o.occ_count, case when ro.id is null then 'false' else 'true' end checked from occupancy o
                                             left join room_occupancy ro on o.id = ro.occupancy and ro.room_id = {0} where o.is_default = 'N' ORDER BY o.id", id);
 
                 DataSet ds = sqlHelper.GetDatasetByMySql(query);
@@ -1611,7 +1621,8 @@ namespace VTravel.Admin.Controllers
                             id = Convert.ToInt32(r["id"].ToString()),
                             roomid = Convert.ToInt32(r["room_id"].ToString()),
                             occupancy = r["occupancy"].ToString(),
-                            check = r["checked"].ToString()
+                            check = r["checked"].ToString(),
+                            occcount = Convert.ToInt32(r["occ_count"].ToString())
                         }
                         );
 
@@ -1720,6 +1731,12 @@ namespace VTravel.Admin.Controllers
                     sqlHelper.AddSetParameterToMySqlCommand("title1", MySqlDbType.String, model.title.ToString());
                     sqlHelper.AddSetParameterToMySqlCommand("description1", MySqlDbType.String, model.description.ToString());
                     sqlHelper.AddSetParameterToMySqlCommand("noofrooms1", MySqlDbType.Int32, Convert.ToInt32(model.noofrooms));
+                    sqlHelper.AddSetParameterToMySqlCommand("normalocc", MySqlDbType.Int32, Convert.ToInt32(model.normalocc));
+                    sqlHelper.AddSetParameterToMySqlCommand("maxadults", MySqlDbType.Int32, Convert.ToInt32(model.maxadults));
+                    sqlHelper.AddSetParameterToMySqlCommand("maxchildren", MySqlDbType.Int32, Convert.ToInt32(model.maxchildren));
+                    //sqlHelper.AddSetParameterToMySqlCommand("years_06", MySqlDbType.Int32, Convert.ToInt32(model.years06));
+                    //sqlHelper.AddSetParameterToMySqlCommand("years_612", MySqlDbType.Int32, Convert.ToInt32(model.years612));
+                    //sqlHelper.AddSetParameterToMySqlCommand("years_12", MySqlDbType.Int32, Convert.ToInt32(model.years12));
                     sqlHelper.AddSetParameterToMySqlCommand("userid", MySqlDbType.Int32, Convert.ToInt32(userId));
 
                     DataSet ds = sqlHelper.GetDatasetByCommand("insert_room");
@@ -1771,8 +1788,8 @@ namespace VTravel.Admin.Controllers
                     MySqlHelper sqlHelper = new MySqlHelper();
                     string query = string.Empty; ;
 
-                    query = string.Format(@"UPDATE room SET title='{0}', description='{1}',room_type_id={2}, noofrooms = {4} WHERE id={3}",
-                        model.title, model.description, model.roomTypeId, id, model.noofrooms);
+                    query = string.Format(@"UPDATE room SET title='{0}', description='{1}',room_type_id={2}, noofrooms = {4}, normal_occupancy = {5}, max_adults = {6}, max_children = {7} WHERE id={3}",
+                        model.title, model.description, model.roomTypeId, id, model.noofrooms, model.normalocc, model.maxadults, model.maxchildren);
 
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);

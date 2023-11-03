@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NbAuthJWTToken,NbAuthService } from '@nebular/auth';
+import { NbAuthJWTToken, NbAuthService } from '@nebular/auth';
 /*import { MENU_ITEMS } from './pages-menu';*/
 
 @Component({
@@ -25,7 +25,7 @@ export class PagesComponent {
         if (token.isValid()) {
           this.user = token.getPayload();
 
-          //console.log(JSON.stringify(this.user));
+          // console.log(JSON.stringify(this.user));
 
 
           this.menu = [
@@ -33,25 +33,29 @@ export class PagesComponent {
               title: 'Dashboard',
               icon: 'shopping-cart-outline',
               link: '/pages/dashboard',
-              home: true,
+              home: true ,
             },
             {
               title: 'MANAGE',
-              group: true,
+              group: true ,
             },
             {
               title: 'Operations',
               icon: 'layout-outline',
               children: [
 
-                //{
+                // {
                 //  title: 'Enquiries',
                 //  link: '/pages/operations/enquiries',
-                //},
+                // },
 
                 {
                   title: 'Reservation',
                   link: '/pages/operations/reservation',
+                },
+                {
+                  title: 'Reservation New',
+                  link: '/pages/operations/newreservation',
                 },
                 {
                   title: 'Inventory',
@@ -63,7 +67,7 @@ export class PagesComponent {
             {
               title: 'CMS',
               "hidden": this.user.role != 'ADMIN' ? true : false,
-              group: true,
+              group: true ,
             },
             {
               title: 'Catalog',
@@ -133,7 +137,7 @@ export class PagesComponent {
             {
               title: 'Partner',
               "hidden": this.user.role != 'ADMIN' ? true : false,
-              //icon: 'people-outline',
+              // icon: 'people-outline',
               children: [
                 {
                   title: 'Users',
@@ -148,8 +152,8 @@ export class PagesComponent {
             },
             {
               title: 'Reports',
-              //"hidden": this.user.role != 'ADMIN' ? true : false,
-              //icon: 'people-outline',
+              // "hidden": this.user.role != 'ADMIN' ? true : false,
+              // icon: 'people-outline',
               children: [
                 {
                   title: 'Availability',

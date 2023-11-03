@@ -1,0 +1,11 @@
+CREATE TABLE `vtravel_uat`.`reserve_rooms` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `reservation_id` INT NULL,
+  `from_date` DATE NULL,
+  `to_date` DATE NULL,
+  `room_id` INT NULL,
+  `years06` INT NULL,
+  `years612` INT NULL,
+  `years12` INT NULL,
+  `amount` FLOAT NULL,
+  PRIMARY KEY (`id`));

@@ -486,6 +486,15 @@ export class PropertyComponent implements OnInit  {
 
   }
 
+  togglehideprop(checked: boolean) {
+    if (checked) {
+      this.property.hideProperty = '1';
+    }
+    else {
+      this.property.hideProperty = '0';
+    }
+  }
+
   toggleAmenity(checked: boolean, amenityId) {
 
     let propertyAmenity = new PropertyAmenity();
@@ -1456,6 +1465,12 @@ export class PropertyComponent implements OnInit  {
     this.room.description = obj.description;
     this.room.roomTypeId = obj.roomTypeId;
     this.room.noofrooms = obj.noofrooms;
+    this.room.normalocc = obj.normalocc;
+    this.room.maxadults = obj.maxadults;
+    this.room.maxchildren = obj.maxchildren;
+    // this.room.years06 = obj.years06;
+    // this.room.years612 = obj.years612;
+    // this.room.years12 = obj.years12;
 
     this.loadRoomOccupancy();
 
@@ -1498,7 +1513,7 @@ export class PropertyComponent implements OnInit  {
     this.deleteDialogRef = this.dialogService.open(
       deleteRoomDialog,
       { context: { title: 'Delete Room' } });
-  }
+  }pp
   onNewRoomSubmit() {
 
     this.loadingRoomSave = true ;
@@ -1606,7 +1621,7 @@ export class PropertyComponent implements OnInit  {
     else {
       attr.check = 'false';
     }
-
+    this.maxchange();
   }
   deleteRoom() {
 
@@ -1649,6 +1664,25 @@ export class PropertyComponent implements OnInit  {
         });
 
   }
+
+  maxchange() {
+    var maxcount = 0;
+
+    for (var i = 0; i < this.occupancylist1.length; i++) {
+      if (this.occupancylist1[i].check == 'true') {
+        if (maxcount < this.occupancylist1[i].occcount) {
+          maxcount = this.occupancylist1[i].occcount;
+        }
+      }
+    }
+
+    if (this.room.maxadults + this.room.maxchildren > maxcount) {
+      this.room.maxadults = 0;
+      this.room.maxchildren = 0;
+      this.toast('Error', 'Max. count should not be greater than the occupancy!', 'danger');
+      return false;
+    }
+  }
 }
 
 class Property {
@@ -1679,6 +1713,7 @@ class Property {
   email: string ;
   reserveAlert: string ;
   reserveAllowed: string ;
+  hideProperty: string ;
   userName: string ;
 }
 
@@ -1731,7 +1766,13 @@ class Room {
   description: string ;
   typeName: string ;
   noofrooms: number;
-  // occupancy: Occupancy;
+  normalocc: number;
+  maxadults: number;
+  maxchildren: number;
+  // years06: number;
+  // years612: number;
+  // years12: number;
+  // occupancy: Occupancy;s
 }
 
 class Occupancy {
@@ -1740,6 +1781,7 @@ class Occupancy {
   room_id: number;
   occupancy: string ;
   check: string ;
+  occcount: number;
 
 }
 

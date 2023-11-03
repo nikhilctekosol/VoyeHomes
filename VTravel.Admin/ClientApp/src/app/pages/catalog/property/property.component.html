@@ -229,14 +229,20 @@
                   </div>
 
                   <!--<div class="form-group">
-                    <label class="label">Login Email</label>
-                    <input type="email" nbInput fullWidth placeholder="Login Email"
-                           autocomplete="off"
-                           name="userName"
-                           [(ngModel)]="property.userName"
-                           required #userName="ngModel"
-                           [status]="userName.dirty ? (userName.invalid  ? 'danger' : 'success') : 'basic'">
-                  </div>-->
+            <label class="label">Login Email</label>
+            <input type="email" nbInput fullWidth placeholder="Login Email"
+                   autocomplete="off"
+                   name="userName"
+                   [(ngModel)]="property.userName"
+                   required #userName="ngModel"
+                   [status]="userName.dirty ? (userName.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>-->
+
+                  <div class="form-group">
+                    <nb-checkbox [checked]="property.hideProperty == '1'" (checkedChange)="togglehideprop($event)">
+                      Hide from property listing
+                    </nb-checkbox>
+                  </div>
                 </nb-card-body>
               </nb-card>
             </form>
@@ -1116,6 +1122,67 @@
 
         </div>
 
+        <div class="form-group">
+          <label class="label">Normal Occupancy</label>
+          <input type="number" nbInput fullWidth placeholder="Normal Occupancy"
+                 autocomplete="off"
+                 name="normalocc"
+                 [(ngModel)]="room.normalocc"
+                 required #normalocc="ngModel"
+                 [status]="normalocc.dirty ? (normalocc.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Max. Adults</label>
+          <input type="number" nbInput fullWidth placeholder="Max. Adults"
+                 autocomplete="off" 
+                 name="maxadults"
+                 [(ngModel)]="room.maxadults"
+                 required #maxadults="ngModel"
+                 [status]="maxadults.dirty ? (maxadults.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Max. Children</label>
+          <input type="number" nbInput fullWidth placeholder="Max. Children"
+                 autocomplete="off" 
+                 name="maxchildren"
+                 [(ngModel)]="room.maxchildren"
+                 required #maxchildren="ngModel"
+                 [status]="maxchildren.dirty ? (maxchildren.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <!--<div class="form-group">
+          <label class="label">Rate Slab</label>
+        </div>
+        <div class="form-group">
+          <label class="label">0 - 6 Years</label>
+          <input type="number" nbInput fullWidth placeholder="0-6 years"
+                 autocomplete="off"
+                 name="years06"
+                 [(ngModel)]="room.years06"
+                 required #years06="ngModel"
+                 [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
+
+        </div>
+        <div class="form-group">
+          <label class="label">6 - 12 Years</label>
+          <input type="number" nbInput fullWidth placeholder="6-12 years"
+                 autocomplete="off"
+                 name="years612"
+                 [(ngModel)]="room.years612"
+                 required #years612="ngModel"
+                 [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
+
+        </div>
+        <div class="form-group">
+          <label class="label">Above 12 Years</label>
+          <input type="number" nbInput fullWidth placeholder="Above 12 years"
+                 autocomplete="off"
+                 name="years12"
+                 [(ngModel)]="room.years12"
+                 required #years12="ngModel"
+                 [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>-->
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewRoomForm.invalid"
                 [nbSpinner]="loadingRoomSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
           <nb-icon icon="save-outline"></nb-icon>SAVE
@@ -1196,6 +1263,68 @@
 
 
         </div>
+
+        <div class="form-group">
+          <label class="label">Normal Occupancy</label>
+          <input type="number" nbInput fullWidth placeholder="Normal Occupancy"
+                 autocomplete="off"
+                 name="normalocc"
+                 [(ngModel)]="room.normalocc"
+                 required #normalocc="ngModel"
+                 [status]="normalocc.dirty ? (normalocc.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Max. Adults</label>
+          <input type="number" nbInput fullWidth placeholder="Max. Adults"
+                 autocomplete="off" 
+                 name="maxadults"
+                 [(ngModel)]="room.maxadults"
+                 required #maxadults="ngModel"
+                 [status]="maxadults.dirty ? (maxadults.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Max. Children</label>
+          <input type="number" nbInput fullWidth placeholder="Max. Children"
+                 autocomplete="off"
+                 name="maxchildren" 
+                 [(ngModel)]="room.maxchildren"
+                 required #maxchildren="ngModel"
+                 [status]="maxchildren.dirty ? (maxchildren.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <!--<div class="form-group">
+          <label class="label">Rate Slab</label>
+        </div>
+        <div class="form-group">
+          <label class="label">0 - 6 Years</label>
+          <input type="number" nbInput fullWidth placeholder="0-6 years"
+                 autocomplete="off"
+                 name="years06"
+                 [(ngModel)]="room.years06"
+                 required #years06="ngModel"
+                 [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
+
+        </div>
+        <div class="form-group">
+          <label class="label">6 - 12 Years</label>
+          <input type="number" nbInput fullWidth placeholder="6-12 years"
+                 autocomplete="off"
+                 name="years612"
+                 [(ngModel)]="room.years612"
+                 required #years612="ngModel"
+                 [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
+
+        </div>
+        <div class="form-group">
+          <label class="label">Above 12 Years</label>
+          <input type="number" nbInput fullWidth placeholder="Above 12 years"
+                 autocomplete="off"
+                 name="years12"
+                 [(ngModel)]="room.years12"
+                 required #years12="ngModel"
+                 [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>-->
 
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainRoomForm.invalid"
                 [nbSpinner]="loadingRoomSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">

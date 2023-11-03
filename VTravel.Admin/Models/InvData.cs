@@ -20,6 +20,12 @@ namespace VTravel.Admin.Models
         public double childPrice { get; set; }
         public string mode { get; set; }
         public string occrates { get; set; }
+        //public int normalocc { get; set; }
+        //public int maxadults { get; set; }
+        //public int maxchildren { get; set; }
+        //public double years06 { get; set; }
+        //public double years612 { get; set; }
+        //public double years12 { get; set; }
 
     }
 }

@@ -1,0 +1,760 @@
+
+
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-12">
+            Reservation
+
+          </div>
+
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+
+          <div class="col-md-6">
+            <input #autoInput nbInput [(ngModel)]="selectedPropertyName" type="text" (input)="onChange()" placeholder="[SELECT PROPERTY]"
+                   [nbAutocomplete]="auto" [fullWidth]="true" />
+
+            <nb-autocomplete #auto (selectedChange)="onSelectionChange($event)">
+              <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+                {{ option.title }}
+              </nb-option>
+            </nb-autocomplete>
+          </div>
+          <div class="col-md-2">
+            <input type="radio" checked (change)="showInventory($event)" id="rdInventory" name="rdDisplayMode" />
+            <label for="rdInventory"> Inventory</label>
+          </div>
+          <div class="col-md-2">
+
+            <input type="radio" (change)="showBookings($event)" id="rdBookings" name="rdDisplayMode" />
+            <label for="rdBookings"> Bookings</label>
+          </div>
+
+        </div>
+
+        <nb-card-body>
+          <div class="row">
+            <nb-card-body>
+
+              <div class="row" [nbSpinner]="isLoadingRooms"
+                   nbSpinnerStatus="primary"
+                   nbSpinnerSize="large"
+                   nbSpinnerMessage="">
+                <div class="col-sm-12 col-md-6 col-lg-2" *ngFor="let item of rooms">
+                  <nb-card class="room-card" [ngClass]="{'room-card-selected': item.id === room.id}"
+                           (click)="selectRoom(item)">
+                    <!--<nb-card-header>
+                      {{item.title}}
+                    </nb-card-header>-->
+                    <nb-card-body>
+                      {{item.title}}<br />
+                      {{item.typeName}}
+                    </nb-card-body>
+                  </nb-card>
+                </div>
+              </div>
+              <hr />
+              <full-calendar [nbSpinner]="isLoadingReservations"
+                             nbSpinnerStatus="primary"
+                             nbSpinnerSize="large"
+                             nbSpinnerMessage=""
+                             *ngIf="room.id>0" #calendar [options]="calendarOptions" deepChangeDetection="true"></full-calendar>
+
+
+            </nb-card-body>
+          </div>
+        </nb-card-body>
+
+        <nb-card-body *ngIf="room.id>0">
+          <form (ngSubmit)="onAddClick()" #addroom="ngForm" novalidate>
+            <div class="row">
+              <div class="col-3">
+                <label class="label">Check-in</label>
+                <!--<input type="date" nbInput fullWidth placeholder="Check-in"
+                   autocomplete="off"
+                   name="fromDate"
+                   [(ngModel)]="roomData.fromDate"
+                   required #fromDate="ngModel"
+                   [status]="fromDate.dirty ? (fromDate.invalid  ? 'danger' : 'success') : 'basic'">-->
+                <input nbInput placeholder="Check-in" name="fromDate"
+                       [nbDatepicker]="from" [(ngModel)]="roomData.fromDate"
+                       class="date-picker-box input-rectangle" [fullWidth]="true"
+                       readonly="readonly"required #fromDate="ngModel"
+                   [status]="fromDate.dirty ? (fromDate.invalid  ? 'danger' : 'success') : 'basic'">
+                <nb-datepicker #from></nb-datepicker>
+              </div>
+              <div class="col-3">
+                <label class="label">Check-out</label>
+                <!--<input type="date" nbInput fullWidth placeholder="Check-out"
+                   autocomplete="off"
+                   name="toDate"
+                   [(ngModel)]="roomData.toDate"
+                   required #toDate="ngModel"
+                   [status]="toDate.dirty ? (toDate.invalid  ? 'danger' : 'success') : 'basic'">-->
+                <input nbInput placeholder="Check-out" name="toDate"
+                       [nbDatepicker]="to" [(ngModel)]="roomData.toDate"
+                       class="date-picker-box input-rectangle" [fullWidth]="true"
+                       readonly="readonly" required #toDate="ngModel"
+                       [status]="toDate.dirty ? (toDate.invalid  ? 'danger' : 'success') : 'basic'">
+                <nb-datepicker #to></nb-datepicker>
+              </div>
+
+              <div class="col-md-6">
+                <button type="submit" nbButton class="btn btn-sm btn-outline-primary btn-right" [disabled]="addroom.invalid"
+                        [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+                  <nb-icon icon="plus-outline"></nb-icon>ADD
+                </button>
+              </div>
+
+            </div>
+          </form>
+        </nb-card-body>
+
+        <nb-card-body *ngIf="roomDetails.length > 0 && reservData.id == 0">
+          <div class="col-md-12">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Check In - Check Out</th>
+                  <th scope="col">Room Type</th>
+                  <th scope="col">Pax Details</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of roomDetails">
+                  <td scope="row">{{item.fromDate | date:'MMM d y'}} - {{item.toDate | date:'MMM d y'}}</td>
+                  <td scope="row">{{item.room}}</td>
+                  <td scope="row">{{item.years12}} Adults +{{item.years612}} Children +{{item.years06}} Infants </td>
+                  <td scope="row">{{item.amount | number : '1.2-2'}}</td>
+                  <td scope="row"><nb-icon icon="trash-outline" (click)="deleterow(item.id)"></nb-icon></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-12">
+            <div class="pull-right">
+              <button type="submit" nbButton class="btn btn-sm btn-outline-primary btn-right" (click)="checkout()"
+                      [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+                CHECK OUT
+              </button>
+            </div>
+          </div>
+        </nb-card-body>
+
+      </nb-card-body>
+
+    </nb-card>
+  </div>
+</div>
+
+<ng-template #eventtooltip let-modal let-ref="dialogRef">
+  <nb-card style="width:150%;">
+    <nb-card-header style="padding:.25rem .25rem;">
+      <div class="row">
+
+        <!--<div class="col-md-10">{{modal.title}}</div>-->
+        <div class="col-md-12">
+          <button type="button" (click)="popclose()" nbButton class="btn btn-sm" style="float:right;">
+            <nb-icon icon="close"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body style="padding:.25rem .25rem;">
+      <table class="table table-striped" style="font-size:12px; margin-bottom:.5rem;">
+        <tr *ngFor="let part of modal.occrate.split(',')">
+          <td *ngFor="let p of part.split('-')">{{p}}</td>
+        </tr>
+        <!--<tr>
+          <td><label>Extra Person Rate</label></td>
+          <td><label id="lbl_ebp" name="ebp">{{modal.ebp | number:'1.2-2' }}</label></td>
+        </tr>
+        <tr>
+          <td><label>Child Rate</label></td>
+          <td><label id="lbl_cp" name="ebp">{{modal.cp | number:'1.2-2' }}</label></td>
+        </tr>-->
+      </table>
+    </nb-card-body>
+  </nb-card>
+
+</ng-template>
+
+<ng-template #paxDetails let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary pop-close-btn">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onpaxadd()" #paxForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <!--<div class="col-8">-->
+          <label class="label">0 - 6 Years</label>
+          <input type="number" nbInput fullWidth placeholder="0 - 6 Years"
+                 autocomplete="off"
+                 name="years06"
+                 [(ngModel)]="roomData.years06"
+                 required #years06="ngModel" (change)="paxchange()"
+                 [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
+          <!--</div>-->
+          <!--<label class="label" style="margin-top:40px;">{{this.room.years06}} RS/ Person</label>-->
+        </div>
+        <div class="form-group">
+          <!--<div class="col-8">-->
+          <label class="label">6 - 12 Years</label>
+          <input type="number" nbInput fullWidth placeholder="6 - 12 Years"
+                 autocomplete="off"
+                 name="years612"
+                 [(ngModel)]="roomData.years612"
+                 required #years612="ngModel" (change)="paxchange()"
+                 [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
+          <!--</div>-->
+          <!--<label class="label" style="margin-top: 40px;">{{this.room.years612}} RS/ Person</label>-->
+        </div>
+
+        <div class="form-group">
+          <!--<div class="col-8">-->
+          <label class="label">Above 12 Years</label>
+          <input type="number" nbInput fullWidth placeholder="12 Years Above"
+                 autocomplete="off"
+                 name="years12"
+                 [(ngModel)]="roomData.years12"
+                 required #years12="ngModel" (change)="paxchange()"
+                 [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
+          <!--</div>-->
+          <!--<label class="label" style="margin-top: 40px;">{{this.room.years12}} RS/ Person</label>-->
+        </div>
+
+        <div class="form-group">
+          <input type="number" nbInput fullWidth placeholder="No. of Guests"
+                 autocomplete="off"
+                 name="noOfGuests" value="0"
+                 [(ngModel)]="roomData.noOfGuests"
+                 #noOfGuests="ngModel" disabled="disabled"
+                 [status]="noOfGuests.dirty ? (noOfGuests.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="paxForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>Add Pax.
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #reserveDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary pop-close-btn">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onNewReserveSubmit()" #mainNewReservForm="ngForm" novalidate>
+
+        <div class="form-group row">
+
+          <div class="col-6">
+            <label class="label">Booking Channel</label>
+            <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                       name="bookingChannelId"
+                       [(ngModel)]="reservData.bookingChannelId"
+                       required #bookingChannelId="ngModel"
+                       [status]="bookingChannelId.dirty ? (bookingChannelId.invalid  ? 'danger' : 'success') : 'basic'">
+              <nb-option value={{item.id}} *ngFor="let item of channels">{{item.channelName}}</nb-option>
+            </nb-select>
+          </div>
+          <!--<div class="col-6">
+            <label class="label">Number of Rooms</label>
+            <input type="number" nbInput fullWidth placeholder="Number of Rooms"
+                   autocomplete="off"
+                   name="noOfrooms"
+                   [(ngModel)]="roomDetails.length"
+                   required #noOfrooms="ngModel"
+                   [status]="noOfrooms.dirty ? (noOfrooms.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>-->
+        </div>
+
+        <div class="form-group row">
+          <!--<div class="col-6">
+            <label class="label">Number of Guests</label>
+            <input type="number" nbInput fullWidth placeholder="Number of Guests"
+                   autocomplete="off"
+                   name="noOfGuests"
+                   [(ngModel)]="reservData.noOfGuests"
+                   required #noOfGuests="ngModel"
+                   [status]="noOfGuests.dirty ? (noOfGuests.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>-->
+          <div class="col-6">
+            <label class="label">Final Amount</label>
+            <input type="number" nbInput fullWidth placeholder="Final Amount"
+                   autocomplete="off"
+                   name="finalAmount"
+                   [(ngModel)]="reservData.finalAmount"
+                   required #finalAmount="ngModel" (change)="paymentchange()"
+                   [status]="finalAmount.dirty ? (finalAmount.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+          <div class="col-6">
+            <label class="label">Advance Payment</label>
+            <input type="number" nbInput fullWidth placeholder="Advance Payment"
+                   autocomplete="off"
+                   name="advancepayment" value="0"
+                   [(ngModel)]="reservData.advancepayment"
+                   #advancepayment="ngModel" (change)="paymentchange()"
+                   [status]="advancepayment.dirty ? (advancepayment.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-6">
+            <label class="label">Part Payment</label>
+            <input type="number" nbInput fullWidth placeholder="Part Payment"
+                   autocomplete="off"
+                   name="partpayment" value="0"
+                   [(ngModel)]="reservData.partpayment"
+                   #partpayment="ngModel" (change)="paymentchange()"
+                   [status]="partpayment.dirty ? (partpayment.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+          <div class="col-6">
+            <label class="label">Balance Payment</label>
+            <input type="number" nbInput fullWidth placeholder="Balance Payment"
+                   autocomplete="off"
+                   name="balancepayment" value="0" disabled
+                   [(ngModel)]="reservData.balancepayment"
+                   required #balancepayment="ngModel"
+                   [status]="balancepayment.dirty ? (balancepayment.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+        </div>
+
+        <!--<div class="form-group row">
+        </div>-->
+
+        <div class="form-group">
+          <label class="label">Guest Name</label>
+          <input type="text" nbInput fullWidth placeholder="Guest Name"
+                 autocomplete="off"
+                 name="custName"
+                 [(ngModel)]="reservData.custName"
+                 required #custName="ngModel"
+                 [status]="custName.dirty ? (custName.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group row">
+          <div class="col-6">
+            <label class="label">Guest Email</label>
+            <input type="email" nbInput fullWidth placeholder="Guest Email"
+                   autocomplete="off"
+                   name="custEmail"
+                   [(ngModel)]="reservData.custEmail"
+                   #custEmail="ngModel"
+                   [status]="custEmail.dirty ? (custEmail.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+
+          <div class="col-6">
+            <label class="label">Guest Phone</label>
+            <input type="number" nbInput fullWidth placeholder="Guest Phone"
+                   autocomplete="off"
+                   name="custPhone"
+                   [(ngModel)]="reservData.custPhone"
+                   #custPhone="ngModel"
+                   [status]="custPhone.dirty ? (custPhone.invalid  ? 'danger' : 'success') : 'basic'">
+          </div>
+
+
+        </div>
+
+        <div class="form-group">
+          <label class="label">Req Reference</label>
+          <input type="text" nbInput fullWidth placeholder="Req Reference"
+                 autocomplete="off"
+                 name="enquiry_ref"
+                 [(ngModel)]="reservData.enquiry_ref"
+                 #enquiry_ref="ngModel"
+                 [status]="enquiry_ref.dirty ? (enquiry_ref.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Details</label>
+          <textarea nbInput fullWidth placeholder="Details"
+                    autocomplete="off"
+                    name="details"
+                    [(ngModel)]="reservData.details"
+                    #details="ngModel"
+                    [status]="details.dirty ? (details.invalid  ? 'danger' : 'success') : 'basic'">
+
+          </textarea>
+        </div>
+
+
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewReservForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #reserveDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-6">{{data.title}}. Number: <b>{{reservData.id}}</b></div>
+        <div class="col-4"> Status: <b>{{reservData.res_status}}</b></div>
+        <div class="col-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary btn-right">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+
+
+      <nb-tabset fullWidth>
+        <nb-tab tabTitle="Details">
+          <form (ngSubmit)="onReserveSubmit()" #mainReservForm="ngForm" novalidate>
+            <div class="col-md-12">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Check In - Check Out</th>
+                    <th scope="col">Room Type</th>
+                    <th scope="col">Pax Details</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of roomDetails">
+                    <td scope="row">{{item.fromDate | date:'MMM d y'}} - {{item.toDate | date:'MMM d y'}}</td>
+                    <td scope="row">{{item.room}}</td>
+                    <td scope="row">{{item.years12}} Adults +{{item.years612}} Children +{{item.years06}} Infants </td>
+                    <td scope="row">{{item.amount | number : '1.2-2'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="form-group row">
+
+              <div class="col-6">
+                <label class="label">Booking Channel</label>
+                <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                           name="bookingChannelId"
+                           [(ngModel)]="reservData.bookingChannelId"
+                           required #bookingChannelId="ngModel"
+                           [status]="bookingChannelId.dirty ? (bookingChannelId.invalid  ? 'danger' : 'success') : 'basic'">
+                  <nb-option value={{item.id}} *ngFor="let item of channels">{{item.channelName}}</nb-option>
+                </nb-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-6">
+                <label class="label">Final Amount</label>
+                <input type="number" nbInput fullWidth placeholder="Final Amount"
+                       autocomplete="off"
+                       name="finalAmount"
+                       [(ngModel)]="reservData.finalAmount"
+                       required #finalAmount="ngModel" (change)="paymentchange()"
+                       [status]="finalAmount.dirty ? (finalAmount.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+              <div class="col-6">
+                <label class="label">Advance Payment</label>
+                <input type="number" nbInput fullWidth placeholder="Advance Payment"
+                       autocomplete="off"
+                       name="advancepayment" value="0"
+                       [(ngModel)]="reservData.advancepayment"
+                       #advancepayment="ngModel" (change)="paymentchange()"
+                       [status]="advancepayment.dirty ? (advancepayment.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-6">
+                <label class="label">Part Payment</label>
+                <input type="number" nbInput fullWidth placeholder="Part Payment"
+                       autocomplete="off"
+                       name="partpayment" value="0"
+                       [(ngModel)]="reservData.partpayment"
+                       #partpayment="ngModel" (change)="paymentchange()"
+                       [status]="partpayment.dirty ? (partpayment.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+              <div class="col-6">
+                <label class="label">Balance Payment</label>
+                <input type="number" nbInput fullWidth placeholder="Balance Payment"
+                       autocomplete="off"
+                       name="balancepayment" value="0" disabled
+                       [(ngModel)]="reservData.balancepayment"
+                       required #balancepayment="ngModel"
+                       [status]="balancepayment.dirty ? (balancepayment.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+            </div>
+
+            <!--<div class="form-group row">
+            </div>-->
+
+            <div class="form-group">
+              <label class="label">Guest Name</label>
+              <input type="text" nbInput fullWidth placeholder="Guest Name"
+                     autocomplete="off"
+                     name="custName"
+                     [(ngModel)]="reservData.custName"
+                     required #custName="ngModel"
+                     [status]="custName.dirty ? (custName.invalid  ? 'danger' : 'success') : 'basic'">
+            </div>
+            <div class="form-group row">
+              <div class="col-6">
+                <label class="label">Guest Email</label>
+                <input type="email" nbInput fullWidth placeholder="Guest Email"
+                       autocomplete="off"
+                       name="custEmail"
+                       [(ngModel)]="reservData.custEmail"
+                       #custEmail="ngModel"
+                       [status]="custEmail.dirty ? (custEmail.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+
+              <div class="col-6">
+                <label class="label">Guest Phone</label>
+                <input type="number" nbInput fullWidth placeholder="Guest Phone"
+                       autocomplete="off"
+                       name="custPhone"
+                       [(ngModel)]="reservData.custPhone"
+                       #custPhone="ngModel"
+                       [status]="custPhone.dirty ? (custPhone.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+
+
+            </div>
+
+            <div class="form-group">
+              <label class="label">Req Reference</label>
+              <input type="text" nbInput fullWidth placeholder="Req Reference"
+                     autocomplete="off"
+                     name="enquiry_ref"
+                     [(ngModel)]="reservData.enquiry_ref"
+                     #enquiry_ref="ngModel"
+                     [status]="enquiry_ref.dirty ? (enquiry_ref.invalid  ? 'danger' : 'success') : 'basic'">
+            </div>
+
+            <div class="form-group">
+              <label class="label">Details</label>
+              <textarea nbInput fullWidth placeholder="Details"
+                        autocomplete="off"
+                        name="details"
+                        [(ngModel)]="reservData.details"
+                        #details="ngModel"
+                        [status]="details.dirty ? (details.invalid  ? 'danger' : 'success') : 'basic'">
+
+              </textarea>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-6">
+                <label class="label">Created User</label>
+                <input type="text" readonly nbInput fullWidth placeholder="Created User"
+                       autocomplete="off"
+                       name="created_by"
+                       [(ngModel)]="reservData.created_by"
+                       #created_by="ngModel"
+                       [status]="created_by.dirty ? (created_by.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+
+              <div class="col-6">
+                <label class="label">Updated User</label>
+                <input type="text" readonly nbInput fullWidth placeholder="Updated User"
+                       autocomplete="off"
+                       name="updated_by"
+                       [(ngModel)]="reservData.updated_by"
+                       #updated_by="ngModel"
+                       [status]="updated_by.dirty ? (updated_by.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-6">
+                <label class="label">Created Date</label>
+                <input type="text" readonly nbInput fullWidth placeholder="Created Date"
+                       autocomplete="off"
+                       name="created_on"
+                       [(ngModel)]="reservData.created_on"
+                       #created_on="ngModel"
+                       [status]="created_on.dirty ? (created_on.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+
+              <div class="col-6">
+                <label class="label">Updated Date</label>
+                <input type="text" readonly nbInput fullWidth placeholder="Updated Date"
+                       autocomplete="off"
+                       name="updated_on"
+                       [(ngModel)]="reservData.updated_on"
+                       #updated_on="ngModel"
+                       [status]="updated_on.dirty ? (updated_on.invalid  ? 'danger' : 'success') : 'basic'">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-2">
+                <button type="button" (click)="openReserveDelete(deleteReserveDialog)" nbButton class="btn btn-sm btn-outline-secondary">
+                  <nb-icon icon="trash-outline"></nb-icon>
+                </button>
+              </div>
+
+
+              <div class="col-4">
+                <button type="submit" nbButton class="btn btn-sm btn-outline-primary btn-right" [disabled]="mainReservForm.invalid"
+                        [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+                  <nb-icon icon="save-outline"></nb-icon>SAVE
+                </button>
+              </div>
+
+              <div class="col-6">
+
+                <button (click)="onReserveStatusSubmit()" *ngIf="reservData.res_status!='COMPLETED' && reservData.bookingChannelId != 45" type="button" nbButton class="btn btn-sm btn-primary btn-right"
+                        [nbSpinner]="loadingStatusSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+
+                  <nb-icon icon="done-all-outline"></nb-icon>COMPLETE RESERVATION
+                </button>
+
+              </div>
+
+
+            </div>
+
+
+
+          </form>
+        </nb-tab>
+        <nb-tab tabTitle="Documents({{resdocs.length}})">
+          <nb-card>
+            <nb-card-header>
+
+              <div class="row">
+                <div class="col-md-4">
+
+                  <nb-select placeholder="[SELECT DOC TYPE]" [fullWidth]="true"
+                             name="docTypeId"
+                             [(ngModel)]="defaultDocTypeId"
+                             required #docTypeId="ngModel"
+                             [status]="docTypeId.dirty ? (docTypeId.invalid  ? 'danger' : 'success') : 'basic'">
+
+                    <nb-option value={{item.id}} *ngFor="let item of doctypes">{{item.doc_type_name}}</nb-option>
+                  </nb-select>
+
+                </div>
+                <div class="col-md-5">
+                  <input type="file" [(ngModel)]="docfiles" #docfileinput placeholder="Choose files" multiple />
+                </div>
+                <div class="col-md-3">
+
+                  <button type="button" (click)="uploadDocs(docfileinput.files)" nbButton class="btn btn-sm btn-outline-primary"
+                          [nbSpinner]="loadingDocSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+
+                    <nb-icon icon="upload-outline"></nb-icon>UPLOAD
+                  </button>
+
+                </div>
+
+
+              </div>
+            </nb-card-header>
+            <nb-card-body>
+              <!--<div class="row">
+                <div class="col-md-2 thumbnail" *ngFor="let item of idProofs"
+                     (click)="openImage(imageDialog,item.id)">
+                  <img src="{{item.url}}" alt="" onerror="this.src='assets/images/default.jpg'" />
+                </div>
+              </div>-->
+
+              <table class="table table-striped custom-table">
+                <thead>
+                  <tr>
+
+                    <th scope="col">Doc Type</th>
+                    <th scope="col">File</th>
+                    <th scope="col">Action</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of resdocs">
+
+                    <td scope="row">{{item.doc_type_name}}</td>
+                    <td>
+                      <a href="{{item.url}}" target="_blank">{{item.file_name}}</a>
+
+                    </td>
+                    <td><a *ngIf="reservData.res_status!='COMPLETED'" (click)="deleteFile(item.id)"><nb-icon icon="trash-outline"></nb-icon></a></td>
+
+                  </tr>
+                </tbody>
+
+              </table>
+            </nb-card-body>
+
+          </nb-card>
+        </nb-tab>
+
+
+      </nb-tabset>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteReserveDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this reservation?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary pop-close-btn" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteReservation()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingDelete" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

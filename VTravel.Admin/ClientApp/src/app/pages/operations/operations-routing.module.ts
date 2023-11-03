@@ -7,6 +7,7 @@ import { InventoryComponent } from './inventory/inventory.component';
 import { EnquiriesComponent } from './enquiries/enquiries.component';
 import { EnquiryComponent } from './enquiry/enquiry.component';
 import { InventorynewComponent } from './inventorynew/inventorynew.component';
+import { ReservationnewComponent } from './reservationnew/reservationnew.component';
 
 
 const routes: Routes = [{
@@ -20,7 +21,8 @@ const routes: Routes = [{
     {
       path: 'enquiry/:id',
       component: EnquiryComponent,
-    }, {
+    },
+    {
       path: 'reservation',
       component: ReservationComponent,
     },
@@ -28,6 +30,11 @@ const routes: Routes = [{
     //  path: 'inventory',
     //  component: InventoryComponent,
     // },
+
+    {
+      path: 'newreservation',
+      component: ReservationnewComponent,
+    },
     {
       path: 'inventory',
       component: InventorynewComponent,
@@ -44,6 +51,7 @@ export class OperationsRoutingModule { }
 export const routedComponents = [
   OperationsComponent,
   ReservationComponent,
+  ReservationnewComponent,
   InventoryComponent,
   EnquiriesComponent,
   EnquiryComponent,
