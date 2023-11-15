@@ -1,0 +1,11 @@
+CREATE TABLE `vtravel`.`tax_slab` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `from` FLOAT NULL,
+  `to` FLOAT NULL,
+  `tax` FLOAT NULL,
+  `is_active` CHAR NULL,
+  PRIMARY KEY (`id`));
+
+
+INSERT INTO `vtravel`.`tax_slab` (`from`, `to`, `tax`, `is_active`) VALUES ('0', '7500', '12', 'Y');
+INSERT INTO `vtravel`.`tax_slab` (`from`, `to`, `tax`, `is_active`) VALUES ('7501', '500000', '18', 'Y');

@@ -1,0 +1,4 @@
+INSERT INTO `vtravel_uat`.`occupancy` (`occupancy`, `is_default`, `occ_count`) VALUES ('Nine Person', 'N', '9');
+INSERT INTO `vtravel_uat`.`occupancy` (`occupancy`, `is_default`, `occ_count`) VALUES ('Ten Person', 'N', '10');
+INSERT INTO `vtravel_uat`.`occupancy` (`occupancy`, `is_default`, `occ_count`) VALUES ('Eleven Person', 'N', '11');
+INSERT INTO `vtravel_uat`.`occupancy` (`occupancy`, `is_default`, `occ_count`) VALUES ('Twelve Person', 'N', '12');

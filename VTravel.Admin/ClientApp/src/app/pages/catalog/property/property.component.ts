@@ -22,6 +22,7 @@ export class PropertyComponent implements OnInit  {
   deleteDialogRef: any;
   roomDialogRef: any;
   imageDialogRef: any;
+  profitdialogRef: any;
   propertyImage=new PropertyImage();
   aboutEditMode = false;
   thumbnailEditMode = false;
@@ -37,6 +38,8 @@ export class PropertyComponent implements OnInit  {
   loadingAttributeSave = false;
   loadingPriceSave = false;
   loadingRoomSave = false;
+  loadingProfitSave = false;
+  loadingProfitDelete = false;
   isAlert = false;
   alertMessage = '';
   alertStatus = '';
@@ -65,6 +68,10 @@ export class PropertyComponent implements OnInit  {
   rooms: any[];
   occupancylist: any[];
   occupancylist1: Occupancy[];
+
+  profitDetails: any[] = [];
+  profitsharing = new ProfitSharing();
+  channels: any[];
 
   constructor(private http: HttpClient, private authService: NbAuthService,
     private cd: ChangeDetectorRef, private router: Router,
@@ -303,6 +310,13 @@ export class PropertyComponent implements OnInit  {
           this.loadPrices();
           this.loadImages();
           this.loadRooms();
+          this.loadBookingChannels();
+          this.profitsharing.mode = 'Percentage';
+          this.profitsharing.propertyId = this.property.id;
+          this.loadProfit();
+          this.profitsharing.include_food = '0';
+          this.profitsharing.include_extra = '0';
+          this.profitsharing.taxless_amount = '0';
         }
 
       },
@@ -479,6 +493,33 @@ export class PropertyComponent implements OnInit  {
         error => {
 
           console.log('api/attribute/get-list', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
+  }
+
+  private loadBookingChannels() {
+
+    this.isLoading = true ;
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/bookingchannel/get-list'
+      , { headers: headers }).subscribe((res: any) => {
+
+        this.isLoading = false;
+
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.channels = res.data;
+          }
+        }
+
+      },
+        error => {
+          this.isLoading = false;
+          console.log('api/bookingchannel/get-list', error)
           if (error.status === 401) {
             this.router.navigate(['auth/login']);
           }
@@ -1447,6 +1488,11 @@ export class PropertyComponent implements OnInit  {
 
     this.room = new Room();
     this.room.id = 0;
+    this.room.baserate = 0;
+    this.room.noofrooms = 0;
+    this.room.normalocc = 0;
+    this.room.maxchildren = 0;
+    this.room.maxadults = 0;
     this.loadRoomOccupancy();
     this.roomDialogRef = this.dialogService.open(
       roomDialogNew,
@@ -1468,6 +1514,7 @@ export class PropertyComponent implements OnInit  {
     this.room.normalocc = obj.normalocc;
     this.room.maxadults = obj.maxadults;
     this.room.maxchildren = obj.maxchildren;
+    this.room.baserate = obj.baserate;
     // this.room.years06 = obj.years06;
     // this.room.years612 = obj.years612;
     // this.room.years12 = obj.years12;
@@ -1549,7 +1596,7 @@ export class PropertyComponent implements OnInit  {
       },
         error => {
 
-          this.loadingPriceSave = false;
+          this.loadingRoomSave = false;
           this.toast('Error', 'Could not save data!', 'danger');
 
           console.log('api/property/create-room', error);
@@ -1683,6 +1730,174 @@ export class PropertyComponent implements OnInit  {
       return false;
     }
   }
+
+  toggleprofit(evt, mode) {
+    if (evt) {
+      if (mode == 'food') {
+        this.profitsharing.include_food = '1';
+      }
+      else if (mode == 'extra') {
+        this.profitsharing.include_extra = '1';
+      }
+      else {
+        this.profitsharing.taxless_amount = '1';
+      }
+    }
+    else {
+
+      if (mode == 'food') {
+        this.profitsharing.include_food = '0';
+      }
+      else if (mode == 'extra') {
+        this.profitsharing.include_extra = '0';
+      }
+      else {
+        this.profitsharing.taxless_amount = '0';
+      }
+    }
+  }
+
+  loadProfit() {
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/profit/get-list?id=' + this.property.id
+      , { headers: headers }).subscribe((res: any) => {
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.profitDetails = res.data;
+          }
+        }
+
+      },
+        error => {
+
+          console.log('api/profit/get-list', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
+  }
+
+  onProfitAdd() {
+
+    this.loadingProfitSave = true ;
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+
+    let attr = this.profitDetails.find(_attr => _attr.channelId == this.profitsharing.channelId);
+
+    var url = '';
+    if (attr!=null) {
+      url = 'api/profit/update?id='+ attr.id;
+    }
+    else {
+      url = 'api/profit/create';
+    }
+
+    this.http.post(url
+      , this.profitsharing, { headers: headers }).subscribe((res: any) => {
+        this.loadingProfitSave = false;
+
+        if (res.actionStatus === 'SUCCESS') {
+
+          this.loadingProfitSave = false;
+          this.toast('Success', 'Data saved successfully!', 'success');
+          this.profitsharing = new ProfitSharing();
+          this.profitsharing.propertyId = this.property.id;
+          this.profitsharing.mode = 'Percentage';
+          this.loadProfit();
+          this.profitsharing.include_food = '0';
+          this.profitsharing.include_extra = '0';
+          this.profitsharing.taxless_amount = '0';
+        }
+        else {
+
+          this.loadingProfitSave = false;
+          this.toast('Error', 'Could not save data!', 'danger');
+
+
+        }
+
+      },
+      error => {
+
+        this.loadingProfitSave = false;
+        this.toast('Error', 'Could not save data!', 'danger');
+
+        console.log('api/profit/create', error);
+        if (error.status === 401) {
+          this.router.navigate(['auth/login']);
+        }
+
+      });
+  }
+
+  deleterow(id, deleteProfitDialog: TemplateRef<any>) {
+    let attr = this.profitDetails.find(_attr => _attr.id == id);
+
+    if (attr != null) {
+      this.profitsharing = new ProfitSharing();
+      this.profitsharing.id = attr.id;
+
+      // this.profitdialogRef.close();
+      this.profitdialogRef = this.dialogService.open(
+        deleteProfitDialog,
+        { context: { title: 'Delete Profit' } });
+    }
+    else {
+      this.toast('Error', 'Could not load data!', 'danger');
+    }
+  }
+
+  deleteProfit() {
+    this.loadingProfitDelete = true ;
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+
+    this.http.delete('api/profit/delete?id=' + this.profitsharing.id
+      , { headers: headers }).subscribe((res: any) => {
+        this.loadingDelete = false;
+
+        if (res.actionStatus === 'SUCCESS') {
+
+          this.toast('Success', 'Profit Details deleted successfully!', 'success');
+          this.profitdialogRef.close();
+          this.profitsharing = new ProfitSharing();
+          this.profitsharing.propertyId = this.property.id;
+          const option3 = document.getElementById("rdFixed") as HTMLInputElement;
+          option3.checked = true ;
+          this.profitsharing.mode = 'Percentage';
+          this.loadProfit();
+          this.profitsharing.include_food = '0';
+          this.profitsharing.include_extra = '0';
+          this.profitsharing.taxless_amount = '0';
+
+        }
+        else {
+
+
+          this.toast('Error', 'Could not delete!', 'danger');
+
+
+        }
+
+      },
+        error => {
+
+          this.loadingDelete = false;
+          this.toast('Error', 'Could not delete!', 'danger');
+
+          console.log('api/profit/delete', error);
+          if (error.status === 401) {
+            this.router.navigate(['/auth/login']);
+          }
+
+        });
+  }
 }
 
 class Property {
@@ -1769,6 +1984,7 @@ class Room {
   normalocc: number;
   maxadults: number;
   maxchildren: number;
+  baserate: number;
   // years06: number;
   // years612: number;
   // years12: number;
@@ -1791,5 +2007,21 @@ class PropertyImage {
   url: number;
   image_alt: string ;
 
+}
+
+
+class ProfitSharing {
+
+  id: number;
+  propertyId: number;
+  room: string ;
+  channelId: number;
+  channel: string ;
+  mode: string ;
+  price: number;
+  percentage: number ;
+  include_food: string ;
+  include_extra: string ;
+  taxless_amount: string ;
 }
 

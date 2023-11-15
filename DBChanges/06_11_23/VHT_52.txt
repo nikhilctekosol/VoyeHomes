@@ -1,0 +1,7 @@
+ALTER TABLE `vtravel`.`reservation` 
+ADD COLUMN `discount` FLOAT(18,2) NULL AFTER `balancepayment`,
+ADD COLUMN `commission` FLOAT(18,2) NULL AFTER `discount`;
+
+
+ALTER TABLE `vtravel`.`reservation` 
+ADD COLUMN `country` VARCHAR(10) NULL AFTER `commission`;

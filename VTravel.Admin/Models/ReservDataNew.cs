@@ -20,6 +20,9 @@ namespace VTravel.Admin.Models
         public float advancepayment { get; set; }
         public float partpayment { get; set; }
         public float balancepayment { get; set; }
+        public float discount { get; set; }
+        public float commission { get; set; }
+        public string country { get; set; }
         public string created_on { get; set; }
         public string updated_on { get; set; }
         public string created_by { get; set; }

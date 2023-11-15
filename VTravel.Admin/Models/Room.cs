@@ -17,6 +17,7 @@ namespace VTravel.Admin.Models
         public int normalocc { get; set; }
         public int maxadults { get; set; }
         public int maxchildren { get; set; }
+        public decimal baserate { get; set; }
         //public int years06 { get; set; }
         //public int years612 { get; set; }
         //public int years12 { get; set; }

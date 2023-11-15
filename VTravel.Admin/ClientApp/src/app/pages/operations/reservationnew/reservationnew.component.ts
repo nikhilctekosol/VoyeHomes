@@ -61,6 +61,8 @@ export class ReservationnewComponent implements OnInit {
   filteredOptions$: Observable<any[]>;
   defaultValue: any;
   selectedPropertyName: string ;
+  isDisabled: boolean = true;
+  countries: any[];
 
   @ViewChild('autoInput') input;
 
@@ -126,7 +128,7 @@ export class ReservationnewComponent implements OnInit {
 
     this.reservData = new ReservData();
     this.reservData.id = 0;
-    //this.reservData.propertyId = this.property.id.toString();
+    // this.reservData.propertyId = this.property.id.toString();
   }
 
   loadProperty() {
@@ -203,6 +205,7 @@ export class ReservationnewComponent implements OnInit {
     this.loadProperty();
     this.loadBookingChannels();
     this.loadDocTypes();
+    this.loadCountries();
   }
 
   private loadProperties() {
@@ -256,6 +259,34 @@ export class ReservationnewComponent implements OnInit {
         error => {
           this.isLoading = false;
           console.log('api/bookingchannel/get-list', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
+  }
+
+  loadCountries() {
+
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/location/get-country-list'
+      , { headers: headers }).subscribe((res: any) => {
+
+
+
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.countries = res.data;
+
+          }
+        }
+
+      },
+        error => {
+
+          console.log('api/location/get-country-list', error)
           if (error.status === 401) {
             this.router.navigate(['auth/login']);
           }
@@ -479,8 +510,8 @@ export class ReservationnewComponent implements OnInit {
   handleEventClick(clickInfo: EventClickArg) {
 
      if (this.displayMode == 'BOOKINGS') {
-      this.reservData = this.reservations.find(_obj => _obj.id == clickInfo.event.id);
-
+       this.reservData = this.reservations.find(_obj => _obj.id == clickInfo.event.id);
+       this.channelchange();
       // var maxAvailableQty = this.checkIfInventory(this.roomData.fromDate, this.roomData.toDate);
       //// console.log(this.reservData.noOfRooms);
       // this.reservData.maxAvailableQty = parseInt(this.reservData.noOfRooms) + maxAvailableQty;
@@ -488,7 +519,7 @@ export class ReservationnewComponent implements OnInit {
       // this.roomData.fromDate = this.formatDate(this.roomData.fromDate);
       // this.roomData.toDate = this.formatDate(this.roomData.toDate);
 
-       this.isLoadingReservations = true;
+       this.isLoadingReservations = true ;
        let headers = new HttpHeaders().set("Authorization", "Bearer " +
          this.token).set("Content-Type", "application/json");
        this.http.get('api/reservation/get-reserve-rooms?Id=' + this.reservData.id
@@ -636,7 +667,9 @@ export class ReservationnewComponent implements OnInit {
   }
 
   onAddClick() {
-    this.loadingSave = true ;
+    this.loadingSave = true;
+    this.roomData.fromDate = this.formatDate(this.roomData.fromDate);
+    this.roomData.toDate = this.formatDate(this.roomData.toDate);
     if (this.validateCheckinCheckoutDates(new Date(this.roomData.fromDate), new Date(this.roomData.toDate))) {
 
       var maxAvailableQty = this.checkIfInventory(new Date(this.roomData.fromDate), new Date(this.roomData.toDate));
@@ -699,9 +732,9 @@ export class ReservationnewComponent implements OnInit {
   }
 
   paxchange() {
-    let inv = this.roominventory.find(c => this.formatDate(c.invDate)
+    let inv = this.roominventory.find((c, i) => this.formatDate(c.invDate)
       == this.formatDate(this.roomData.fromDate)
-      && c.propertyId == this.property.id && c.roomId == this.roomData.roomId && c.occupancy == 'Child Price');
+      && c.propertyId == this.property.id && c.roomId == this.roomData.roomId && i == 0);
     if (this.roomData.years12 > inv.maxadults) {
       this.roomData.years12 = 0;
       this.toast('Error', 'Maximum allowed adult count is ' + inv.maxadults + '!', 'danger');
@@ -796,6 +829,8 @@ export class ReservationnewComponent implements OnInit {
 
   checkout() {
     this.reservData.propertyId = this.property.id.toString();
+    this.reservData.commission = 0;
+    this.reservData.discount = 0;
     this.reservData.advancepayment = 0;
     this.reservData.partpayment = 0;
     this.reservData.balancepayment = 0;
@@ -816,15 +851,29 @@ export class ReservationnewComponent implements OnInit {
     this.dialogRef = this.dialogService.open(
       this.reserveDialogNew,
       { context: { title: 'Create Reservation' } });
+
   }
 
   paymentchange() {
+    let sum = 0;
+
+    this.roomDetails.forEach(element => {
+      sum += element.amount;
+    });
+
+
+    let commission = this.reservData.commission;
+    this.reservData.finalAmount = sum + commission;
     let famt = this.reservData.finalAmount;
+    let discount = this.reservData.discount;
     let advance = this.reservData.advancepayment;
     let part = this.reservData.partpayment;
 
     if (famt.toString() == '' || !famt) {
       famt = 0;
+    }
+    if (discount.toString() == '' || !discount) {
+      discount = 0;
     }
     if (advance.toString() == '' || !advance) {
       advance = 0;
@@ -832,7 +881,7 @@ export class ReservationnewComponent implements OnInit {
     if (part.toString() == '' || !part) {
       part = 0;
     }
-    if (advance + part > famt) {
+    if (advance + part > famt - discount) {
       advance = this.reservData.advancepayment = 0;
       part = this.reservData.partpayment = 0;
       this.reservData.balancepayment = famt;
@@ -840,7 +889,7 @@ export class ReservationnewComponent implements OnInit {
       return;
     }
     else {
-      this.reservData.balancepayment = famt -
+      this.reservData.balancepayment = famt - discount -
         (advance + part);
     }
   }
@@ -902,7 +951,7 @@ export class ReservationnewComponent implements OnInit {
       this.token).set("Content-Type", "application/json");
 
     this.reservData.custPhone = this.reservData.custPhone?.toString();
-    this.http.put('api/reservation/update?id=' + this.reservData.id
+    this.http.put('api/reservation/update-new?id=' + this.reservData.id
       , this.reservData, { headers: headers }).subscribe((res: any) => {
         this.loadingSave = false;
 
@@ -1212,6 +1261,17 @@ export class ReservationnewComponent implements OnInit {
 
   }
 
+  channelchange() {
+    let ct = this.channels.find(_ct => _ct.id == this.reservData.bookingChannelId);
+    if (ct.channelName == 'voyehomes.com' || ct.channelName == 'Property Owner') {
+      this.isDisabled = true ;
+    }
+    else {
+      this.isDisabled = false;
+
+    }
+  }
+
   toast(title, message, status: NbComponentStatus) {
     this.toastrService.show(title, message, { status });
   }
@@ -1273,6 +1333,9 @@ class ReservData {
   advancepayment: number | undefined;
   partpayment: number | undefined;
   balancepayment: number | undefined;
+  discount: number | undefined;
+  commission: number | undefined;
+  country: string ;
   created_on: string ;
   updated_on: string ;
   created_by: string ;

@@ -683,7 +683,141 @@
 
             </nb-card>
           </nb-tab>
+          <nb-tab tabTitle="Profit Sharing">
 
+            <form (ngSubmit)="onProfitAdd()" #addprofit="ngForm" novalidate>
+              <nb-card>
+                <nb-card-header>
+                  <div class="row">
+                    <div class="col-md-10">Profit Sharing</div>
+                  </div>
+                </nb-card-header>
+
+                <nb-card-body>
+                  <div class="form-group row">
+                    <!--<div class="col-4">
+                      <label class="label">Rooms</label>
+                      <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                                 name="roomId"
+                                 [(ngModel)]="profitsharing.roomId"
+                                 required #roomId="ngModel"
+                                 [status]="roomId.dirty ? (roomId.invalid  ? 'danger' : 'success') : 'basic'">
+                        <nb-option value={{item.id}} *ngFor="let item of rooms">{{item.title}}</nb-option>
+                      </nb-select>
+                    </div>-->
+                    <div class="col-4">
+                      <label class="label">Booking Channel</label>
+                      <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                                 name="channelId"
+                                 [(ngModel)]="profitsharing.channelId"
+                                 required #channelId="ngModel"
+                                 [status]="channelId.dirty ? (channelId.invalid  ? 'danger' : 'success') : 'basic'">
+                        <nb-option value={{item.id}} *ngFor="let item of channels">{{item.channelName}}</nb-option>
+                      </nb-select>
+                    </div>
+                    <!--<div class="col-md-2" style="margin-top: 35px;">
+                      <input type="radio" checked [(ngModel)]="profitsharing.mode" value="Fixed Price" id="rdFixed" name="rdDisplayMode" />
+                      <label for="rdFixed"> Fixed Price</label>
+                    </div>
+                    <div class="col-md-2" style="margin-top:35px;">
+
+                      <input type="radio" [(ngModel)]="profitsharing.mode" value="Percentage" id="rdPerc" name="rdDisplayMode" />
+                      <label for="rdPerc"> Percentage</label>
+                    </div>-->
+
+                  </div>
+
+                <!--</nb-card-body>
+
+              </nb-card>
+              <nb-card>
+                <nb-card-body>-->
+                  <!--<div class="col-md-4" *ngIf="profitsharing.mode == 'Fixed Price'">
+                    <nb-card-body>
+                      <div class="form-group">
+                        <label class="label">Fixed Price</label>
+                        <input type="number" nbInput fullWidth placeholder="Price per room(Rs)"
+                               autocomplete="off"
+                               name="price"
+                               [(ngModel)]="profitsharing.price"
+                               required #price="ngModel"
+                               [status]="price.dirty ? (price.invalid  ? 'danger' : 'success') : 'basic'">
+                      </div>
+                    </nb-card-body>
+                  </div>-->
+
+                  <div class="col-md-4" *ngIf="profitsharing.mode == 'Percentage'">
+                    <nb-card-body>
+                      <div class="form-group">
+                        <label class="label">Percentage</label>
+                        <input type="number" nbInput fullWidth placeholder="Percentage of share to host(%)"
+                               autocomplete="off"
+                               name="percentage"
+                               [(ngModel)]="profitsharing.percentage"
+                               required #percentage="ngModel"
+                               [status]="percentage.dirty ? (percentage.invalid  ? 'danger' : 'success') : 'basic'">
+                      </div>
+                      <div class="form-group">
+                        <nb-checkbox [checked]="profitsharing.include_food==1" (checkedChange)="toggleprofit($event,'food')">
+                          Includes food rate
+                        </nb-checkbox>
+                      </div>
+                      <div class="form-group">
+                        <nb-checkbox [checked]="profitsharing.include_extra==1" (checkedChange)="toggleprofit($event,'extra')">
+                          Includes extra person rate
+                        </nb-checkbox>
+                      </div>
+                      <div class="form-group">
+                        <nb-checkbox [checked]="profitsharing.taxless_amount==1" (checkedChange)="toggleprofit($event,'taxless')">
+                          Calculate over taxless amount
+                        </nb-checkbox>
+                      </div>
+                    </nb-card-body>
+                  </div>
+                  <div class="col-md-4">
+                    <button type="submit" nbButton class="btn btn-sm btn-outline-primary btn-right" [disabled]="addprofit.invalid"
+                            [nbSpinner]="loadingProfitSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+                      <nb-icon icon="plus-outline"></nb-icon>ADD
+                    </button>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+              <nb-card>
+                <nb-card-body *ngIf="profitDetails.length>0">
+                  <div class="col-md-12">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <!--<th scope="col">Room</th>-->
+                          <th scope="col">Booking Channel</th>
+                          <!--<th scope="col">Mode</th>-->
+                          <!--<th scope="col">Price</th>-->
+                          <th scope="col">Percentage</th>
+                          <th scope="col">Include Food?</th>
+                          <th scope="col">Include Extra Person Rate?</th>
+                          <th scope="col">Calculate Ove Taxless Amount?</th>
+                          <th scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of profitDetails">
+                          <!--<td scope="row">{{item.room}}</td>-->
+                          <td scope="row">{{item.channel}}</td>
+                          <!--<td scope="row">{{item.mode}}</td>-->
+                          <!--<td scope="row">{{item.price | number : '1.2-2'}}</td>-->
+                          <td scope="row">{{item.percentage | number : '1.2-2'}}</td>
+                          <td scope="row">{{item.include_food == '1' ? 'Yes' : 'No'}}</td>
+                          <td scope="row">{{item.include_extra == '1' ? 'Yes' : 'No'}}</td>
+                          <td scope="row">{{item.taxless_amount == '1' ? 'Yes' : 'No'}}</td>
+                          <td scope="row"><nb-icon icon="trash-outline" (click)="deleterow(item.id, deleteProfitDialog)"></nb-icon></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </form>
+          </nb-tab>
         </nb-tabset>
       </nb-card-body>
 
@@ -1100,6 +1234,16 @@
         </div>
 
         <div class="form-group">
+          <label class="label">Base Rate</label>
+          <input type="number" nbInput fullWidth placeholder="Base Rate"
+                 autocomplete="off"
+                 name="baserate"
+                 [(ngModel)]="room.baserate"
+                 required #baserate="ngModel"
+                 [status]="baserate.dirty ? (baserate.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
           <label class="label">No. of rooms</label>
           <input type="number" nbInput fullWidth placeholder="No. of rooms"
                  autocomplete="off"
@@ -1135,7 +1279,7 @@
         <div class="form-group">
           <label class="label">Max. Adults</label>
           <input type="number" nbInput fullWidth placeholder="Max. Adults"
-                 autocomplete="off" 
+                 autocomplete="off"
                  name="maxadults"
                  [(ngModel)]="room.maxadults"
                  required #maxadults="ngModel"
@@ -1145,44 +1289,44 @@
         <div class="form-group">
           <label class="label">Max. Children</label>
           <input type="number" nbInput fullWidth placeholder="Max. Children"
-                 autocomplete="off" 
+                 autocomplete="off"
                  name="maxchildren"
                  [(ngModel)]="room.maxchildren"
                  required #maxchildren="ngModel"
                  [status]="maxchildren.dirty ? (maxchildren.invalid  ? 'danger' : 'success') : 'basic'">
         </div>
         <!--<div class="form-group">
-          <label class="label">Rate Slab</label>
-        </div>
-        <div class="form-group">
-          <label class="label">0 - 6 Years</label>
-          <input type="number" nbInput fullWidth placeholder="0-6 years"
-                 autocomplete="off"
-                 name="years06"
-                 [(ngModel)]="room.years06"
-                 required #years06="ngModel"
-                 [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
+    <label class="label">Rate Slab</label>
+  </div>
+  <div class="form-group">
+    <label class="label">0 - 6 Years</label>
+    <input type="number" nbInput fullWidth placeholder="0-6 years"
+           autocomplete="off"
+           name="years06"
+           [(ngModel)]="room.years06"
+           required #years06="ngModel"
+           [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
 
-        </div>
-        <div class="form-group">
-          <label class="label">6 - 12 Years</label>
-          <input type="number" nbInput fullWidth placeholder="6-12 years"
-                 autocomplete="off"
-                 name="years612"
-                 [(ngModel)]="room.years612"
-                 required #years612="ngModel"
-                 [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
+  </div>
+  <div class="form-group">
+    <label class="label">6 - 12 Years</label>
+    <input type="number" nbInput fullWidth placeholder="6-12 years"
+           autocomplete="off"
+           name="years612"
+           [(ngModel)]="room.years612"
+           required #years612="ngModel"
+           [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
 
-        </div>
-        <div class="form-group">
-          <label class="label">Above 12 Years</label>
-          <input type="number" nbInput fullWidth placeholder="Above 12 years"
-                 autocomplete="off"
-                 name="years12"
-                 [(ngModel)]="room.years12"
-                 required #years12="ngModel"
-                 [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
-        </div>-->
+  </div>
+  <div class="form-group">
+    <label class="label">Above 12 Years</label>
+    <input type="number" nbInput fullWidth placeholder="Above 12 years"
+           autocomplete="off"
+           name="years12"
+           [(ngModel)]="room.years12"
+           required #years12="ngModel"
+           [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
+  </div>-->
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewRoomForm.invalid"
                 [nbSpinner]="loadingRoomSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
           <nb-icon icon="save-outline"></nb-icon>SAVE
@@ -1242,6 +1386,16 @@
         </div>
 
         <div class="form-group">
+          <label class="label">Base Rate</label>
+          <input type="number" nbInput fullWidth placeholder="Base Rate"
+                 autocomplete="off"
+                 name="baserate"
+                 [(ngModel)]="room.baserate"
+                 required #baserate="ngModel"
+                 [status]="baserate.dirty ? (baserate.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
           <label class="label">No. of rooms</label>
           <input type="number" nbInput fullWidth placeholder="No. of rooms"
                  autocomplete="off"
@@ -1277,7 +1431,7 @@
         <div class="form-group">
           <label class="label">Max. Adults</label>
           <input type="number" nbInput fullWidth placeholder="Max. Adults"
-                 autocomplete="off" 
+                 autocomplete="off"
                  name="maxadults"
                  [(ngModel)]="room.maxadults"
                  required #maxadults="ngModel"
@@ -1288,43 +1442,43 @@
           <label class="label">Max. Children</label>
           <input type="number" nbInput fullWidth placeholder="Max. Children"
                  autocomplete="off"
-                 name="maxchildren" 
+                 name="maxchildren"
                  [(ngModel)]="room.maxchildren"
                  required #maxchildren="ngModel"
                  [status]="maxchildren.dirty ? (maxchildren.invalid  ? 'danger' : 'success') : 'basic'">
         </div>
         <!--<div class="form-group">
-          <label class="label">Rate Slab</label>
-        </div>
-        <div class="form-group">
-          <label class="label">0 - 6 Years</label>
-          <input type="number" nbInput fullWidth placeholder="0-6 years"
-                 autocomplete="off"
-                 name="years06"
-                 [(ngModel)]="room.years06"
-                 required #years06="ngModel"
-                 [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
+    <label class="label">Rate Slab</label>
+  </div>
+  <div class="form-group">
+    <label class="label">0 - 6 Years</label>
+    <input type="number" nbInput fullWidth placeholder="0-6 years"
+           autocomplete="off"
+           name="years06"
+           [(ngModel)]="room.years06"
+           required #years06="ngModel"
+           [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
 
-        </div>
-        <div class="form-group">
-          <label class="label">6 - 12 Years</label>
-          <input type="number" nbInput fullWidth placeholder="6-12 years"
-                 autocomplete="off"
-                 name="years612"
-                 [(ngModel)]="room.years612"
-                 required #years612="ngModel"
-                 [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
+  </div>
+  <div class="form-group">
+    <label class="label">6 - 12 Years</label>
+    <input type="number" nbInput fullWidth placeholder="6-12 years"
+           autocomplete="off"
+           name="years612"
+           [(ngModel)]="room.years612"
+           required #years612="ngModel"
+           [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
 
-        </div>
-        <div class="form-group">
-          <label class="label">Above 12 Years</label>
-          <input type="number" nbInput fullWidth placeholder="Above 12 years"
-                 autocomplete="off"
-                 name="years12"
-                 [(ngModel)]="room.years12"
-                 required #years12="ngModel"
-                 [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
-        </div>-->
+  </div>
+  <div class="form-group">
+    <label class="label">Above 12 Years</label>
+    <input type="number" nbInput fullWidth placeholder="Above 12 years"
+           autocomplete="off"
+           name="years12"
+           [(ngModel)]="room.years12"
+           required #years12="ngModel"
+           [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
+  </div>-->
 
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainRoomForm.invalid"
                 [nbSpinner]="loadingRoomSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
@@ -1355,6 +1509,34 @@
         <div class="col-md-6">
           <button type="button" (click)="deleteRoom()" nbButton class="btn btn-sm btn-outline-primary"
                   [nbSpinner]="loadingDelete" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteProfitDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this Profit Details?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary pop-close-btn" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteProfit()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingProfitDelete" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
             <nb-icon icon="trash-outline"></nb-icon>DELETE
           </button>
         </div>

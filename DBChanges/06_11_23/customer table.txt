@@ -1,0 +1,2 @@
+ALTER TABLE `vtravel`.`enquiry` 
+ADD COLUMN `referral_person` VARCHAR(45) NULL AFTER `total_price_per_room`;

@@ -1,0 +1,61 @@
+
+DROP TABLE `vtravel`.`profit_details`;
+
+
+CREATE TABLE `vtravel`.`profit_details` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `property_id` INT NULL,
+  `channel_id` INT NULL,
+  `mode` VARCHAR(20) NULL,
+  `price` DOUBLE NULL,
+  `percentage` DOUBLE NULL,
+  `include_food` INT NULL,
+  `include_extra` INT NULL,
+  `taxless_amount` INT NULL,
+  `created_by` INT NULL,
+  `created_on` DATETIME NULL,
+  `updated_by` INT NULL,
+  `updated_on` DATETIME NULL,
+  PRIMARY KEY (`id`));
+
+
+ALTER TABLE `vtravel`.`room` 
+ADD COLUMN `base_rate` FLOAT NULL AFTER `max_children`;
+
+ALTER TABLE `vtravel`.`room` 
+CHANGE COLUMN `base_rate` `base_rate` FLOAT NULL DEFAULT 0 ;
+
+
+USE `vtravel`;
+DROP procedure IF EXISTS `insert_room`;
+
+USE `vtravel`;
+DROP procedure IF EXISTS `vtravel`.`insert_room`;
+;
+
+DELIMITER $$
+USE `vtravel`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_room`(IN `propertyId` INT, IN `roomTypeId` INT, IN `title1` VARCHAR(50), IN `description1` VARCHAR(50), IN `noofrooms1` INT,
+ IN `normalocc` INT, IN `maxadults` INT, IN `maxchildren` INT, IN `baserate` FLOAT, IN `userid` INT)
+BEGIN
+	DECLARE rid int DEFAULT 0;
+    DECLARE other_room int;
+    
+    select id into other_room from room where property_id = propertyId and is_active = 'Y' order by id limit 1;
+    
+	INSERT INTO room(property_id,room_type_id,title,description, noofrooms, normal_occupancy, max_adults, max_children, base_rate)
+                      VALUES(propertyId,roomTypeId,title1,description1, noofrooms1, normalocc, maxadults, maxchildren, baserate);
+                      
+    set rid = LAST_INSERT_ID();
+    
+    if(rid > 0) then
+			insert into inventory(room_id, property_id, inv_date, total_qty, booked_qty, is_active, created_on, created_by, price, extra_bed_price, child_price, rateplan)
+			select rid, property_id, inv_date, 0, 0, is_active, NOW(), userid, 0, 0, 0, rateplan 
+			from inventory where room_id = other_room;
+    end if;
+     
+    select rid;
+END$$
+
+DELIMITER ;
+;

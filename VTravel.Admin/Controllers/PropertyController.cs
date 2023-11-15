@@ -1544,7 +1544,7 @@ namespace VTravel.Admin.Controllers
                 MySqlHelper sqlHelper = new MySqlHelper();
 
                 var query = string.Format(@"SELECT room.id,title,room_type_id,room.description,type_name, IFNULL(noofrooms, 0) noofrooms 
-                            ,normal_occupancy, max_adults, max_children
+                            ,normal_occupancy, max_adults, max_children, IFNULL(room.base_rate, 0) base_rate
                             FROM room INNER JOIN room_type ON room.room_type_id=room_type.id WHERE property_id={0}
                             ORDER BY room.sort_order, title", id
                                    );
@@ -1566,7 +1566,8 @@ namespace VTravel.Admin.Controllers
                             noofrooms = Convert.ToInt32(r["noofrooms"].ToString()),
                             normalocc = Convert.ToInt32(r["normal_occupancy"].ToString()),
                             maxadults = Convert.ToInt32(r["max_adults"].ToString()),
-                            maxchildren = Convert.ToInt32(r["max_children"].ToString())
+                            maxchildren = Convert.ToInt32(r["max_children"].ToString()),
+                            baserate = Convert.ToInt32(r["base_rate"].ToString())
                             //,
                             //years06 = Convert.ToInt32(r["years06"].ToString()),
                             //years612 = Convert.ToInt32(r["years612"].ToString()),
@@ -1734,6 +1735,7 @@ namespace VTravel.Admin.Controllers
                     sqlHelper.AddSetParameterToMySqlCommand("normalocc", MySqlDbType.Int32, Convert.ToInt32(model.normalocc));
                     sqlHelper.AddSetParameterToMySqlCommand("maxadults", MySqlDbType.Int32, Convert.ToInt32(model.maxadults));
                     sqlHelper.AddSetParameterToMySqlCommand("maxchildren", MySqlDbType.Int32, Convert.ToInt32(model.maxchildren));
+                    sqlHelper.AddSetParameterToMySqlCommand("baserate", MySqlDbType.Int32, Convert.ToInt32(model.baserate));
                     //sqlHelper.AddSetParameterToMySqlCommand("years_06", MySqlDbType.Int32, Convert.ToInt32(model.years06));
                     //sqlHelper.AddSetParameterToMySqlCommand("years_612", MySqlDbType.Int32, Convert.ToInt32(model.years612));
                     //sqlHelper.AddSetParameterToMySqlCommand("years_12", MySqlDbType.Int32, Convert.ToInt32(model.years12));
@@ -1788,8 +1790,8 @@ namespace VTravel.Admin.Controllers
                     MySqlHelper sqlHelper = new MySqlHelper();
                     string query = string.Empty; ;
 
-                    query = string.Format(@"UPDATE room SET title='{0}', description='{1}',room_type_id={2}, noofrooms = {4}, normal_occupancy = {5}, max_adults = {6}, max_children = {7} WHERE id={3}",
-                        model.title, model.description, model.roomTypeId, id, model.noofrooms, model.normalocc, model.maxadults, model.maxchildren);
+                    query = string.Format(@"UPDATE room SET title='{0}', description='{1}',room_type_id={2}, noofrooms = {4}, normal_occupancy = {5}, max_adults = {6}, max_children = {7}, base_rate = {8} WHERE id={3}",
+                        model.title, model.description, model.roomTypeId, id, model.noofrooms, model.normalocc, model.maxadults, model.maxchildren, model.baserate);
 
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
