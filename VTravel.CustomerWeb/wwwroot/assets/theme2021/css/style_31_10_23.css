@@ -254,9 +254,9 @@ form.navbar-form {
         font-size: 14px;
     }
 
-    form.navbar-form button.btn.btn-default:hover {
-        background: #000;
-    }
+        form.navbar-form button.btn.btn-default:hover {
+            background: #000;
+        }
 
     form.navbar-form .form-control {
         height: 45px;
@@ -267,18 +267,18 @@ form.navbar-form {
         border: 0px;
     }
 
-    .highlightMessage {
-        position: absolute;
-        z-index: 600;
-        text-align: center;
-        width: 100%;
-        color: #fff;
-        top: 36%;
-        max-width: 800px;
-        margin: 0 auto;
-        left: 0;
-        right: 0;
-    }
+.highlightMessage {
+    position: absolute;
+    z-index: 600;
+    text-align: center;
+    width: 100%;
+    color: #fff;
+    top: 250px;
+    max-width: 800px;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+}
 
     .highlightMessage.partner {
         top: 150px;
@@ -297,11 +297,11 @@ form.navbar-form {
     }*/
 
     .highlightMessage .stylish {
-        font-size: 15px;
+        font-size: 18px;
         text-shadow: 0 0 11px #000;
         color: #fff;
         text-transform: uppercase;
-        letter-spacing: 9px;
+        letter-spacing: 10px;
     }
     .highlightMessage .stylishdesc {
         font-size: 16px;
@@ -391,24 +391,7 @@ ul.slick-dots {
     bottom: 15px;
 }
 
-.highlightMessage{
-    /* min-height: 250px; */
-}
-.highlightMessage .btn.btn-outline-light.text-light {
-    font-size: 15px;
-    padding: 5px 20px;
-    background: rgb(255 255 255 / 23%);
-    color: #fff;
-    border-color: #ffffff;
-    border-radius: 30px;
-    /* position: absolute;
-    bottom: 0;
-    margin: 0 auto; */
-}
-.highlightMessage .btn.btn-outline-light.text-light:hover {
-    background: rgb(255 255 255);
-    color: #0a117e !important;
-}
+
 
 .propertySlide ul.slick-dots {
     bottom: -7px;
@@ -2723,6 +2706,7 @@ textarea.form-control.message{
 
     .highlightMessage {
         max-width: 80%;
+        top: 13%;
     }
     .highlightMessage h1 {
         font-size: 25px;
@@ -2768,7 +2752,7 @@ textarea.form-control.message{
     }
 
     .highlightMessage {
-        top: 75px;
+        top: 100px;
         max-width: 90%;
     }
     .listing-slider.slick-slider .slick-arrow.slick-prev, .listing-slider.slick-slider .slick-arrow.slick-next{
@@ -2883,8 +2867,8 @@ textarea.form-control.message{
     }
 
     .highlightMessage .stylish {
-        font-size: 7px;
-        letter-spacing: 2px;
+        font-size: 9px;
+        letter-spacing: 5px;
     }
     .about-property {
         height: auto !important;
@@ -2892,7 +2876,7 @@ textarea.form-control.message{
 
     .highlightMessage h1 {
         font-size: 15px;
-        margin: 10px 5px;
+        margin: 12px 10px;
         font-weight: 500;
     }
 

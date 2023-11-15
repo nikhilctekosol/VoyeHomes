@@ -182,9 +182,9 @@ namespace VTravel.CustomerWeb.Controllers
                         {
                             //create new customer 
                             query = string.Format(@"INSERT INTO customer(cust_name,cust_email,cust_phone,referral_code)
-                                  VALUES('{0}','{1}','{2}','{3}');SELECT LAST_INSERT_ID() AS id;"
+                                  VALUES('{0}','{1}','{2}','{3}','{4}');SELECT LAST_INSERT_ID() AS id;"
                                      , model.custName, model.custEmail, model.custPhone,
-                                      model.referralCode.ToUpper());
+                                      model.referralCode.ToUpper(), model.referralPerson);
                             ds = sqlHelper.GetDatasetByMySql(query);
                             if (ds.Tables.Count > 0)
                             {
@@ -201,11 +201,11 @@ namespace VTravel.CustomerWeb.Controllers
 
                       
 
-                        query = string.Format(@"INSERT INTO enquiry(cust_id,property_id,checkin_date,checkout_date,adults_count,children_count,room_id,room_name,price_list_json,total_price_per_room)
-                                  VALUES({0},{1},'{2}','{3}',{4},{5},{6},'{7}','{8}',{9});SELECT LAST_INSERT_ID() AS id;"
+                        query = string.Format(@"INSERT INTO enquiry(cust_id,property_id,checkin_date,checkout_date,adults_count,children_count,room_id,room_name,price_list_json,total_price_per_room, referral_person, referral_code)
+                                  VALUES({0},{1},'{2}','{3}',{4},{5},{6},'{7}','{8}',{9}, '{10}', '{11}');SELECT LAST_INSERT_ID() AS id;"
                                           , custId, model.propertyId,
                                           model.startDate.ToString("yyyy-MM-dd"), model.endDate.ToString("yyyy-MM-dd"),
-                                          model.adultsCount, model.childrenCount,model.roomId,model.roomName,model.priceListJson,model.totalPricePerRoom);
+                                          model.adultsCount, model.childrenCount,model.roomId,model.roomName,model.priceListJson,model.totalPricePerRoom, model.referralPerson, model.referralCode);
                         ds = sqlHelper.GetDatasetByMySql(query);
                         if (ds.Tables.Count > 0)
                         {
@@ -225,8 +225,8 @@ namespace VTravel.CustomerWeb.Controllers
                                         var emailBody = ds.Tables[0].Rows[0]["content"].ToString();
 
                                         query = string.Format(@"SELECT t1.id,t1.property_id,t1.cust_id,t1.adults_count,t1.children_count,
-                                                   t1.checkin_date,t1.checkout_date,t1.room_name,t1.room_id,t1.price_list_json,t1.total_price_per_room,t2.cust_name,t2.cust_email,t2.cust_phone,t2.referral_code,
-                                                    t3.id AS property_id,t3.thumbnail,t3.title,t3.perma_title,t3.short_description FROM enquiry t1 LEFT JOIN customer t2
+                                                   t1.checkin_date,t1.checkout_date,t1.room_name,t1.room_id,t1.price_list_json,t1.total_price_per_room,t2.cust_name,t2.cust_email,t2.cust_phone,t1.referral_code,
+                                                    t1.referral_person,t3.id AS property_id,t3.thumbnail,t3.title,t3.perma_title,t3.short_description FROM enquiry t1 LEFT JOIN customer t2
                                                     ON t1.cust_id=t2.id LEFT JOIN property t3 ON t1.property_id=t3.id WHERE t1.is_active='Y' AND t1.id={0}", enquiryId);
                                         ds = sqlHelper.GetDatasetByMySql(query);
                                         DataRow r = ds.Tables[0].Rows[0];
@@ -250,6 +250,7 @@ namespace VTravel.CustomerWeb.Controllers
                                         .Replace("#PHONE#", r["cust_phone"].ToString())
                                         .Replace("#PROPERTY#", r["title"].ToString())
                                         .Replace("#REFERRAL_CODE#", r["referral_code"].ToString())
+                                        .Replace("#REFERRAL_PERSON#", r["referral_person"].ToString())
                                         .Replace("#ROOM_NAME#", r["room_name"].ToString())
                                         .Replace("#TOTAL_PRICE_PER_ROOM#", r["total_price_per_room"].ToString())
                                         .Replace("#PRICE_LIST_JSON#", priceListText)
@@ -261,7 +262,7 @@ namespace VTravel.CustomerWeb.Controllers
                                         var subject = General.GetSettingsValue("enquiry_email_subject")
                                             .Replace("#PROPERTY#", r["title"].ToString()).Replace("#ENQUIRYID#", enquiryId.ToString());
 
-                                         General.SendMailMailgun(subject, emailBody, General.GetSettingsValue("enquiry_email_to"), General.GetSettingsValue("enquiry_from_email"), General.GetSettingsValue("enquiry_from_display_name"));
+                                        General.SendMailMailgun(subject, emailBody, General.GetSettingsValue("enquiry_email_to"), General.GetSettingsValue("enquiry_from_email"), General.GetSettingsValue("enquiry_from_display_name"));
 
 
 

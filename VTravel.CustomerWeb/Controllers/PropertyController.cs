@@ -219,7 +219,7 @@ namespace VTravel.CustomerWeb.Controllers
                           * cos(radians({1}) - radians(p.longitude))
                           + sin(radians(p.latitude))
                           * sin(radians({0}))
-                            ) ) <=p.display_radius", latitude, longitude);
+                            ) ) <=p.display_radius AND p.hide_property = '0'", latitude, longitude);
 
                     title = address;
                     description = "Explore the best holiday homes in " + address;
@@ -236,7 +236,7 @@ namespace VTravel.CustomerWeb.Controllers
                     var encodedId2 = id2Array[id2Array.Length - 1];
                     var decodedId2 = General.DecodeString(encodedId2);
 
-                    condition = "p.destination_id=" + decodedId2;
+                    condition = "p.hide_property = '0' AND p.destination_id=" + decodedId2;
 
                     //get destination details
                     query = string.Format(@"SELECT id,image1, title,description,thumbnail,meta_title,meta_keywords,meta_description
@@ -296,7 +296,7 @@ namespace VTravel.CustomerWeb.Controllers
                     var encodedId2 = id2Array[id2Array.Length - 1];
                     var decodedId2 = General.DecodeString(encodedId2);
 
-                    condition = string.Format(" p.id IN(SELECT property_id FROM property_tag WHERE tag_id={0})", decodedId2);
+                    condition = string.Format(" p.id IN(SELECT property_id FROM property_tag WHERE tag_id={0}) AND p.hide_property = '1'", decodedId2);
 
                     //get tag details
                     query = string.Format(@"SELECT id,image1, tag_name,meta_title,meta_keywords,meta_description   

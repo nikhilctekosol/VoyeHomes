@@ -23,7 +23,7 @@
                     <div class="col-md-8 ">
                         <h3>@Model.property.title <span class="gray location"><i class="fas fa-map-marker-alt"></i>  @Model.property.city, @Model.property.state</span></h3>
                     </div>
-                    <div class="col-md-4 text-right">
+                    <div class="col-md-4 text-right" style="display:none;">
                         @if (Model.property.priceList != null)
                             {
                         @if (Model.property.priceList.Length > 0)
@@ -180,6 +180,17 @@
                                 <label class="label" for="referralCode">Referral Code, If Any</label>
                                 <input type="text" autocomplete="off" class="form-control" id="referralCode" name="referralCode" placeholder="Referral Code">
                                 <div class="invalid-feedback">Please enter referral code.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group boxed">
+                            <div class="input-wrapper">
+                                <label class="label" for="custName">Referral Person</label>
+                                <input type="text" autocomplete="off" class="form-control" id="referralPerson" name="referralPerson" placeholder="Referral Person">
+                                <i class="clear-input">
+                                    <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+                                </i>
+
+                                <div class="invalid-feedback">Please enter referral person name.</div>
                             </div>
                         </div>
 

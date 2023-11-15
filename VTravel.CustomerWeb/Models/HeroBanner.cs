@@ -14,9 +14,8 @@ namespace VTravel.CustomerWeb.Models
         public string description { get; set; }
         public int property_id { get; set; }
         public int destination { get; set; }
-
-
-
+        public string bannertype { get; set; }
+        public string offertext { get; set; }
 
 
     }

@@ -22,6 +22,7 @@ namespace VTravel.CustomerWeb.Models
         public int adultsCount { get; set; }
         public int childrenCount { get; set; }
         public string referralCode { get; set; }
+        public string referralPerson { get; set; }
         public string agreeTerms { get; set; }
 
         public string priceListJson { get; set; }

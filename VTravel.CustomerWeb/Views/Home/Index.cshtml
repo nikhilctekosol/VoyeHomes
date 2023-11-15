@@ -20,8 +20,22 @@
             <div class="item">
                 <a href="@banner.navigate_url">
                     <div class="highlightMessage">
-                        <h2 class="stylish">@banner.title</h2>
-                        <h1>@banner.description</h1>
+                        @if (@banner.description != "")
+                        {
+                            @if (@banner.bannertype == "Promotion")
+                            {
+                                <h2 class="stylish">@banner.title</h2>
+                                <h1>@banner.description</h1>
+                                <button class="btn btn-outline-light text-light">View More</button>
+                            }
+                            else
+                            {
+                                <h2 class="stylish">@banner.title</h2>
+                                <h1>@banner.offertext</h1>
+                                <h1>@banner.description</h1>
+                                <button class="btn btn-outline-light text-light">View More</button>
+                            }
+                        }
                     </div>
                     <picture>
                         <source media="(max-width: 320px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_320,c_scale/")">
