@@ -182,9 +182,9 @@ namespace VTravel.CustomerWeb.Controllers
                         {
                             //create new customer 
                             query = string.Format(@"INSERT INTO customer(cust_name,cust_email,cust_phone,referral_code)
-                                  VALUES('{0}','{1}','{2}','{3}','{4}');SELECT LAST_INSERT_ID() AS id;"
+                                  VALUES('{0}','{1}','{2}','{3}');SELECT LAST_INSERT_ID() AS id;"
                                      , model.custName, model.custEmail, model.custPhone,
-                                      model.referralCode.ToUpper(), model.referralPerson);
+                                      model.referralCode.ToUpper());
                             ds = sqlHelper.GetDatasetByMySql(query);
                             if (ds.Tables.Count > 0)
                             {
@@ -287,6 +287,7 @@ namespace VTravel.CustomerWeb.Controllers
                                        .Replace("#PHONE#", r["cust_phone"].ToString())
                                        .Replace("#PROPERTY#", r["title"].ToString())
                                        .Replace("#REFERRAL_CODE#", r["referral_code"].ToString())
+                                       .Replace("#REFERRAL_PERSON#", r["referral_person"].ToString())
                                        .Replace("#ENQUIRYID#", enquiryId.ToString())
                                        .Replace("#THUMBNAIL#", r["thumbnail"].ToString())
                                        .Replace("#SHORT_DESCRIPTION#", r["short_description"].ToString())
