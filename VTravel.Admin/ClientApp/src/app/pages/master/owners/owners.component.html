@@ -1,0 +1,215 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-10">Owners</div>
+      <div class="col-md-2">
+        <button type="submit" (click)="openOwnerNew(ownerDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+          <nb-icon icon="plus-outline"></nb-icon>ADD
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <nb-card *ngFor="let item of owners">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-10">{{item.name}}</div>
+          <div class="col-md-1">
+            <button type="button" (click)="openOwnerDelete(deleteOwnerDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="trash-outline"></nb-icon>
+            </button>
+          </div>
+          <div class="col-md-1">
+            <button type="button" (click)="openOwner(ownerDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+      </nb-card-header>
+
+    </nb-card>
+  </nb-card-body>
+</nb-card>
+
+<ng-template #ownerDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onNewOwnerSubmit()" #mainNewOwnerForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">Name</label>
+          <input type="text" nbInput fullWidth placeholder="Name"
+                 autocomplete="off"
+                 name="name"
+                 [(ngModel)]="owner.name"
+                 required #name="ngModel"
+                 [status]="name.dirty ? (name.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Address</label>
+          <textarea nbInput fullWidth placeholder="Address"
+                    autocomplete="off"
+                    name="address"
+                    [(ngModel)]="owner.address"
+                    #address="ngModel"
+                    [status]="address.dirty ? (address.invalid  ? 'danger' : 'success') : 'basic'">
+                    </textarea>
+        </div>
+        <div class="form-group">
+          <label class="label">GST No.</label>
+          <input type="text" nbInput fullWidth placeholder="GST No."
+                 autocomplete="off"
+                 name="gstno"
+                 [(ngModel)]="owner.gstno"
+                 required #gstno="ngModel" (change)="validateGST()"
+                 [status]="gstno.dirty ? (gstno.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">PAN No.</label>
+          <input type="text" nbInput fullWidth placeholder="PAN No."
+                 autocomplete="off"
+                 name="pan"
+                 [(ngModel)]="owner.pan"
+                 required #pan="ngModel" (change)="validatePAN()"
+                 [status]="pan.dirty ? (pan.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Type of Ownership</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="ownershiptype"
+                     [(ngModel)]="owner.ownershiptype"
+                     required #ownershiptype="ngModel"
+                     [status]="ownershiptype.dirty ? (ownershiptype.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value="INDIVIDUAL">Individual</nb-option>
+            <nb-option value="COMPANY">Company</nb-option>
+
+          </nb-select>
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewOwnerForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #ownerDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+
+      <form (ngSubmit)="onOwnerSubmit()" #mainOwnerForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">Name</label>
+          <input type="text" nbInput fullWidth placeholder="Name"
+                 autocomplete="off"
+                 name="name"
+                 [(ngModel)]="owner.name"
+                 required #name="ngModel"
+                 [status]="name.dirty ? (name.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Address</label>
+          <textarea nbInput fullWidth placeholder="Address"
+                    autocomplete="off"
+                    name="address"
+                    [(ngModel)]="owner.address"
+                    #address="ngModel"
+                    [status]="address.dirty ? (address.invalid  ? 'danger' : 'success') : 'basic'">
+                    </textarea>
+        </div>
+        <div class="form-group">
+          <label class="label">GST No.</label>
+          <input type="text" nbInput fullWidth placeholder="GST No."
+                 autocomplete="off"
+                 name="gstno"
+                 [(ngModel)]="owner.gstno"
+                 required #gstno="ngModel" (change)="validateGST()"
+                 [status]="gstno.dirty ? (gstno.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">PAN No.</label>
+          <input type="text" nbInput fullWidth placeholder="PAN No."
+                 autocomplete="off"
+                 name="pan"
+                 [(ngModel)]="owner.pan"
+                 required #pan="ngModel" (change)="validatePAN()"
+                 [status]="pan.dirty ? (pan.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Type of Ownership</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="ownershiptype"
+                     [(ngModel)]="owner.ownershiptype"
+                     required #ownershiptype="ngModel"
+                     [status]="ownershiptype.dirty ? (ownershiptype.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value="INDIVIDUAL">Individual</nb-option>
+            <nb-option value="COMPANY">Company</nb-option>
+
+          </nb-select>
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainOwnerForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteOwnerDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this Owner?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteOwner()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

@@ -1,0 +1,13 @@
+CREATE TABLE `vtravel_uat`.`owner_master` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NULL,
+  `address` VARCHAR(200) NULL,
+  `gst_no` VARCHAR(20) NULL,
+  `pan_no` VARCHAR(20) NULL,
+  `ownership_type` VARCHAR(45) NULL,
+  `created_by` INT NULL,
+  `created_on` DATETIME NULL,
+  `updated_by` INT NULL,
+  `updated_on` DATETIME NULL,
+  `is_active` VARCHAR(1) NULL DEFAULT 'Y',
+  PRIMARY KEY (`id`));

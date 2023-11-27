@@ -13,6 +13,7 @@ using CloudinaryDotNet.Actions;
 using System.Security.Claims;
 using System.Linq;
 using MySql.Data.MySqlClient;
+using System.Transactions;
 //using Microsoft.Extensions.Hosting;
 
 namespace VTravel.Admin.Controllers
@@ -310,7 +311,7 @@ namespace VTravel.Admin.Controllers
                 var query = string.Format(@"select id,title,reserve_alert,reserve_allowed,destination_id,thumbnail,address,city,property_status,sort_order 
                  ,short_description,long_description,latitude,longitude,state,country,property_type_id
                  ,display_radius,meta_title,meta_keywords,meta_description,email,phone,max_occupancy  
-                 ,room_count,bathroom_count,user_name, hide_property FROM property WHERE is_active='Y' AND id={0} ORDER BY sort_order", id);
+                 ,room_count,bathroom_count,user_name, hide_property, IFNULL(is_gst, 0) is_gst, owner FROM property WHERE is_active='Y' AND id={0} ORDER BY sort_order", id);
 
                 DataSet ds = sqlHelper.GetDatasetByMySql(query);
 
@@ -349,6 +350,8 @@ namespace VTravel.Admin.Controllers
                         reserveAllowed = r["reserve_allowed"].ToString(),
                         userName = r["user_name"].ToString(),
                         hideProperty = r["hide_property"].ToString(),
+                        gst = r["is_gst"].ToString(),
+                        owner = r["owner"].ToString(),
 
                     };
 
@@ -443,12 +446,12 @@ namespace VTravel.Admin.Controllers
                     var query = string.Format(@"UPDATE property SET title='{0}',property_type_id={1},short_description='{2}'
                            ,address='{3}',country='{4}',state='{5}',city='{6}',display_radius={7}
                            ,max_occupancy={8} ,room_count={9} ,bathroom_count={10},destination_id={11}
-                            ,reserve_allowed='{12}',reserve_alert='{13}', hide_property='{18}',user_name='{14}',updated_on='{15}',updated_by={16} WHERE id={17}",
+                            ,reserve_allowed='{12}',reserve_alert='{13}', hide_property='{18}', is_gst='{19}', owner= {20},user_name='{14}',updated_on='{15}',updated_by={16} WHERE id={17}",
                                      model.title, model.propertyTypeId, model.shortDescription
                                      , model.address, model.country, model.state, model.city
                                      , model.displayRadius,model.maxOccupancy, model.roomCount
                                      , model.bathroomCount,model.destinationId, model.reserveAllowed,model.reserveAlert,model.userName,
-                                     DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),userId,id, model.hideProperty);
+                                     DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),userId,id, model.hideProperty, model.gst, model.owner);
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
                     response.ActionStatus = "SUCCESS";
@@ -2015,6 +2018,266 @@ namespace VTravel.Admin.Controllers
                 response.ActionStatus = "SUCCESS";
 
 
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
+
+        [HttpGet, Route("get-charge-list")]
+        public IActionResult GetChargeList(int id)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                List<ChargeList> chargeList = new List<ChargeList>();
+                MySqlHelper sqlHelper = new MySqlHelper();
+
+                var query = string.Format(@"SELECT id, property_id, name, charge_type, amount, percentage, effective_from FROM app_charges where is_active = 'Y' and property_id = {0};", id);
+
+                DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+
+                    chargeList.Add(
+                        new ChargeList
+                        {
+                            id = Convert.ToInt32(r["id"].ToString()),
+                            propertyid = Convert.ToInt32(r["property_id"].ToString()),
+                            name = r["name"].ToString(),
+                            chargetype = r["charge_type"].ToString(),
+                            amount = Convert.ToDecimal(r["amount"].ToString()),
+                            percentage = Convert.ToDecimal(r["percentage"].ToString()),
+                            effective = DateTime.Parse(r["effective_from"].ToString()),
+                        }
+                        );
+
+                }
+
+
+                response.Data = chargeList;
+                response.ActionStatus = "SUCCESS";
+
+
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpPost, Route("create-charge")]
+        public IActionResult CreateCharge([FromBody] ChargeList model)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                if (model != null)
+                {
+                    using (var scope = new TransactionScope())
+                    {
+                        MySqlHelper sqlHelper = new MySqlHelper();
+                        IEnumerable<Claim> claims = User.Claims;
+                        var userId = claims.Where(c => c.Type == "id").FirstOrDefault().Value;
+
+                        var query = string.Format(@"INSERT INTO app_charges(property_id, name, charge_type, amount, percentage, effective_from, is_active, created_by, created_on) VALUES({0},'{1}','{2}',{3},{4}, '{5}', '{6}', {7}, '{8}');
+                                         SELECT LAST_INSERT_ID() AS id;",
+                                         model.propertyid, model.name, model.chargetype, model.amount, model.percentage, model.effective.ToString("yyyy-MM-dd"), 'Y', userId, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                        DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+                        if (ds != null)
+                        {
+                            if (ds.Tables.Count > 0)
+                            {
+                                if (ds.Tables[0].Rows.Count > 0)
+                                {
+                                    DataRow r = ds.Tables[0].Rows[0];
+                                    model.id = Convert.ToInt32(r["id"].ToString());
+                                    response.Data = model;
+                                    response.ActionStatus = "SUCCESS";
+                                }
+                            }
+                        }
+                        scope.Complete();
+                    }
+
+                }
+                else
+                {
+                    return BadRequest("Invalid Charge details");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpPut, Route("update-charge")]
+        public IActionResult UpdateCharge([FromBody] ChargeList model)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                if (model != null)
+                {
+                    using (var scope = new TransactionScope())
+                    {
+                        MySqlHelper sqlHelper = new MySqlHelper();
+                        IEnumerable<Claim> claims = User.Claims;
+                        var userId = claims.Where(c => c.Type == "id").FirstOrDefault().Value;
+
+                        var query = string.Format(@"UPDATE app_charges set effective_to = '{0}', is_active = 'N', updated_by = {1}, updated_on = '{2}' where id = {3}",
+                                         model.effective.AddDays(-1).ToString("yyyy-MM-dd"), userId, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), model.id);
+
+                        DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+                        if (ds != null)
+                        {
+                            query = string.Format(@"INSERT INTO app_charges(property_id, name, charge_type, amount, percentage, effective_from, is_active, created_by, created_on) VALUES({0},'{1}','{2}',{3},{4}, '{5}', '{6}', {7}, '{8}');
+                                         SELECT LAST_INSERT_ID() AS id;",
+                                             model.propertyid, model.name, model.chargetype, model.amount, model.percentage, model.effective.ToString("yyyy-MM-dd"), 'Y', userId, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                            ds = sqlHelper.GetDatasetByMySql(query);
+
+                            if (ds != null)
+                            {
+                                if (ds.Tables.Count > 0)
+                                {
+                                    if (ds.Tables[0].Rows.Count > 0)
+                                    {
+                                        DataRow r = ds.Tables[0].Rows[0];
+                                        model.id = Convert.ToInt32(r["id"].ToString());
+                                        response.Data = model;
+                                        response.ActionStatus = "SUCCESS";
+                                    }
+                                }
+                            }
+                        }
+                        scope.Complete();
+                    }
+
+                }
+                else
+                {
+                    return BadRequest("Invalid Charge details");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpDelete, Route("delete-charge")]
+        public IActionResult DeleteCharge(int id)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                MySqlHelper sqlHelper = new MySqlHelper();
+                string query = string.Empty;
+
+                query = string.Format(@"UPDATE app_charges set is_active = 'N' WHERE id={0}",
+                     id);
+                //
+
+                DataSet ds = sqlHelper.GetDatasetByMySql(query);
+                response.ActionStatus = "SUCCESS";
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpPut, Route("update-property-contact")]
+        public IActionResult UpdatePropertyContact([FromBody] PropertyContact model, int id)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                if (model != null)
+                {
+
+                    MySqlHelper sqlHelper = new MySqlHelper();
+                    string query = string.Empty; ;
+
+                    if (model.status == 0)
+                    {
+                        query = string.Format(@"DELETE FROM property_contacts WHERE contact_id={0} AND property_id={1}",
+                         model.contact, id);
+                    }
+                    else if (model.status == 1)
+                    {
+                        query = string.Format(@"INSERT INTO property_contacts(contact_id,property_id, is_active) 
+                        VALUES({0},{1}, 'Y')",
+                          model.contact, id);
+                    }
+
+
+                    DataSet ds = sqlHelper.GetDatasetByMySql(query);
+                    response.ActionStatus = "SUCCESS";
+
+                }
+                else
+                {
+                    return BadRequest("Invalid property details");
+                }
 
             }
             catch (Exception ex)

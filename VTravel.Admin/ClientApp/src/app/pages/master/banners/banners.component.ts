@@ -22,6 +22,7 @@ export class BannersComponent implements OnInit {
   dialogRef: any;
   destinations: any[];
   properties: any[];
+  classes: any[];
   isAlert = false;
   alertMessage = '';
   alertStatus = '';
@@ -39,6 +40,7 @@ export class BannersComponent implements OnInit {
     this.loadDestinations();
     this.loadProperties();
     this.loadBanners();
+    this.loadClasses();
   }
 
   private loadBanners() {
@@ -59,7 +61,7 @@ export class BannersComponent implements OnInit {
       },
         error => {
           this.isLoading = false;
-          console.log('api/destination/get-list', error)
+          console.log('api/banner/get-list', error)
           if (error.status === 401) {
             this.router.navigate(['auth/login']);
           }
@@ -108,12 +110,38 @@ export class BannersComponent implements OnInit {
         });
   }
 
+  loadClasses() {
+    this.isLoading = true ;
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/banner/get-color-list'
+      , { headers: headers }).subscribe((res: any) => {
+
+        this.isLoading = false;
+
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.classes = res.data;
+          }
+        }
+
+      },
+        error => {
+          this.isLoading = false;
+          console.log('api/banner/get-color-list', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+  }
+
   openBannerNew(bannerDialogNew: TemplateRef<any>) {
 
     this.banner = new BannerList();
     this.banner.show_in_home = 'N';
     this.banner.destination_id = '0';
     this.banner.property_id = '0';
+    this.banner.bannertype = 'Promotion';
     this.dialogRef = this.dialogService.open(
       bannerDialogNew,
       { context: { title: 'Add Banner' } });
@@ -135,7 +163,10 @@ export class BannersComponent implements OnInit {
     this.banner.property_id = ct.property_id;
     this.banner.show_in_home = ct.show_in_home;
     this.banner.active = ct.active;
-
+    this.banner.bannertype = ct.bannertype;
+    this.banner.offertext = ct.offertext;
+    this.banner.offerclass = ct.offerclass;
+    this.banner.coupon = ct.coupon;
 
     this.dialogRef = this.dialogService.open(
       bannerDialog,
@@ -269,8 +300,6 @@ export class BannersComponent implements OnInit {
 
   }
 
-
-
   drop(event: CdkDragDrop<string[]>) {
 
     var banner = this.bannerlist[event.previousIndex];
@@ -298,7 +327,7 @@ export class BannersComponent implements OnInit {
         if (res.actionStatus === 'SUCCESS') {
 
           this.loadingSave = false;
-          this.isAlert = true;
+          this.isAlert = true ;
           this.alertStatus = 'success';
           this.alertMessage = "Data sorted successfully!";
           setTimeout(() => {
@@ -310,7 +339,7 @@ export class BannersComponent implements OnInit {
         else {
 
           this.loadingSave = false;
-          this.isAlert = true;
+          this.isAlert = true ;
           this.alertStatus = 'danger';
           this.alertMessage = "Could not sort data!";
 
@@ -326,7 +355,7 @@ export class BannersComponent implements OnInit {
         error => {
 
           this.loadingSave = false;
-          this.isAlert = true;
+          this.isAlert = true ;
           this.alertStatus = 'danger';
           this.alertMessage = "Could not import data!";
 
@@ -363,7 +392,10 @@ class BannerList {
   destination_id: string ;
   show_in_home: string ;
   active: string ;
-
+  bannertype: string ;
+  offertext: string ;
+  offerclass: string ;
+  coupon: string ;
 }
 class SortData {
   itemId: number;

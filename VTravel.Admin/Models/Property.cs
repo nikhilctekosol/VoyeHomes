@@ -31,7 +31,8 @@ namespace VTravel.Admin.Models
         public int bathroomCount { get; set; }
         public string phone { get; set; }
         public string email { get; set; }
-
+        public string gst { get; set; }
+        public string owner { get; set; }
         public string reserveAllowed { get; set; }
         public string reserveAlert { get; set; }
         public string hideProperty { get; set; }

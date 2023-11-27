@@ -38,9 +38,11 @@ namespace VTravel.Admin.Controllers
                 MySqlHelper sqlHelper = new MySqlHelper();
 
                 var query = string.Format(@"select b.id, image_url, image_alt, b.title, b.description, IFNULL(b.navigate_url, '') navigate_url, b.is_active, show_in_home, IFNULL(b.property_id, 0) property_id
-                                            , IFNULL(b.destination,0) destination_id, IFNULL(p.title, '') property, IFNULL(d.title, '') destination, b.sort_order 
+                                            , IFNULL(b.destination,0) destination_id, IFNULL(p.title, '') property, IFNULL(d.title, '') destination, b.sort_order, b.banner_type, b.offer_text
+                                            , IFNULL(oc.class_name, '') offer_class, IFNULL(b.coupon_code, '') coupon_code
                                             from hero_banner b
                                             left join property p on p.id = b.property_id
+                                            left join offer_classes oc on oc.class_name = b.offer_class
                                             left join destination d on d.id = b.destination where b.is_active = 'Y' order by b.sort_order"
                                    );
 
@@ -65,7 +67,11 @@ namespace VTravel.Admin.Controllers
                             destination_id = r["destination_id"] == DBNull.Value ? "0" : r["destination_id"].ToString(),
                             property = r["property"].ToString(),
                             destination = r["destination"].ToString(),
-                            sort_order = Convert.ToInt32(r["sort_order"])
+                            sort_order = Convert.ToInt32(r["sort_order"]),
+                            bannertype = r["banner_type"].ToString() == "" ? "Promotion" : r["banner_type"].ToString(),
+                            offertext = r["offer_text"].ToString(),
+                            offerclass = r["offer_class"].ToString(),
+                            coupon = r["coupon_code"].ToString()
                         }
                         );
 
@@ -99,7 +105,7 @@ namespace VTravel.Admin.Controllers
                 BannerList bannerlist = new BannerList();
                 MySqlHelper sqlHelper = new MySqlHelper();
 
-                var query = string.Format(@"select b.id, image_url, image_alt, b.title, b.description, b.navigate_url, b.is_active, show_in_home, b.property_id, b.destination destination_id, p.title property, d.title destination from hero_banner b
+                var query = string.Format(@"select b.id, image_url, image_alt, b.title, b.description, b.navigate_url, b.is_active, show_in_home, b.property_id, b.destination destination_id, p.title property, d.title destination, b.banner_type, b.offer_text from hero_banner b
                                             left join property p on p.id = b.property_id
                                             left join destination d on d.id = b.destination where b.is_active = 'Y' and b.id = {0}", id);
 
@@ -122,7 +128,9 @@ namespace VTravel.Admin.Controllers
                         property_id = r["property_id"].ToString(),
                         destination_id = r["destination_id"].ToString(),
                         property = r["property"].ToString(),
-                        destination = r["destination"].ToString()
+                        destination = r["destination"].ToString(),
+                        bannertype = r["banner_type"].ToString(),
+                        offertext = r["offer_text"].ToString()
 
                     };
 
@@ -162,10 +170,11 @@ namespace VTravel.Admin.Controllers
                     var userId = claims.Where(c => c.Type == "id").FirstOrDefault().Value;
 
                     var query = string.Format(@"SELECT MAX(sort_order) INTO @sortorder FROM hero_banner;
-                                        INSERT INTO hero_banner(title, description, image_url, image_alt, property_id, destination, is_active, show_in_home, create_by, created_on, navigate_url, sort_order)
-                                        VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}', '{10}', @sortorder + 1);
+                                        INSERT INTO hero_banner(title, description, image_url, image_alt, property_id, destination, is_active, show_in_home, create_by, created_on, navigate_url, sort_order, banner_type, offer_text, offer_class, coupon_code)
+                                        VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}', '{10}', @sortorder + 1, '{11}', '{12}', '{13}', '{14}');
                                         SELECT LAST_INSERT_ID() AS id;",
-                                     model.title, model.description, model.image_url, model.image_alt, model.property_id, model.destination_id, 'Y', model.show_in_home, userId, DateTime.Today.ToString("yyyy-MM-dd"), model.navigate_url);
+                                     model.title, model.description, model.image_url, model.image_alt, model.property_id, model.destination_id, 'Y', model.show_in_home, userId, DateTime.Today.ToString("yyyy-MM-dd"), model.navigate_url,
+                                     model.bannertype, model.offertext, model.offerclass, model.coupon);
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
                     if (ds != null)
@@ -217,8 +226,9 @@ namespace VTravel.Admin.Controllers
                     var userId = claims.Where(c => c.Type == "id").FirstOrDefault().Value;
 
                     var query = string.Format(@"UPDATE hero_banner SET title='{0}',description='{1}',image_url='{2}',image_alt='{3}',property_id='{4}',destination='{5}'
-                                            ,show_in_home='{6}',updated_by='{7}',updated_on='{8}', navigate_url = '{10}' WHERE id={9}",
-                                     model.title, model.description, model.image_url, model.image_alt, model.property_id, model.destination_id, model.show_in_home, userId, DateTime.Today.ToString("yyyy-MM-dd"), id, model.navigate_url);
+                                            ,show_in_home='{6}',updated_by='{7}',updated_on='{8}', navigate_url = '{10}', banner_type = '{11}', offer_text = '{12}', offer_class = '{13}', coupon_code = '{14}' WHERE id={9}",
+                                     model.title, model.description, model.image_url, model.image_alt, model.property_id, model.destination_id, model.show_in_home, userId, DateTime.Today.ToString("yyyy-MM-dd"), id, model.navigate_url,
+                                     model.bannertype, model.offertext, model.offerclass, model.coupon);
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
                     response.ActionStatus = "SUCCESS";
@@ -324,6 +334,56 @@ namespace VTravel.Admin.Controllers
                 {
                     return BadRequest("Invalid sort banner");
                 }
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
+
+        [HttpGet, Route("get-color-list")]
+        public IActionResult GetColorList()
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                List<OfferClass> classes = new List<OfferClass>();
+                MySqlHelper sqlHelper = new MySqlHelper();
+
+                var query = string.Format(@"select id,class_text,class_name FROM offer_classes");
+
+                DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+
+                    classes.Add(
+                        new OfferClass
+                        {
+                            id = Convert.ToInt32(r["id"].ToString()),
+                            classtext = r["class_text"].ToString(),
+                            classname = r["class_name"].ToString()
+                        }
+                        );
+
+                }
+
+
+                response.Data = classes;
+                response.ActionStatus = "SUCCESS";
+
+
 
             }
             catch (Exception ex)

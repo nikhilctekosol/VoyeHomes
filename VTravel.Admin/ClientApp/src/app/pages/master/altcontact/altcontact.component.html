@@ -1,0 +1,178 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-10">Alternate Contacts</div>
+      <div class="col-md-2">
+        <button type="submit" (click)="openContactNew(contactDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+          <nb-icon icon="plus-outline"></nb-icon>ADD
+        </button>
+      </div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <nb-card *ngFor="let item of contactlist">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-9">{{item.name}}</div>
+          <div class="col-md-2">
+            <button type="button" *ngIf="item.isactive=='Y'" (click)="openDContactDelete(deleteContactDialog,item.id)" nbButton class="btn btn-sm btn-outline-danger">
+              DE-ACTIVATE
+            </button>
+            <button type="button" *ngIf="item.isactive=='N'" (click)="openAContactDelete(activateContactDialog,item.id)" nbButton class="btn btn-sm btn-outline-primary">
+              ACTIVATE
+            </button>
+          </div>
+          <div class="col-md-1">
+            <button type="button" (click)="openContact(contactDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+              <nb-icon icon="edit-outline"></nb-icon>
+            </button>
+
+          </div>
+
+        </div>
+
+      </nb-card-header>
+
+    </nb-card>
+  </nb-card-body>
+</nb-card>
+
+<ng-template #contactDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <form (ngSubmit)="onContactNewSubmit()" #mainContactNewForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">Contact Name</label>
+          <input type="text" nbInput fullWidth placeholder="Contact Name"
+                 autocomplete="off"
+                 name="name"
+                 [(ngModel)]="contact.name"
+                 required #name="ngModel"
+                 [status]="name.dirty ? (name.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Contact Number</label>
+          <input type="text" nbInput fullWidth placeholder="Contact Number"
+                 autocomplete="off"
+                 name="contactno"
+                 [(ngModel)]="contact.contactno"
+                 required #contactno="ngModel"
+                 [status]="contactno.dirty ? (contactno.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainContactNewForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #contactDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <form (ngSubmit)="onContactSubmit()" #mainContactForm="ngForm" novalidate>
+        <div class="form-group">
+          <label class="label">Contact Name</label>
+          <input type="text" nbInput fullWidth placeholder="Contact Name"
+                 autocomplete="off"
+                 name="name"
+                 [(ngModel)]="contact.name"
+                 required #name="ngModel"
+                 [status]="name.dirty ? (name.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">Contact Number</label>
+          <input type="text" nbInput fullWidth placeholder="Contact Number"
+                 autocomplete="off"
+                 name="contactno"
+                 [(ngModel)]="contact.contactno"
+                 required #contactno="ngModel"
+                 [status]="contactno.dirty ? (contactno.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainContactForm.invalid"
+                [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteContactDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to de-activate this contact?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-5">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-7">
+          <button type="button" (click)="deleteContact(1)" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DE-ACTIVATE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #activateContactDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to activate this contact?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deleteContact(2)" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="checkmark-circle-outline"></nb-icon>ACTIVATE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

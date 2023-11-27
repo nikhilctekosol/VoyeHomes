@@ -5,7 +5,7 @@ import { ThemeModule } from '../../@theme/theme.module';
 import { MasterRoutingModule, routedComponents } from './master-routing.module';
 import {
   NbCardModule, NbSpinnerModule, NbDialogModule, NbAlertModule, NbAutocompleteModule,
-  NbInputModule, NbSelectModule, NbTabsetModule, NbIconModule, NbCheckboxModule, NbToastrModule
+  NbInputModule, NbSelectModule, NbTabsetModule, NbIconModule, NbCheckboxModule, NbToastrModule, NbDatepickerModule
 } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -31,7 +31,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
     NbCheckboxModule,
     GoogleMapsModule,
     NbToastrModule,
-    NbAutocompleteModule
+    NbAutocompleteModule,
+    NbDatepickerModule
   ],
   declarations: [
     ...routedComponents,

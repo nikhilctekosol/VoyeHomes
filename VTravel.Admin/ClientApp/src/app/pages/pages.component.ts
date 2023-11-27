@@ -131,6 +131,18 @@ export class PagesComponent {
                   title: 'Rate Plan',
                   link: '/pages/master/rateplan',
                 },
+                {
+                  title: 'Owners',
+                  link: '/pages/master/owners',
+                },
+                {
+                  title: 'TDS',
+                  link: '/pages/master/tds',
+                },
+                {
+                  title: 'Alt. Contacts',
+                  link: '/pages/master/altcontact',
+                },
               ],
 
             },

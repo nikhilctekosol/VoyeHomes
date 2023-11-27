@@ -204,6 +204,58 @@
                   </div>
 
                   <div class="form-group">
+                    <nb-checkbox [checked]="property.gst == '1'" (checkedChange)="togglegst($event)">
+                      GST Applicable?
+                    </nb-checkbox>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="label">Owner</label>
+                    <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                               name="owner"
+                               [(ngModel)]="property.owner"
+                               required #owner="ngModel"
+                               [status]="owner.dirty ? (owner.invalid  ? 'danger' : 'success') : 'basic'">
+                      <nb-option value={{item.id}} *ngFor="let item of owners">{{item.name}}</nb-option>
+
+
+                    </nb-select>
+                  </div>
+
+                  <!--<div class="form-group" *ngIf="property.gst=='1'">
+                    <label class="label">GST No.</label>
+                    <input type="text" nbInput fullWidth placeholder="GST No."
+                           autocomplete="off"
+                           name="gstno"
+                           [(ngModel)]="property.gstno"
+                           required #gstno="ngModel"
+                           [status]="gstno.dirty ? (gstno.invalid  ? 'danger' : 'success') : 'basic'">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="label">Type of Ownership</label>
+                    <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                               name="ownershiptype"
+                               [(ngModel)]="property.ownershiptype"
+                               required #ownershiptype="ngModel"
+                               [status]="ownershiptype.dirty ? (ownershiptype.invalid  ? 'danger' : 'success') : 'basic'">
+                      <nb-option value="INDIVIDUAL">Individual</nb-option>
+                      <nb-option value="COMPANY">Company</nb-option>
+
+                    </nb-select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="label">PAN No.</label>
+                    <input type="text" nbInput fullWidth placeholder="PAN No."
+                           autocomplete="off"
+                           name="pan"
+                           [(ngModel)]="property.pan"
+                           required #pan="ngModel"
+                           [status]="pan.dirty ? (pan.invalid  ? 'danger' : 'success') : 'basic'">
+                  </div>-->
+
+                  <div class="form-group">
                     <label class="label">Reservation Alert</label>
                     <textarea nbInput fullWidth placeholder="Reservation Alert"
                               autocomplete="off"
@@ -229,14 +281,14 @@
                   </div>
 
                   <!--<div class="form-group">
-            <label class="label">Login Email</label>
-            <input type="email" nbInput fullWidth placeholder="Login Email"
-                   autocomplete="off"
-                   name="userName"
-                   [(ngModel)]="property.userName"
-                   required #userName="ngModel"
-                   [status]="userName.dirty ? (userName.invalid  ? 'danger' : 'success') : 'basic'">
-          </div>-->
+                    <label class="label">Login Email</label>
+                    <input type="email" nbInput fullWidth placeholder="Login Email"
+                           autocomplete="off"
+                           name="userName"
+                           [(ngModel)]="property.userName"
+                           required #userName="ngModel"
+                           [status]="userName.dirty ? (userName.invalid  ? 'danger' : 'success') : 'basic'">
+                  </div>-->
 
                   <div class="form-group">
                     <nb-checkbox [checked]="property.hideProperty == '1'" (checkedChange)="togglehideprop($event)">
@@ -383,6 +435,22 @@
                 </nb-card-body>
               </nb-card>
             </form>
+
+            <nb-card>
+              <nb-card-header>
+                <div class="row">
+                  <div class="col-md-10">Alternate Contacts</div>
+                </div>
+
+              </nb-card-header>
+              <nb-card-body>
+                <div class="form-group" *ngFor="let item of contactlist">
+                  <nb-checkbox [checked]="item.status==1" (checkedChange)="togglecontact($event,item.id)">
+                    {{item.name}} - {{item.contactno}}
+                  </nb-checkbox>
+                </div>
+              </nb-card-body>
+            </nb-card>
 
           </nb-tab>
           <nb-tab tabTitle="Media">
@@ -727,11 +795,11 @@
 
                   </div>
 
-                <!--</nb-card-body>
+                  <!--</nb-card-body>
 
-              </nb-card>
-              <nb-card>
-                <nb-card-body>-->
+                  </nb-card>
+                  <nb-card>
+                    <nb-card-body>-->
                   <!--<div class="col-md-4" *ngIf="profitsharing.mode == 'Fixed Price'">
                     <nb-card-body>
                       <div class="form-group">
@@ -817,6 +885,54 @@
                 </nb-card-body>
               </nb-card>
             </form>
+          </nb-tab>
+          <nb-tab tabTitle="Applicable Charges">
+            <nb-card>
+              <nb-card-header>
+                <div class="row">
+                  <div class="col-md-10">Applicable Charges</div>
+                  <div class="col-md-2">
+
+                    <button type="submit" (click)="openChargeNew(chargeDialogNew)" nbButton class="btn btn-sm btn-outline-primary">
+                      <nb-icon icon="plus-outline"></nb-icon>ADD
+                    </button>
+                  </div>
+
+                </div>
+
+              </nb-card-header>
+              <nb-card-body>
+
+                <nb-card *ngFor="let item of chargelist">
+                  <nb-card-header>
+                    <div class="row">
+                      <div class="col-md-10">{{item.name}}</div>
+                      <div class="col-md-1">
+                        <button type="button" (click)="openChargeDelete(deleteChargeDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+                          <nb-icon icon="trash-outline"></nb-icon>
+                        </button>
+                      </div>
+                      <div class="col-md-1">
+                        <button type="button" (click)="openCharge(chargeDialog,item.id)" nbButton class="btn btn-sm btn-outline-secondary">
+                          <nb-icon icon="edit-outline"></nb-icon>
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  </nb-card-header>
+                  <!--<nb-card-body>
+                    <div class="row">
+                      <div class="col-md-6">{{item.typeName}}</div>
+                      <div class="col-md-6">{{item.description}}</div>
+                    </div>
+                  </nb-card-body>-->
+
+                </nb-card>
+              </nb-card-body>
+
+            </nb-card>
           </nb-tab>
         </nb-tabset>
       </nb-card-body>
@@ -1009,7 +1125,7 @@
             </button>
           </div>
         </div>
-        
+
       </div>
 
     </nb-card-body>
@@ -1296,37 +1412,37 @@
                  [status]="maxchildren.dirty ? (maxchildren.invalid  ? 'danger' : 'success') : 'basic'">
         </div>
         <!--<div class="form-group">
-    <label class="label">Rate Slab</label>
-  </div>
-  <div class="form-group">
-    <label class="label">0 - 6 Years</label>
-    <input type="number" nbInput fullWidth placeholder="0-6 years"
-           autocomplete="off"
-           name="years06"
-           [(ngModel)]="room.years06"
-           required #years06="ngModel"
-           [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
+          <label class="label">Rate Slab</label>
+        </div>
+        <div class="form-group">
+          <label class="label">0 - 6 Years</label>
+          <input type="number" nbInput fullWidth placeholder="0-6 years"
+                 autocomplete="off"
+                 name="years06"
+                 [(ngModel)]="room.years06"
+                 required #years06="ngModel"
+                 [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
 
-  </div>
-  <div class="form-group">
-    <label class="label">6 - 12 Years</label>
-    <input type="number" nbInput fullWidth placeholder="6-12 years"
-           autocomplete="off"
-           name="years612"
-           [(ngModel)]="room.years612"
-           required #years612="ngModel"
-           [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">6 - 12 Years</label>
+          <input type="number" nbInput fullWidth placeholder="6-12 years"
+                 autocomplete="off"
+                 name="years612"
+                 [(ngModel)]="room.years612"
+                 required #years612="ngModel"
+                 [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
 
-  </div>
-  <div class="form-group">
-    <label class="label">Above 12 Years</label>
-    <input type="number" nbInput fullWidth placeholder="Above 12 years"
-           autocomplete="off"
-           name="years12"
-           [(ngModel)]="room.years12"
-           required #years12="ngModel"
-           [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
-  </div>-->
+        </div>
+        <div class="form-group">
+          <label class="label">Above 12 Years</label>
+          <input type="number" nbInput fullWidth placeholder="Above 12 years"
+                 autocomplete="off"
+                 name="years12"
+                 [(ngModel)]="room.years12"
+                 required #years12="ngModel"
+                 [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>-->
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewRoomForm.invalid"
                 [nbSpinner]="loadingRoomSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
           <nb-icon icon="save-outline"></nb-icon>SAVE
@@ -1448,37 +1564,37 @@
                  [status]="maxchildren.dirty ? (maxchildren.invalid  ? 'danger' : 'success') : 'basic'">
         </div>
         <!--<div class="form-group">
-    <label class="label">Rate Slab</label>
-  </div>
-  <div class="form-group">
-    <label class="label">0 - 6 Years</label>
-    <input type="number" nbInput fullWidth placeholder="0-6 years"
-           autocomplete="off"
-           name="years06"
-           [(ngModel)]="room.years06"
-           required #years06="ngModel"
-           [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
+          <label class="label">Rate Slab</label>
+        </div>
+        <div class="form-group">
+          <label class="label">0 - 6 Years</label>
+          <input type="number" nbInput fullWidth placeholder="0-6 years"
+                 autocomplete="off"
+                 name="years06"
+                 [(ngModel)]="room.years06"
+                 required #years06="ngModel"
+                 [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
 
-  </div>
-  <div class="form-group">
-    <label class="label">6 - 12 Years</label>
-    <input type="number" nbInput fullWidth placeholder="6-12 years"
-           autocomplete="off"
-           name="years612"
-           [(ngModel)]="room.years612"
-           required #years612="ngModel"
-           [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+        <div class="form-group">
+          <label class="label">6 - 12 Years</label>
+          <input type="number" nbInput fullWidth placeholder="6-12 years"
+                 autocomplete="off"
+                 name="years612"
+                 [(ngModel)]="room.years612"
+                 required #years612="ngModel"
+                 [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
 
-  </div>
-  <div class="form-group">
-    <label class="label">Above 12 Years</label>
-    <input type="number" nbInput fullWidth placeholder="Above 12 years"
-           autocomplete="off"
-           name="years12"
-           [(ngModel)]="room.years12"
-           required #years12="ngModel"
-           [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
-  </div>-->
+        </div>
+        <div class="form-group">
+          <label class="label">Above 12 Years</label>
+          <input type="number" nbInput fullWidth placeholder="Above 12 years"
+                 autocomplete="off"
+                 name="years12"
+                 [(ngModel)]="room.years12"
+                 required #years12="ngModel"
+                 [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>-->
 
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainRoomForm.invalid"
                 [nbSpinner]="loadingRoomSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
@@ -1537,6 +1653,192 @@
         <div class="col-md-6">
           <button type="button" (click)="deleteProfit()" nbButton class="btn btn-sm btn-outline-primary"
                   [nbSpinner]="loadingProfitDelete" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+            <nb-icon icon="trash-outline"></nb-icon>DELETE
+          </button>
+        </div>
+      </div>
+
+
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #chargeDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onNewChargeSubmit()" #mainNewChargeForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <label class="label">Charge Name</label>
+          <input type="text" nbInput fullWidth placeholder="Charge Name"
+                 autocomplete="off"
+                 name="name"
+                 [(ngModel)]="appcharge.name"
+                 required #name="ngModel"
+                 [status]="name.dirty ? (name.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6" style="margin-top: 35px;">
+            <input type="radio" checked [(ngModel)]="appcharge.chargetype" value="Amount" id="rdAmount" name="rdChargeType" />
+            <label for="rdAmount"> Amount</label>
+          </div>
+          <div class="col-md-6" style="margin-top:35px;">
+
+            <input type="radio" [(ngModel)]="appcharge.chargetype" value="Percentage" id="rdPerc" name="rdChargeType" />
+            <label for="rdPerc"> Percentage</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="appcharge.chargetype == 'Amount'">
+          <label class="label">Amount</label>
+          <input type="number" nbInput fullWidth placeholder="Amount"
+                 autocomplete="off"
+                 name="amount"
+                 [(ngModel)]="appcharge.amount"
+                 required #amount="ngModel"
+                 [status]="amount.dirty ? (amount.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group" *ngIf="appcharge.chargetype == 'Percentage'">
+          <label class="label">Percentage</label>
+          <input type="number" nbInput fullWidth placeholder="Percentage"
+                 autocomplete="off"
+                 name="percentage"
+                 [(ngModel)]="appcharge.percentage"
+                 required #percentage="ngModel" (change)="validateFields()"
+                 [status]="percentage.dirty ? (percentage.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Effective From</label>
+          <input nbInput placeholder="Effective From" name="effective"
+                 [nbDatepicker]="from" [(ngModel)]="appcharge.effective"
+                 class="date-picker-box input-rectangle" [fullWidth]="true"
+                 readonly="readonly" required #effective="ngModel"
+                 [status]="effective.dirty ? (effective.invalid  ? 'danger' : 'success') : 'basic'">
+          <nb-datepicker #from></nb-datepicker>
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewChargeForm.invalid"
+                [nbSpinner]="loadingChargeSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #chargeDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="onChargeSubmit()" #mainChargeForm="ngForm" novalidate>
+
+        <div class="form-group">
+          <label class="label">Charge Name</label>
+          <input type="text" nbInput fullWidth placeholder="Charge Name"
+                 autocomplete="off"
+                 name="name"
+                 [(ngModel)]="appcharge.name"
+                 required #name="ngModel"
+                 [status]="name.dirty ? (name.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-6" style="margin-top: 35px;">
+            <input type="radio" checked [(ngModel)]="appcharge.chargetype" value="Amount" id="rdAmount" name="rdChargeType" />
+            <label for="rdAmount"> Amount</label>
+          </div>
+          <div class="col-md-6" style="margin-top:35px;">
+
+            <input type="radio" [(ngModel)]="appcharge.chargetype" value="Percentage" id="rdPerc" name="rdChargeType" />
+            <label for="rdPerc"> Percentage</label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="appcharge.chargetype == 'Amount'">
+          <label class="label">Amount</label>
+          <input type="number" nbInput fullWidth placeholder="Amount"
+                 autocomplete="off"
+                 name="amount"
+                 [(ngModel)]="appcharge.amount"
+                 required #amount="ngModel"
+                 [status]="amount.dirty ? (amount.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group" *ngIf="appcharge.chargetype == 'Percentage'">
+          <label class="label">Percentage</label>
+          <input type="number" nbInput fullWidth placeholder="Percentage"
+                 autocomplete="off"
+                 name="percentage"
+                 [(ngModel)]="appcharge.percentage"
+                 required #percentage="ngModel" (change)="validateFields()"
+                 [status]="percentage.dirty ? (percentage.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group">
+          <label class="label">Effective From</label>
+          <input nbInput placeholder="Effective From" name="effective"
+                 [nbDatepicker]="from" [(ngModel)]="appcharge.effective"
+                 class="date-picker-box input-rectangle" [fullWidth]="true"
+                 readonly="readonly" required #effective="ngModel"
+                 [status]="effective.dirty ? (effective.invalid  ? 'danger' : 'success') : 'basic'">
+          <nb-datepicker #from (dateChange)="validateFields()"></nb-datepicker>
+        </div>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainChargeForm.invalid"
+                [nbSpinner]="loadingChargeSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #deleteChargeDialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{data.title}}
+    </nb-card-header>
+    <nb-card-body>
+      Are you sure to delete this Applicable Charge Details?
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-md-6">
+          <button type="button" nbButton class="btn btn-sm btn-outline-secondary pop-close-btn" (click)="ref.close()">
+            <nb-icon icon="slash-outline"></nb-icon>CANCEL
+          </button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="deletecharge()" nbButton class="btn btn-sm btn-outline-primary"
+                  [nbSpinner]="loadingChargeDelete" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
             <nb-icon icon="trash-outline"></nb-icon>DELETE
           </button>
         </div>

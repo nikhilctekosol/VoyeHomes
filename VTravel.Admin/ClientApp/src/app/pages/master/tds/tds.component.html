@@ -1,0 +1,72 @@
+<nb-card>
+  <nb-card-header>
+    <div class="row">
+      <div class="col-md-10">TDS Details</div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <form (ngSubmit)="onTDSSubmit()" #mainTDSForm="ngForm" novalidate>
+      <div class="form-group row">
+
+        <div class="col-4">
+          <label class="label">Type of Ownership</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="ownershiptype"
+                     [(ngModel)]="tds.ownershiptype"
+                     required #ownershiptype="ngModel"
+                     [status]="ownershiptype.dirty ? (ownershiptype.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value="INDIVIDUAL">Individual</nb-option>
+            <nb-option value="COMPANY">Company</nb-option>
+
+          </nb-select>
+        </div>
+
+        <div class="col-4">
+          <label class="label">Percentage</label>
+          <input type="number" nbInput fullWidth placeholder="Percentage"
+                 autocomplete="off"
+                 name="percentage"
+                 [(ngModel)]="tds.percentage"
+                 required #percentage="ngModel" (change)="validateFields()"
+                 [status]="percentage.dirty ? (percentage.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="col-4">
+          <label class="label">Effective From</label>
+          <input nbInput placeholder="Effective From" name="effective"
+                 [nbDatepicker]="from" [(ngModel)]="tds.effective"
+                 class="date-picker-box input-rectangle" [fullWidth]="true"
+                 readonly="readonly" required #effective="ngModel"
+                 [status]="effective.dirty ? (effective.invalid  ? 'danger' : 'success') : 'basic'">
+          <nb-datepicker #from (dateChange)="validateFields()"></nb-datepicker>
+        </div>
+
+      </div>
+      <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainTDSForm.invalid"
+              [nbSpinner]="loadingSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+        <nb-icon icon="save-outline"></nb-icon>SAVE
+      </button>
+    </form>
+
+  </nb-card-body>
+  <nb-card-body *ngIf="tdslist.length>0">
+    <div class="col-md-12">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Type of Ownership</th>
+            <th scope="col">Percentage</th>
+            <th scope="col">Effective From</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of tdslist">
+            <td scope="row">{{item.ownershiptype}}</td>
+            <td scope="row">{{item.percentage | number : '1.2-2'}}</td>
+            <td scope="row">{{item.effective}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

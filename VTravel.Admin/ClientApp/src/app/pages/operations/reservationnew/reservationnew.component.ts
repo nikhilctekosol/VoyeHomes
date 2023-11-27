@@ -61,7 +61,7 @@ export class ReservationnewComponent implements OnInit {
   filteredOptions$: Observable<any[]>;
   defaultValue: any;
   selectedPropertyName: string ;
-  isDisabled: boolean = true;
+  isDisabled: boolean = true ;
   countries: any[];
 
   @ViewChild('autoInput') input;
@@ -667,7 +667,7 @@ export class ReservationnewComponent implements OnInit {
   }
 
   onAddClick() {
-    this.loadingSave = true;
+    this.loadingSave = true ;
     this.roomData.fromDate = this.formatDate(this.roomData.fromDate);
     this.roomData.toDate = this.formatDate(this.roomData.toDate);
     if (this.validateCheckinCheckoutDates(new Date(this.roomData.fromDate), new Date(this.roomData.toDate))) {

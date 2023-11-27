@@ -1,0 +1,11 @@
+CREATE TABLE `vtravel_uat`.`offer_classes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `class_text` VARCHAR(45) NULL,
+  `class_name` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+
+
+INSERT INTO `vtravel_uat`.`offer_classes` (`class_text`, `class_name`) VALUES ('Gold', 'golden');
+INSERT INTO `vtravel_uat`.`offer_classes` (`class_text`, `class_name`) VALUES ('Blue', 'blue');
+INSERT INTO `vtravel_uat`.`offer_classes` (`class_text`, `class_name`) VALUES ('Red', 'red');
+INSERT INTO `vtravel_uat`.`offer_classes` (`class_text`, `class_name`) VALUES ('Light Blue', 'light-blue');

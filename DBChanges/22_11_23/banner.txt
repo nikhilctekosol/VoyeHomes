@@ -1,0 +1,3 @@
+ALTER TABLE `vtravel_uat`.`hero_banner` 
+ADD COLUMN `offer_class` VARCHAR(20) NULL AFTER `offer_text`,
+ADD COLUMN `coupon_code` VARCHAR(50) NULL AFTER `offer_class`;

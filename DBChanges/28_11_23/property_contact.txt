@@ -1,0 +1,6 @@
+CREATE TABLE `vtravel_uat`.`property_contacts` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `property_id` INT NULL,
+  `contact_id` INT NULL,
+  `is_active` VARCHAR(1) NULL,
+  PRIMARY KEY (`id`));

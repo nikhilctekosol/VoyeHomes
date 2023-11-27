@@ -12,6 +12,9 @@ import { BookingChannelsComponent } from './booking-channels/booking-channels.co
 import { UsersComponent } from './users/users.component';
 import { BannersComponent } from './banners/banners.component';
 import { RateplanComponent } from './rateplan/rateplan.component';
+import { OwnersComponent } from './owners/owners.component';
+import { TdsComponent } from './tds/tds.component';
+import { AltcontactComponent } from './altcontact/altcontact.component';
 
 const routes: Routes = [{
   path: '',
@@ -56,6 +59,18 @@ const routes: Routes = [{
     {
       path: 'rateplan',
       component: RateplanComponent,
+    },
+    {
+      path: 'owners',
+      component: OwnersComponent,
+    },
+    {
+      path: 'tds',
+      component: TdsComponent,
+    },
+    {
+      path: 'altcontact',
+      component: AltcontactComponent,
     }
    // {
   //    path: 'view-request/:id',
@@ -81,5 +96,8 @@ export const routedComponents = [
   BookingChannelsComponent,
   UsersComponent,
   BannersComponent,
-  RateplanComponent
+  RateplanComponent,
+  OwnersComponent,
+  TdsComponent,
+  AltcontactComponent
 ];

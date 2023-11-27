@@ -23,6 +23,7 @@ export class PropertyComponent implements OnInit  {
   roomDialogRef: any;
   imageDialogRef: any;
   profitdialogRef: any;
+  chargeDialogRef: any;
   propertyImage=new PropertyImage();
   aboutEditMode = false;
   thumbnailEditMode = false;
@@ -34,17 +35,23 @@ export class PropertyComponent implements OnInit  {
   loadingAboutSave = false;
   loadingStatusSave = false;
   loadingImageDelete = false;
+  loadingChargeSave = false;
   loadingDelete = false;
   loadingAttributeSave = false;
   loadingPriceSave = false;
   loadingRoomSave = false;
   loadingProfitSave = false;
   loadingProfitDelete = false;
+  loadingChargeDelete = false;
   isAlert = false;
   alertMessage = '';
   alertStatus = '';
   property = new Property();
   room = new Room();
+  appcharge = new AppCharges();
+  altcontact = new AltContact();
+  chargelist: any[];
+  contactlist: any[];
   propertyAttribute = new PropertyAttribute();
   propertyPrice = new PropertyPrice();
   prices: any[];
@@ -73,6 +80,8 @@ export class PropertyComponent implements OnInit  {
   profitsharing = new ProfitSharing();
   channels: any[];
 
+  owners: any[];
+
   constructor(private http: HttpClient, private authService: NbAuthService,
     private cd: ChangeDetectorRef, private router: Router,
     private r: ActivatedRoute, private dialogService: NbDialogService, private toastrService: NbToastrService) {
@@ -91,7 +100,7 @@ export class PropertyComponent implements OnInit  {
     this.loadDestinations();
     this.loadProperty();
     this.loadAttributesAll();
-
+    this.loadOwners();
     // this.occupancylist = [
     //  {
     //    id: '1',
@@ -317,6 +326,8 @@ export class PropertyComponent implements OnInit  {
           this.profitsharing.include_food = '0';
           this.profitsharing.include_extra = '0';
           this.profitsharing.taxless_amount = '0';
+          this.loadCharges();
+          this.loadContacts();
         }
 
       },
@@ -500,6 +511,52 @@ export class PropertyComponent implements OnInit  {
 
   }
 
+  loadCharges() {
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/property/get-charge-list?id=' + this.property.id
+      , { headers: headers }).subscribe((res: any) => {
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.chargelist = res.data;
+          }
+        }
+
+      },
+        error => {
+
+          console.log('api/property/get-tag-list', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
+  }
+
+  loadContacts() {
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/contact/get-active-list?id=' + this.property.id
+      , { headers: headers }).subscribe((res: any) => {
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.contactlist = res.data;
+          }
+        }
+
+      },
+        error => {
+
+          console.log('api/property/get-tag-list', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
+  }
+
   private loadBookingChannels() {
 
     this.isLoading = true ;
@@ -527,12 +584,49 @@ export class PropertyComponent implements OnInit  {
 
   }
 
+  loadOwners() {
+
+    this.isLoading = true ;
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/owner/get-list'
+      , { headers: headers }).subscribe((res: any) => {
+
+        this.isLoading = false;
+
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.owners = res.data;
+
+          }
+        }
+
+      },
+        error => {
+          this.isLoading = false;
+          console.log('api/owner/get-list', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
+  }
+
   togglehideprop(checked: boolean) {
     if (checked) {
       this.property.hideProperty = '1';
     }
     else {
       this.property.hideProperty = '0';
+    }
+  }
+
+  togglegst(checked: boolean) {
+    if (checked) {
+      this.property.gst = '1';
+    }
+    else {
+      this.property.gst = '0';
     }
   }
 
@@ -1560,7 +1654,7 @@ export class PropertyComponent implements OnInit  {
     this.deleteDialogRef = this.dialogService.open(
       deleteRoomDialog,
       { context: { title: 'Delete Room' } });
-  }pp
+  }
   onNewRoomSubmit() {
 
     this.loadingRoomSave = true ;
@@ -1898,6 +1992,252 @@ export class PropertyComponent implements OnInit  {
 
         });
   }
+
+  openChargeNew(chargeDialogNew: TemplateRef<any>) {
+    this.appcharge = new AppCharges();
+    this.appcharge.id = 0;
+    this.appcharge.propertyid = this.property.id;
+    this.appcharge.chargetype = 'Amount';
+    this.chargeDialogRef = this.dialogService.open(
+      chargeDialogNew,
+      { context: { title: 'Add Charge' } });
+  }
+
+  openCharge(chargeDialog: TemplateRef<any>, id) {
+
+    let obj = this.chargelist.find(_obj => _obj.id == id);
+
+    this.appcharge = new AppCharges();
+
+    this.appcharge.id = id;
+    this.appcharge.propertyid = obj.propertyid;
+    this.appcharge.name = obj.name;
+    this.appcharge.chargetype = obj.chargetype;
+    this.appcharge.amount = obj.amount;
+    this.appcharge.percentage = obj.percentage;
+    this.appcharge.effective = obj.effective;
+
+    this.chargeDialogRef = this.dialogService.open(
+      chargeDialog,
+      { context: { title: 'Update Charge' } });
+
+
+  }
+
+  openChargeDelete(deleteChargeDialog: TemplateRef<any>, id) {
+
+    this.appcharge = new AppCharges();
+    this.appcharge.id = id;
+
+    this.deleteDialogRef = this.dialogService.open(
+      deleteChargeDialog,
+      { context: { title: 'Delete Applicable Charge' } });
+  }
+
+  onNewChargeSubmit() {
+    if (this.validateFields()) {
+      this.loadingChargeSave = true ;
+
+      let headers = new HttpHeaders().set("Authorization", "Bearer " +
+        this.token).set("Content-Type", "application/json");
+
+      this.appcharge.propertyid = this.property.id;
+      this.appcharge.effective = this.formatDate(this.appcharge.effective);
+
+      this.http.post('api/property/create-charge'
+        , this.appcharge, { headers: headers }).subscribe((res: any) => {
+          this.loadingChargeSave = false;
+
+          if (res.actionStatus === 'SUCCESS') {
+
+            this.loadCharges();
+            this.loadingChargeSave = false;
+            this.toast('Success', 'Data saved successfully!', 'success');
+            this.chargeDialogRef.close();
+          }
+          else {
+
+            this.loadingChargeSave = false;
+            this.toast('Error', 'Could not save data!', 'danger');
+
+
+          }
+
+        },
+          error => {
+
+            this.loadingChargeSave = false;
+            this.toast('Error', 'Could not save data!', 'danger');
+
+            console.log('api/property/create-charge', error);
+            if (error.status === 401) {
+              this.router.navigate(['auth/login']);
+            }
+
+          });
+    }
+  }
+
+  onChargeSubmit() {
+    if (this.validateFields()) {
+      this.loadingChargeSave = true ;
+
+      let headers = new HttpHeaders().set("Authorization", "Bearer " +
+        this.token).set("Content-Type", "application/json");
+
+      this.appcharge.effective = this.formatDate(this.appcharge.effective);
+
+      this.http.put('api/property/update-charge?'
+        , this.appcharge, { headers: headers }).subscribe((res: any) => {
+
+          if (res.actionStatus === 'SUCCESS') {
+
+            this.loadCharges();
+            this.loadingChargeSave = false;
+            this.toast('Success', 'Data saved successfully!', 'success');
+            this.chargeDialogRef.close();
+          }
+          else {
+
+            this.loadingChargeSave = false;
+            this.toast('Error', 'Could not save data!', 'danger');
+
+
+          }
+
+        },
+          error => {
+
+            this.loadingChargeSave = false;
+            this.toast('Error', 'Could not save data!', 'danger');
+
+            console.log('api/property/update-charge', error);
+            if (error.status === 401) {
+              this.router.navigate(['auth/login']);
+            }
+
+          });
+
+
+    }
+
+  }
+
+  deletecharge() {
+    this.loadingChargeDelete = true ;
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+
+    this.http.delete('api/property/delete-charge?id=' + this.appcharge.id
+      , { headers: headers }).subscribe((res: any) => {
+        this.loadingChargeDelete = false;
+
+        if (res.actionStatus === 'SUCCESS') {
+
+          this.toast('Success', 'Applicable Charge deleted successfully!', 'success');
+          this.deleteDialogRef.close();
+          this.appcharge = new AppCharges();
+          this.loadCharges();
+        }
+        else {
+
+          this.loadingChargeDelete = false;
+          this.toast('Error', 'Could not delete!', 'danger');
+
+
+        }
+
+      },
+        error => {
+
+          this.loadingChargeDelete = false;
+          this.toast('Error', 'Could not delete!', 'danger');
+
+          console.log('api/property/delete-charge', error);
+          if (error.status === 401) {
+            this.router.navigate(['/auth/login']);
+          }
+
+        });
+  }
+
+  validateFields(): boolean {
+
+    // Check if the effective from date is in the future (optional)
+    const currentDate = new Date();
+    alert(this.appcharge.effective);
+    alert(new Date(this.appcharge.effective).setHours(0, 0, 0, 0));
+    alert(currentDate.setHours(0, 0, 0, 0));
+    if (new Date(this.appcharge.effective).setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
+      this.toast('Error', 'Effective From date should not be less than current date!', 'danger');
+      this.appcharge.effective = '';
+      return false;
+    }
+
+
+    if (this.appcharge.percentage > 100) {
+      this.toast('Error', 'Percentage should not be greater than 100!', 'danger');
+      this.appcharge.percentage = 0;
+      return false;
+    }
+
+    // All checks passed, the dates are valid
+    return true ;
+  }
+
+  togglecontact(checked: boolean, contactId) {
+    let propertyContact = new AltContact();
+    propertyContact.contact = contactId;
+    if (checked) {
+      propertyContact.status = 1;
+    }
+    else {
+      propertyContact.status = 0;
+    }
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+
+    this.http.put('api/property/update-property-contact?id=' + this.property.id
+      , propertyContact, { headers: headers }).subscribe((res: any) => {
+        this.loadingStatusSave = false;
+
+        if (res.actionStatus === 'SUCCESS') {
+          this.toast('Success', 'Data saved successfully!', 'success');
+        }
+        else {
+
+
+          this.toast('Error', 'Could not save data!', 'danger');
+
+
+        }
+
+      },
+        error => {
+
+          this.loadingAboutSave = false;
+          this.toast('Error', 'Could not save data!', 'danger');
+
+          console.log('api/property/update-property-contact', error);
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+
+        });
+  }
+
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
 }
 
 class Property {
@@ -1929,6 +2269,8 @@ class Property {
   reserveAlert: string ;
   reserveAllowed: string ;
   hideProperty: string ;
+  gst: string ;
+  owner: string ;
   userName: string ;
 }
 
@@ -2023,5 +2365,22 @@ class ProfitSharing {
   include_food: string ;
   include_extra: string ;
   taxless_amount: string ;
+}
+
+class AppCharges {
+  id: number;
+  propertyid: number;
+  name: string;
+  chargetype: string;
+  amount: number;
+  percentage: number;
+  effective: string;
+}
+
+class AltContact {
+  id: number;
+  propertyid: number;
+  contact: number;
+  status: number;
 }
 

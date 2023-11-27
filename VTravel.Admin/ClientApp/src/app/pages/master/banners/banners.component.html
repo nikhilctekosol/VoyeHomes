@@ -98,6 +98,17 @@
     <nb-card-body class="res-card-contaier">
 
       <form (ngSubmit)="onNewBannerSubmit()" #mainNewBannerForm="ngForm" novalidate>
+        <div class="form-group row">
+          <div class="col-md-2" style="margin-top: 35px;">
+            <input type="radio" checked [(ngModel)]="banner.bannertype" value="Promotion" id="rdPromotion" name="rdBannerType" />
+            <label for="rdPromotion"> Promotion</label>
+          </div>
+          <div class="col-md-2" style="margin-top:35px;">
+
+            <input type="radio" [(ngModel)]="banner.bannertype" value="Offer" id="rdOffer" name="rdBannerType" />
+            <label for="rdOffer"> Offer</label>
+          </div>
+        </div>
 
         <div class="form-group">
           <label class="label">Title</label>
@@ -108,6 +119,30 @@
                  #title="ngModel">
         </div>
 
+        <div class="form-group" *ngIf="banner.bannertype == 'Offer'">
+          <label class="label">Offer Text</label>
+          <input type="text" nbInput fullWidth placeholder="Offer Text"
+                 autocomplete="off"
+                 name="offertext"
+                 [(ngModel)]="banner.offertext"
+                 required #offertext="ngModel"
+                 [status]="offertext.dirty ? (offertext.invalid  ? 'danger' : 'success') : 'basic'">
+        </div>
+
+        <div class="form-group" *ngIf="banner.bannertype == 'Offer'">
+          <label class="label">Offer Class</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="offerclass"
+                     [(ngModel)]="banner.offerclass"
+                     required #offerclass="ngModel"
+                     [status]="offerclass.dirty ? (offerclass.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value="0">--Select Class--</nb-option>
+            <nb-option value={{item.classname}} *ngFor="let item of classes">{{item.classtext}}</nb-option>
+
+
+          </nb-select>
+        </div>
+
         <div class="form-group">
           <label class="label">Description</label>
           <input type="text" nbInput fullWidth placeholder="Description"
@@ -115,6 +150,15 @@
                  name="description"
                  [(ngModel)]="banner.description"
                  #description="ngModel">
+        </div>
+
+        <div class="form-group" *ngIf="banner.bannertype == 'Offer'">
+          <label class="label">Coupon Code</label>
+          <input type="text" nbInput fullWidth placeholder="Coupon Code"
+                 autocomplete="off"
+                 name="coupon"
+                 [(ngModel)]="banner.coupon"
+                 #coupon="ngModel">
         </div>
 
         <div class="form-group">
@@ -156,7 +200,7 @@
                      name="property_id"
                      [(ngModel)]="banner.property_id"
                      #property_id="ngModel">
-            <nb-option value="0" >--Select Property--</nb-option>
+            <nb-option value="0">--Select Property--</nb-option>
             <nb-option value={{item.id}} *ngFor="let item of properties">{{item.title}}</nb-option>
 
 
@@ -207,6 +251,19 @@
 
       <form (ngSubmit)="onBannerSubmit()" #mainBannerForm="ngForm" novalidate>
 
+
+        <div class="form-group row">
+          <div class="col-md-2" style="margin-top: 35px;">
+            <input type="radio" checked [(ngModel)]="banner.bannertype" (change)="typechange()" value="Promotion" id="rdPromotion" name="rdBannerType" />
+            <label for="rdPromotion"> Promotion</label>
+          </div>
+          <div class="col-md-2" style="margin-top:35px;">
+
+            <input type="radio" [(ngModel)]="banner.bannertype" (change)="typechange()" value="Offer" id="rdOffer" name="rdBannerType" />
+            <label for="rdOffer"> Offer</label>
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="label">Title</label>
           <input type="text" nbInput fullWidth placeholder="Title"
@@ -216,6 +273,29 @@
                  #title1="ngModel">
         </div>
 
+        <div class="form-group" *ngIf="banner.bannertype == 'Offer'">
+          <label class="label">Offer Text</label>
+          <input type="text" nbInput fullWidth placeholder="Offer Text"
+                 autocomplete="off"
+                 name="offertext"
+                 [(ngModel)]="banner.offertext"
+                 #offertext="ngModel">
+        </div>
+
+        <div class="form-group" *ngIf="banner.bannertype == 'Offer'">
+          <label class="label">Offer Class</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="offerclass"
+                     [(ngModel)]="banner.offerclass"
+                     required #offerclass="ngModel"
+                     [status]="offerclass.dirty ? (offerclass.invalid  ? 'danger' : 'success') : 'basic'">
+            <nb-option value="0">--Select Class--</nb-option>
+            <nb-option value={{item.classname}} *ngFor="let item of classes">{{item.classtext}}</nb-option>
+
+
+          </nb-select>
+        </div>
+
         <div class="form-group">
           <label class="label">Description</label>
           <input type="text" nbInput fullWidth placeholder="Description"
@@ -223,6 +303,15 @@
                  name="description"
                  [(ngModel)]="banner.description"
                  #description1="ngModel">
+        </div>
+
+        <div class="form-group" *ngIf="banner.bannertype == 'Offer'">
+          <label class="label">Coupon Code</label>
+          <input type="text" nbInput fullWidth placeholder="Coupon Code"
+                 autocomplete="off"
+                 name="coupon"
+                 [(ngModel)]="banner.coupon"
+                 #coupon="ngModel">
         </div>
 
         <div class="form-group">

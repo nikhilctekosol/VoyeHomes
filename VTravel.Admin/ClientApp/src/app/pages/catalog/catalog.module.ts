@@ -4,7 +4,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ThemeModule } from '../../@theme/theme.module';
 import { CatalogRoutingModule, routedComponents } from './catalog-routing.module';
 import {
-  NbCardModule, NbSpinnerModule, NbDialogModule, NbAlertModule,
+  NbCardModule, NbSpinnerModule, NbDialogModule, NbAlertModule, NbDatepickerModule,
   NbInputModule, NbSelectModule, NbTabsetModule, NbIconModule, NbCheckboxModule, NbToastrModule
 } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -30,7 +30,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
     CKEditorModule,
     NbCheckboxModule,
     GoogleMapsModule,
-    NbToastrModule
+    NbToastrModule,
+    NbDatepickerModule
   ],
   declarations: [
     ...routedComponents,

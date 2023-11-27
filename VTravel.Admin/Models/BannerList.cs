@@ -20,5 +20,9 @@ namespace VTravel.Admin.Models
         public string show_in_home { get; set; }
         public string active { get; set; }
         public int sort_order { get; set; }
+        public string bannertype { get; set; }
+        public string offertext { get; set; }
+        public string offerclass { get; set; }
+        public string coupon { get; set; }
     }
 }
