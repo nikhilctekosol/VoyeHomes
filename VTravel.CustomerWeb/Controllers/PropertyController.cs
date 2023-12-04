@@ -72,8 +72,16 @@ namespace VTravel.CustomerWeb.Controllers
                                       JSON_OBJECT(
                                         'id',am.id,'amenityName',am.amenity_name,'image1',am.image1)),
                                     ']')
-                             AS JSON) from property_amenity pam INNER JOIN amenity am ON pam.amenity_id=am.id AND am.is_active='Y' where pam.property_id = p.id ORDER BY am.sort_order))
+                             AS JSON) from property_amenity pam INNER JOIN amenity am ON pam.amenity_id=am.id AND am.is_active='Y' where pam.property_id = p.id ORDER BY am.sort_order)
+                            ,'contactList',(SELECT CAST(CONCAT('[',
+                                    GROUP_CONCAT(
+                                      JSON_OBJECT(
+                                        'id',ac.id,'name',ac.contact_name,'contact',ac.contact_no)),
+                                    ']')
+                             AS JSON) from property_contacts pc INNER JOIN alternate_contacts ac ON ac.id = pc.contact_id where pc.property_id = p.id))
                              
+ 
+                           
                           
                              from property p 
                              INNER JOIN property_type pt ON p.property_type_id=pt.id
@@ -296,7 +304,7 @@ namespace VTravel.CustomerWeb.Controllers
                     var encodedId2 = id2Array[id2Array.Length - 1];
                     var decodedId2 = General.DecodeString(encodedId2);
 
-                    condition = string.Format(" p.id IN(SELECT property_id FROM property_tag WHERE tag_id={0}) AND p.hide_property = '1'", decodedId2);
+                    condition = string.Format(" p.id IN(SELECT property_id FROM property_tag WHERE tag_id={0})", decodedId2);
 
                     //get tag details
                     query = string.Format(@"SELECT id,image1, tag_name,meta_title,meta_keywords,meta_description   

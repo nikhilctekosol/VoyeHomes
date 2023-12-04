@@ -19,24 +19,31 @@
         {
             <div class="item">
                 <a href="@banner.navigate_url">
-                    <div class="highlightMessage">
-                        @if (@banner.description != "")
+                    @if (@banner.description != "")
+                    {
+                        @if (@banner.bannertype == "Promotion")
                         {
-                            @if (@banner.bannertype == "Promotion")
-                            {
+                            <div class="highlightMessage">
                                 <h2 class="stylish">@banner.title</h2>
                                 <h1>@banner.description</h1>
                                 <button class="btn btn-outline-light text-light">View More</button>
-                            }
-                            else
-                            {
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="highlightMessage sale @banner.offerclass">
                                 <h2 class="stylish">@banner.title</h2>
                                 <h1>@banner.offertext</h1>
-                                <h1>@banner.description</h1>
-                                <button class="btn btn-outline-light text-light">View More</button>
-                            }
+                                <h2 class="stylish desc">@banner.description
+                                @if (@banner.couponcode != "")
+                                {
+                                    <span id="couponcode" title="Click to copy!!" class="coupon">@banner.couponcode</span>
+                                }
+                                </h2>
+                                <button class="btn btn-outline-light text-light" tabindex="0">View More</button>
+                            </div>
                         }
-                    </div>
+                    }
                     <picture>
                         <source media="(max-width: 320px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_320,c_scale/")">
                         <source media="(max-width: 375px)" srcset="@banner.image_url.Replace("/image/upload/", "/image/upload/w_375,c_scale/")">

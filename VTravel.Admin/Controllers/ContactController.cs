@@ -85,8 +85,12 @@ namespace VTravel.Admin.Controllers
                 List<ContactList> contacts = new List<ContactList>();
                 MySqlHelper sqlHelper = new MySqlHelper();
 
-                var query = string.Format(@"select ac.id, ac.contact_name, ac.contact_no, case when pt.id is null then 0 else 1 end status, ac.is_active from alternate_contacts ac
-                                            left join property_contacts pt on pt.contact_id = ac.id where IFNULL(pt.property_id, {0}) = {0} and ac.is_active = 'Y' order by ac.is_active desc;", id);
+                var query = string.Format(@"select ac.id, ac.contact_name, ac.contact_no, case when pt.id is null then 0 else 1 end status, ac.is_active from property_contacts pt
+                                            inner join alternate_contacts ac on ac.id = pt.contact_id
+                                            where pt.property_id = {0}
+                                            union 
+                                            select ac.id, ac.contact_name, ac.contact_no, 0 status, ac.is_active from alternate_contacts ac
+                                            where ac.id not in (select contact_id from property_contacts where property_id = {0})", id);
 
                 DataSet ds = sqlHelper.GetDatasetByMySql(query);
 
@@ -216,8 +220,8 @@ namespace VTravel.Admin.Controllers
                         IEnumerable<Claim> claims = User.Claims;
                         var userId = claims.Where(c => c.Type == "id").FirstOrDefault().Value;
 
-                        var query = string.Format(@"update alternate_contacts set contact_name = '{0}', updated_by = {1}, updated_on = '{2}' where id = {3}"
-                                                , model.name, userId, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), model.id);
+                        var query = string.Format(@"update alternate_contacts set contact_name = '{0}', contact_no = '{1}', updated_by = {2}, updated_on = '{3}' where id = {4}"
+                                                , model.name, model.contactno, userId, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), model.id);
 
                         DataSet ds = sqlHelper.GetDatasetByMySql(query);
                         response.ActionStatus = "SUCCESS";

@@ -190,10 +190,11 @@ namespace VTravel.CustomerWeb.Controllers
                 }
 
                 query = string.Format(@"SELECT b.id, b.image_url, b.navigate_url, IFNULL(b.title, '') title, IFNULL(b.navigate_url, '') navigate_url, IFNULL(b.description, '') description, IFNULL(b.property_id, 0) property_id, IFNULL(b.destination, 0) dest_id
-                                           , IFNULL(p.title, '') property, IFNULL(d.title, '') destination, IFNULL(b.banner_type, 'Promotion') banner_type, IFNULL(b.offer_text, '') offer_text
+                                           , IFNULL(p.title, '') property, IFNULL(d.title, '') destination, IFNULL(b.banner_type, 'Promotion') banner_type, IFNULL(b.offer_text, '') offer_text, IFNULL(oc.class_name, '') offer_class, IFNULL(b.coupon_code, '') coupon_code
                                            FROM hero_banner b
                                            left join property p on p.id = b.property_id
                                            left join destination d on d.id = b.destination
+                                           left join offer_classes oc on oc.class_name = b.offer_class
                                            where b.is_active='Y' order by b.sort_order",
                                  0);
 
@@ -223,7 +224,9 @@ namespace VTravel.CustomerWeb.Controllers
                                         property_id = Convert.ToInt32(r["property_id"].ToString()),
                                         destination = Convert.ToInt32(r["dest_id"].ToString()),
                                         bannertype = r["banner_type"].ToString(),
-                                        offertext = r["offer_text"].ToString()
+                                        offertext = r["offer_text"].ToString(),
+                                        offerclass = r["offer_class"].ToString(),
+                                        couponcode = r["coupon_code"].ToString()
 
                                     });
 

@@ -43,6 +43,7 @@ namespace VTravel.CustomerWeb.Models
         public PropertyImage[] imageList { get; set; }
         public PropertyAttribute[] attributeList { get; set; }
         public PropertyAmenity[] amenityList { get; set; }
+        public PropertyContacts[] contactList { get; set; }
         public Room[] roomList { get; set; }
 
     }

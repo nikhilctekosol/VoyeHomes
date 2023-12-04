@@ -43,7 +43,19 @@
             <div class="propertyCaption">
                 <div class="row">
                     <div class="col-md-6">
-                        <h1>@Model.property.title <span class="gray location"><i class="fas fa-map-marker-alt"></i> @Model.property.city, @Model.property.state</span></h1>
+                        <h1>@Model.property.title <span class="gray location"><i class="fas fa-map-marker-alt"></i> @Model.property.city, @Model.property.state</span>
+
+                            <p class="gray call"><i class='fas fa-phone fa-rotate-90'></i><a href="tel:@General.GetSettingsValue("business_phone")">@General.GetSettingsValue("business_phone")</a>
+                            @if (Model.property.contactList != null)
+                            {
+                                @foreach (var attr in Model.property.contactList)
+                                {
+                                    <a href="tel:@(attr.contact)">@(attr.contact)</a>
+                                }
+                            }
+                            </p>
+
+                        </h1>
                         <a href="#" class="header-call-button share-btn">
                             <i class="fa fa-share-alt" aria-hidden="true"></i>
                         </a>
@@ -61,7 +73,7 @@
 
                         
                         @{
-                            var callBackLabel = "Reserve Now >";
+                            var callBackLabel = "Reserve Now";
                             var btnClass = "btn-default";
                         }
                         @if(Model.property.sellOnline=="Y"){
@@ -72,36 +84,36 @@
                                
                                     callBackLabel = "Reserve Now";
                                     btnClass = "btn-primary";
-                                    <br />
+                                    @*<br />*@
 
                                 }
                             }
                         }
-
+                        <div class="div float-right">
                           <a href="./reservation/@General.GetUrlSlug(@Model.property.perma_title)-@General.EncodeString(@Model.property.id.ToString())" class="btn @btnClass">@callBackLabel</a>
-                      
-                       
+                        </div>
 
-                    </div>
-                     @if(Model.property.sellOnline=="Y")
-                     {
-                        if (Model.property.bookingUrl !=null)
+
+                        @if (Model.property.sellOnline == "Y")
                         {
-                           @if (Model.property.bookingUrl.Trim().Length > 50)
+                            if (Model.property.bookingUrl != null)
                             {
-                                
-                                <div class="col-md-12">
-                                    <a href="@Model.property.bookingUrl" class="btn btn-default" style="float: right;margin-top: 10px;" target="_blank" >Book Now</a>
+                                @if (Model.property.bookingUrl.Trim().Length > 50)
+                                {
 
+                                    <div class="div booking float-right">
+                                        <a href="@Model.property.bookingUrl" class="btn btn-default" style="float: right;margin-top: 10px;" target="_blank">Book Now</a>
+                                        <div class="priceNote">*Including taxes and other charges</div>
 
-                                </div>
-
+                                    </div>
+                                    @*<div class="col-md-12">
+                                        <div class="priceNote">*Including taxes and other charges</div>
+                                    </div>*@
+                                }
                             }
                         }
-                    }
-                    <div class="col-md-12">
-                        <div class="priceNote">*Including taxes and other charges</div>
                     </div>
+                    
                 </div>
             </div>
         </div>

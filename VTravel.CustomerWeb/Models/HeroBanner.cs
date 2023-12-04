@@ -16,6 +16,8 @@ namespace VTravel.CustomerWeb.Models
         public int destination { get; set; }
         public string bannertype { get; set; }
         public string offertext { get; set; }
+        public string offerclass { get; set; }
+        public string couponcode { get; set; }
 
 
     }

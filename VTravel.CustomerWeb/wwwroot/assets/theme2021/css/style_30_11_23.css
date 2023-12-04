@@ -274,7 +274,7 @@ form.navbar-form {
         width: 100%;
         color: #fff;
         top: 36%;
-        max-width: 900px;
+        max-width: 800px;
         margin: 0 auto;
         left: 0;
         right: 0;
@@ -308,52 +308,6 @@ form.navbar-form {
         text-shadow: 0 0 11px #000;
         color: #fff;
         float: left;
-    }
-    .highlightMessage.sale{
-        max-width: 1100px;
-    }
-    .highlightMessage.sale .stylish {
-        letter-spacing: 2px;
-        font-size: 17px;
-    }
-    .highlightMessage.sale span.coupon {
-        border: 1px dashed #fff;
-        padding: 2px 10px;
-        border-radius: 37px;
-    }
-    .highlightMessage.sale h1 {
-        font-size: 100px;
-        margin: 0px;
-        line-height: 100%;
-        font-family: "Times New Roman", Times, serif;
-        padding-bottom: 10px;
-    }
-    .highlightMessage.sale.golden h1{
-        color: #D99A28 ;
-    }
-    .highlightMessage.sale.golden span.coupon{
-        border-color: #D99A28 ;
-    }
-    .highlightMessage.sale.blue h1{
-        color: #09087E ;
-    }
-    .highlightMessage.sale.blue span.coupon{
-        border-color: #09087E ;
-    }
-    .highlightMessage.sale.red h1{
-        color: #e4272d  ;
-    }
-    .highlightMessage.sale.red span.coupon{
-        border-color: #e4272d  ;
-    }
-    .highlightMessage.sale.light-blue h1{
-        color: #4169E1 ;
-    }
-    .highlightMessage.sale.light-blue span.coupon{
-        border-color: #4169E1 ;
-    }
-    .highlightMessage.sale .btn.btn-outline-light.text-light{
-        margin-top: 25px;
     }
 
     .highlightMessage.inner {
@@ -400,10 +354,6 @@ form.navbar-form {
     font-size: 20px;
     font-weight: 500;
 }
-.btn-primary:hover{
-    background: #09087E;
-    color: #fff;
-}
 
     .btn-primary.sm {
         font-size: 15px;
@@ -422,7 +372,7 @@ form.navbar-form {
 
     .btn-default:hover {
         background: #4169E1;
-        color: #fff;
+        color: #000;
         border-color: #4169E1;
     }
 
@@ -489,7 +439,7 @@ ul.slick-dots li {
     .master-slider ul.slick-dots{
         left: auto;
         right: 35px;
-        bottom: 200px;
+        bottom: 100px;
         display: grid !important;
         top: auto;
         max-height: 200px;
@@ -2460,38 +2410,14 @@ textarea.form-control.message{
 .propertyCaption .gray.location {
     font-size: 15px;
     font-weight: 300;
-    color: #000000;
+    color: #a0a0a0;
     margin-bottom: 0px;
-    padding-top: 8px;
+    padding-top: 5px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
-}
-.propertyCaption .gray.call{
-    font-size: 15px;
-    font-weight: 300;
-    color: #a0a0a0;
-    margin: 12px 0px 0px;
-}
-.propertyCaption .gray.call a {
-    padding-right: 10px;
-    color: #000000;
-}
-.propertyCaption .gray i.fas {
-    margin-right: 7px;
-    color: #000000;
-}
-.propertyCaption .booking{
-    padding-right: 15px;
-}
-.propertyCaption .booking .priceNote {
-    position: absolute;
-    bottom: 7px;
-}
-.propertyCaption .booking a.btn.btn-default {
-    margin-top: 0px !important;
 }
 
 .propertyCaption .pricing {
@@ -2515,10 +2441,6 @@ textarea.form-control.message{
         padding: 8px 15px;
         height: 50px;
     }
-
-.propertyCaption .row{
-    min-height:90px;
-}
 
 .highlighting {
     background: #fff;
@@ -2781,15 +2703,6 @@ textarea.form-control.message{
 }
 
 @media (max-width: 1024px) {
-    .highlightMessage.sale h1 {
-        font-size: 65px;
-    }
-    .highlightMessage.sale .stylish {
-        font-size: 13px;
-    }
-    .highlightMessage.sale .btn.btn-outline-light.text-light {
-        margin-top: 15px;
-    }
     .header-right-menu .navbar-nav {
         display: none;
     }
@@ -2828,7 +2741,7 @@ textarea.form-control.message{
     display: inline-block;
     text-align: left;
     color: #989898;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 400;
     margin-bottom: 10px;
     float: right;
@@ -3663,7 +3576,7 @@ textarea.form-control.message{
 
         .propertyCaption .btn-default {
             float: right;
-            margin-left: 0px;
+            margin-left: 20px;
         }
 
         .propertyCaption .h3, .propertyCaption h3, .propertyCaption .h1, .propertyCaption h1 {
@@ -3680,12 +3593,12 @@ textarea.form-control.message{
         }
 
         .propertyCaption .gray.location {
-            padding-top: 10px;
+            padding-top: 3px;
         }
 
     .btn-default {
-        font-size: 15px;
-        padding: 6px 20px;
+        font-size: 17px;
+        padding: 8px 20px;
     }
 
     .leftItems {
@@ -3953,32 +3866,6 @@ textarea.form-control.message{
     }
 }
 @media (max-width: 768px){
-    .propertyCaption .col-md-6.text-right {
-        text-align: left !important;
-        display: flex;
-        padding: 15px 0px 15px 15px !important;
-    }
-    .propertyCaption .div {
-        padding-right: 10px;
-    }
-    .propertyCaption .booking .priceNote {
-        position: absolute;
-        bottom: -15px;
-        top: auto;
-    }
-    .highlightMessage.sale h1 {
-        font-size: 25px;
-    }
-    .highlightMessage .btn.btn-outline-light.text-light {
-        font-size: 13px;
-        padding: 2px 15px;
-    }
-    .highlightMessage.sale .stylish {
-        font-size: 8px;
-    }
-    .highlightMessage.sale .btn.btn-outline-light.text-light {
-        margin-top: 5px;
-    }
     .giftcard-header {
         text-align: center;
         padding: 80px 0px 30px;

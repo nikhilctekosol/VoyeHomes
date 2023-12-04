@@ -94,6 +94,33 @@ $(document).ready(function () {
     $('.menu-toggle').on('click', function () {
         $('.wrapper').toggleClass('menu--is-revealed');
     });
+    $('.coupon').on('click', function (e) {
+        e.preventDefault();
+
+        // Get the text from the span element
+        var textToCopy = document.getElementById("couponcode");
+
+        // Create a textarea element to hold the text temporarily
+        var textArea = document.createElement("textarea");
+
+        // Set the value of the textarea to the text you want to copy
+        textArea.value = textToCopy.innerText;
+
+        // Append the textarea to the document
+        document.body.appendChild(textArea);
+
+        // Select the text in the textarea
+        textArea.select();
+
+        // Execute the copy command
+        document.execCommand('copy');
+
+        // Remove the textarea from the document
+        document.body.removeChild(textArea);
+
+        // You can also give some feedback to the user
+        alert('Text copied to clipboard!');
+    });
 });
 
 $(document).ready(function () {
