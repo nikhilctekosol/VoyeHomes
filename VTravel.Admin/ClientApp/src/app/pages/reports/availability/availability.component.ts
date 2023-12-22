@@ -58,8 +58,8 @@ export class AvailabilityComponent implements OnInit {
 
     this.defaultPropertyId = $event.id;
     this.selectedPropertyName = $event.title.toString().trim();
-    localStorage["default-reservation-property"] = this.defaultPropertyId;
-    localStorage["default-property-name"] = this.selectedPropertyName;
+    // localStorage["default-reservation-property"] = this.defaultPropertyId;
+    // localStorage["default-property-name"] = this.selectedPropertyName;
     this.loadProperty();
     this.filteredOptions$ = this.getFilteredOptions(this.selectedPropertyName);
   }
@@ -210,7 +210,7 @@ export class AvailabilityComponent implements OnInit {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    this.http.get('api/property/availability?propid=' + this.searchdata.property
+    this.http.get('api/reports/availability?propid=' + this.searchdata.property
       + '&room=' + this.searchdata.room + '&fromdate=' + this.searchdata.fromDate.getFullYear().toString()
       + '-' + (this.searchdata.fromDate.getMonth() + 1).toString() + '-'
       + this.searchdata.fromDate.getDate().toString()

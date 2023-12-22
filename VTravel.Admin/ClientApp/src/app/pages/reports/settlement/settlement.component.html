@@ -1,0 +1,194 @@
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-4">
+            Settlement Report
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-md-4">
+            <input #autoInput
+                   nbInput
+                   [(ngModel)]="selectedPropertyName"
+                   type="text"
+                   (input)="onChange()"
+                   placeholder="[SELECT PROPERTY]"
+                   [nbAutocomplete]="auto"
+                   [fullWidth]="true" />
+
+            <nb-autocomplete #auto (selectedChange)="onPropSelectionChange($event)">
+
+              <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+                {{ option.title }}
+              </nb-option>
+
+
+            </nb-autocomplete>
+          </div>
+          <!--<div class="col-md-3">
+            <input nbInput placeholder="Start Date" [nbDatepicker]="startDate" [(ngModel)]="searchdata.fromDate" class="date-picker-box input-rectangle" [fullWidth]="true" readonly="readonly">
+            <nb-datepicker #startDate></nb-datepicker>
+          </div>
+          <div class="col-md-3">
+            <input nbInput placeholder="End Date" [nbDatepicker]="toDate" [(ngModel)]="searchdata.toDate" class="date-picker-box input-rectangle" [fullWidth]="true" readonly="readonly">
+            <nb-datepicker #toDate></nb-datepicker>
+          </div>-->
+          <div class="col-md-4">
+            <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                       name="month"
+                       [(ngModel)]="searchdata.month"
+                       required #month="ngModel" (selectedChange)="loaddate()"
+                       [status]="month.dirty ? (month.invalid  ? 'danger' : 'success') : 'basic'">
+              <nb-option value={{item.id}} *ngFor="let item of monthlist">{{item.monthname}}</nb-option>
+            </nb-select>
+          </div>
+          <div class="col-md-1">
+            <a nbButton class="btn btn-sm btn-outline-primary" (click)="search()">
+              <nb-icon icon="search-outline"></nb-icon>
+            </a>
+          </div>
+        </div>
+
+      </nb-card-body>
+    </nb-card>
+
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <nb-card style="overflow:auto;">
+      <nb-card-body style="max-width:82vw; max-height:68vh;">
+        <div class="row col-md-12" *ngIf="settlementdata.length > 0">
+          <a nbButton class="btn btn-sm btn-outline-primary" (click)="exportToExcel()">
+            Export to excel
+          </a>
+          <a nbButton class="btn btn-sm btn-outline-danger pull-right" (click)="getsheet()">
+            Generate Sheet
+          </a>
+        </div>
+        <table class="table table-striped custom-table" id="tblData">
+          <thead>
+            <tr>
+              <th scope="col">Reservation Id</th>
+              <th scope="col">Date</th>
+              <th scope="col">Property</th>
+              <th scope="col">Channel</th>
+              <th scope="col">Destination</th>
+              <th scope="col">Cust. Name</th>
+              <th scope="col">Nationality</th>
+              <th scope="col">Cust. Mail</th>
+              <th scope="col">Cust. Phone</th>
+              <th scope="col">Status</th>
+              <th scope="col">Agreed Rent</th>
+              <th scope="col">Booking Amount</th>
+              <th scope="col">OTA Commission</th>
+              <th scope="col">Is GST?</th>
+              <th scope="col">GST Amount</th>
+              <th scope="col">No. of Guests</th>
+              <th scope="col">No. of Units</th>
+              <th scope="col">Rent After OTA</th>
+              <th scope="col">Higher/Eligible</th>
+              <th scope="col">Shortage</th>
+              <th scope="col">Host Share</th>
+              <th scope="col">Voye Commission</th>
+              <th scope="col">Discount</th>
+              <th scope="col">Voye Share</th>
+              <!--<th scope="col">View</th>-->
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let option of settlementdata"  (click)="viewpopup(resDetails, option.res_id)">
+              <td scope="row">{{ option.res_id }}</td>
+              <td scope="row">{{ option.created_date }}</td>
+              <td scope="row">{{ option.property }}</td>
+              <td scope="row">{{ option.channelName }}</td>
+              <td scope="row">{{ option.destination }}</td>
+              <td scope="row">{{ option.custName }}</td>
+              <td scope="row">{{ option.nationality }}</td>
+              <td scope="row">{{ option.custMail }}</td>
+              <td scope="row">{{ option.custPhone }}</td>
+              <td scope="row">{{ option.resStatus }}</td>
+              <td scope="row">{{ option.agreedRent }}</td>
+              <td scope="row">{{ option.bookingAmount }}</td>
+              <td scope="row">{{ option.commission }}</td>
+              <td scope="row">{{ option.isGst }}</td>
+              <td scope="row">{{ option.gst }}</td>
+              <td scope="row">{{ option.noOfGuests }}</td>
+              <td scope="row">{{ option.noOfUnits }}</td>
+              <td scope="row">{{ option.rentAfterOTA }}</td>
+              <td scope="row">{{ option.higherorEligible }}</td>
+              <td scope="row">{{ option.shortage }}</td>
+              <td scope="row">{{ option.hostShare }}</td>
+              <td scope="row">{{ option.voyeCommission }}</td>
+              <td scope="row">{{ option.discount }}</td>
+              <td scope="row">{{ option.voyeShare }}</td>
+              <!--<td scope="row">
+                <a nbButton class="btn btn-sm btn-outline-primary" (click)="viewpopup(resDetails, option.res_id)">
+                  <nb-icon icon="arrow-right"></nb-icon>
+                </a>
+              </td>-->
+            </tr>
+          </tbody>
+        </table>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+
+<ng-template #resDetails let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary pop-close-btn">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <table class="table table-striped custom-table">
+        <thead>
+          <tr>
+            <th>Room</th>
+            <th>Check-In</th>
+            <th>Check-Out</th>
+            <th>0-6 Years</th>
+            <th>6-12 Years</th>
+            <th>Above 12 Years</th>
+            <th>Amount</th>
+            <th>Is GST?</th>
+            <th>GST Percentage</th>
+            <th>GST Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let option of reservationdata">
+            <td>{{ option.room }}</td>
+            <td>{{ option.checkin | date:'MMM d y'}}</td>
+            <td>{{ option.checkout | date:'MMM d y'}}</td>
+            <td>{{ option.years06 }}</td>
+            <td>{{ option.years612 }}</td>
+            <td>{{ option.years12 }}</td>
+            <td>{{ option.amount | number : '1.2-2'}}</td>
+            <td>{{ option.isgst }}</td>
+            <td>{{ option.gstperc | number : '1.2-2'}}</td>
+            <td>{{ option.gstamount | number : '1.2-2'}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" (click)="ref.close()">
+          Close
+        </button>
+
+
+    </nb-card-body>
+  </nb-card>
+</ng-template>

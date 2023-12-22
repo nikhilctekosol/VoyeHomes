@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { ReportsComponent } from './reports.component';
 import { AvailabilityComponent } from './availability/availability.component';
+import { SettlementComponent } from './settlement/settlement.component';
 
 
 const routes: Routes = [{
@@ -12,6 +13,10 @@ const routes: Routes = [{
     {
       path: 'availability',
       component: AvailabilityComponent,
+    },
+    {
+      path: 'settlement',
+      component: SettlementComponent,
     }
   ],
 }];
@@ -23,5 +28,6 @@ const routes: Routes = [{
 export class ReportsRoutingModule { }
 export const routedComponents = [
   ReportsComponent,
-  AvailabilityComponent
+  AvailabilityComponent,
+  SettlementComponent
 ];
