@@ -367,15 +367,20 @@ export class InventorynewComponent implements OnInit {
 
   getassignedrateplans() {
 
+    var from = this.currentYear + '-01-01';
+    var to = this.currentYear + '-12-31';
+
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token).set("Content-Type", "application/json");
-    this.http.get('api/rateplan/get-assignedplan-list?id=' + this.property.id
+    this.http.get('api/rateplan/get-assignedplan-list?id=' + this.property.id + '&from=' + from + '&to=' + to
       , { headers: headers }).subscribe((res: any) => {
 
         if (res.actionStatus == 'SUCCESS') {
           this.assignedplans = res.data;
 
+
           for (let i = 0; i < this.assignedplans.length; i++) {
+
             const dayElements = document.querySelectorAll(`.fc-day[data-date="${this.assignedplans[i].invDate}"]`);
             dayElements.forEach((dayElement) => {
               this.renderer.setStyle(dayElement, 'background-color', this.assignedplans[i].rp_color);

@@ -67,6 +67,10 @@ using MySql.Data.MySqlClient;
             }
         }
 
+        public MySqlConnection GetConnection()
+        {
+            return MySqlConnection;
+        }
         public void Dispose()
         {
             try
