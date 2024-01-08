@@ -14,13 +14,16 @@ using System.Security.Claims;
 using System.Linq;
 using MySql.Data.MySqlClient;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Dapper;
 
 namespace VTravel.Admin.Controllers
 {
     [Route("api/rateplan"), Authorize(Roles = "ADMIN,SUB_ADMIN,OPERATIONS,MARKETING")]
     public class RateplanController : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IHostingEnvironment _hostingEnvironment; 
+        private MySqlConnection MySqlConnection;
+        private string connectionString;
         public RateplanController(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
@@ -496,13 +499,12 @@ namespace VTravel.Admin.Controllers
 
                     MySqlHelper sqlHelper = new MySqlHelper();
 
-                    var query = string.Format(@"SELECT room.id,title,room_type_id,room.description,type_name FROM room INNER JOIN room_type ON room.room_type_id=room_type.id WHERE property_id={0}
-                           ORDER BY room.sort_order, title", model.propertyId
-                    );
+                    var query = string.Format(@"SELECT room.id
+                                                FROM room WHERE property_id={0}", model.propertyId);
 
-                    DataSet ds = sqlHelper.GetDatasetByMySql(query);////////////get room list///////////
+                    DataSet dsrooms = sqlHelper.GetDatasetByMySql(query);////////////get room list///////////
 
-                    foreach (DataRow r in ds.Tables[0].Rows)
+                    foreach (DataRow r in dsrooms.Tables[0].Rows)
                     {
 
                         model.roomId = r["id"].ToString();
@@ -515,12 +517,12 @@ namespace VTravel.Admin.Controllers
                             query = string.Format(@"SELECT 1 FROM inventory WHERE inv_date='{0}' AND room_id={1} AND property_id={2} AND is_active='Y'",
                                              from.ToString("yyyy-MM-dd"), model.roomId, model.propertyId);
 
-                            ds = sqlHelper.GetDatasetByMySql(query); ///////////////check for data existing in inventory/////////////////
-                            if (ds != null)
+                            DataSet dsexist = sqlHelper.GetDatasetByMySql(query); ///////////////check for data existing in inventory/////////////////
+                            if (dsexist != null)
                             {
-                                if (ds.Tables.Count > 0)
+                                if (dsexist.Tables.Count > 0)
                                 {
-                                    if (ds.Tables[0].Rows.Count > 0)
+                                    if (dsexist.Tables[0].Rows.Count > 0)
                                     {
                                         isFound = true;
 
@@ -542,7 +544,7 @@ namespace VTravel.Admin.Controllers
                                     from.ToString("yyyy-MM-dd"), model.roomId, model.propertyId, model.rateplan, userId, DateTime.Now.ToString("yyyy-MM-dd"));
                             }
 
-                            ds = sqlHelper.GetDatasetByMySql(query);
+                            DataSet ds = sqlHelper.GetDatasetByMySql(query);
 
                             from = from.AddDays(1);
                         }
@@ -569,7 +571,7 @@ namespace VTravel.Admin.Controllers
 
         }
         [HttpGet, Route("get-assignedplan-list")]
-        public IActionResult GetAssignedplanList(int id)
+        public IActionResult GetAssignedplanList(int id, string from, string to)
         {
             ApiResponse response = new ApiResponse();
             response.ActionStatus = "FAILURE";
@@ -578,34 +580,43 @@ namespace VTravel.Admin.Controllers
             try
             {
 
-                List<RateplanResult> rateplans = new List<RateplanResult>();
+                //List<RateplanResult> rateplans = new List<RateplanResult>();
                 MySqlHelper sqlHelper = new MySqlHelper();
 
-                var query = string.Format(@"select i.id, i.property_id, i.inv_date, IFNULL(i.rateplan, 0) rp_id, IFNULL(rp.name, '') rp_name, IFNULL(rp.color, '#ffffff') rp_color from inventory i
+                var query = string.Format(@"select i.id, i.property_id propertyId, DATE_FORMAT(i.inv_date, '%Y-%m-%d') invDate, IFNULL(i.rateplan, 0) rp_id, IFNULL(rp.name, '') rp_name
+                                            , IFNULL(rp.color, '#ffffff') rp_color, MAX(i.updated_on) updated_on 
+                                            from property p
+                                            left join room r on r.property_id = p.id
+                                            left join inventory i on i.property_id = p.id and i.room_id = r.id
                                             left join rateplans rp on rp.id = i.rateplan
-                                            where i.property_id = {0}"
-                                   , id);
+                                            where i.property_id = {0} and i.inv_date between '{1}' and '{2}'
+											group by i.property_id, i.inv_date having updated_on = MAX(i.updated_on);"
+                                   , id, from, to);
 
-                DataSet ds = sqlHelper.GetDatasetByMySql(query);
-
-
-                foreach (DataRow r in ds.Tables[0].Rows)
-                {
-
-                    rateplans.Add(
-                        new RateplanResult
-                        {
-                            id = Convert.ToInt32(r["id"].ToString()),
-                            propertyId = r["property_id"] == DBNull.Value ? "0" : r["property_id"].ToString(),
-                            invDate = Convert.ToDateTime(r["inv_date"].ToString()).ToString("yyyy-MM-dd"),
-                            rp_id = Convert.ToInt32(r["rp_id"].ToString()),
-                            rp_name = r["rp_name"].ToString(),
-                            rp_color = r["rp_color"].ToString()
-                        });
-
-                }
+                //DataSet ds = sqlHelper.GetDatasetByMySql(query);
 
 
+                //foreach (DataRow r in ds.Tables[0].Rows)
+                //{
+
+                //    rateplans.Add(
+                //        new RateplanResult
+                //        {
+                //            id = Convert.ToInt32(r["id"].ToString()),
+                //            propertyId = r["property_id"] == DBNull.Value ? "0" : r["property_id"].ToString(),
+                //            invDate = Convert.ToDateTime(r["inv_date"].ToString()).ToString("yyyy-MM-dd"),
+                //            rp_id = Convert.ToInt32(r["rp_id"].ToString()),
+                //            rp_name = r["rp_name"].ToString(),
+                //            rp_color = r["rp_color"].ToString()
+                //        });
+
+                //}
+                //connectionString = VTravel.Admin.Startup.conStr;
+                MySqlConnection = sqlHelper.GetConnection();
+                List<RateplanResult> rateplans = MySqlConnection.Query<RateplanResult>(query, new { Id = id }).ToList();
+
+
+                sqlHelper.Dispose();
                 response.Data = rateplans;
                 response.ActionStatus = "SUCCESS";
 

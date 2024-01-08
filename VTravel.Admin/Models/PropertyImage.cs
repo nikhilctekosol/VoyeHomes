@@ -12,6 +12,12 @@ namespace VTravel.Admin.Models
         public string url { get; set; }
 
         public string image_alt { get; set; }
+        public string categoryid { get; set; }
+        public string category { get; set; }
+        public string subcategoryid { get; set; }
+        public string subcategory { get; set; }
+        public string room { get; set; }
+        public string roomid { get; set; }
     }
   
 }

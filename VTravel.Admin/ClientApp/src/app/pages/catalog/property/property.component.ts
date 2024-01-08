@@ -6,6 +6,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NbDialogService, NbToastrService, NbComponentStatus  } from '@nebular/theme';
 import '../ckeditor.loader';
 import 'ckeditor';
+import { UniqueSelectionDispatcher } from '@angular/cdk/collections';
 
 @Component({
   selector: 'property',
@@ -79,6 +80,11 @@ export class PropertyComponent implements OnInit  {
   profitDetails: any[] = [];
   profitsharing = new ProfitSharing();
   channels: any[];
+  categorylist: any[];
+  subcategorylist: any[];
+  category: number;
+  subcategory: number;
+  imagedetails = new Imagedetails();
 
   owners: any[];
 
@@ -101,6 +107,10 @@ export class PropertyComponent implements OnInit  {
     this.loadProperty();
     this.loadAttributesAll();
     this.loadOwners();
+
+    
+    this.loadcategory();
+    this.loadsubcategory();
     // this.occupancylist = [
     //  {
     //    id: '1',
@@ -412,6 +422,35 @@ export class PropertyComponent implements OnInit  {
 
   }
 
+  uniqueFilter(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+
+  //categorize(images: any[], c: string): any[] {
+  //  this.categorized = images.filter(p => p.category == c);
+  //  return this.categorized;
+  //}
+
+  transform(collection: any[], property: string): any {
+    if (!collection) {
+      return null;
+    }
+
+    const groupedCollection = collection.reduce((acc, obj) => {
+      const key = obj[property];
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(obj);
+      return acc;
+    }, {});
+
+    return Object.keys(groupedCollection).map(key => ({
+      key,
+      items: groupedCollection[key],
+    }));
+  }
+
   loadTags() {
 
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
@@ -720,9 +759,66 @@ export class PropertyComponent implements OnInit  {
   toggleThumbnailEditMode() {
     this.thumbnailEditMode = !this.thumbnailEditMode;
   }
-  toggleImageEditMode() {
+  toggleImageEditMode(mediaDialogNew: TemplateRef<any>) {
     this.imageEditMode = !this.imageEditMode;
+
+    this.propertyImage = new PropertyImage();
+    this.propertyImage.category = "0";
+    this.propertyImage.subcategory = "0";
+    
+
+    this.imageDialogRef = this.dialogService.open(
+      mediaDialogNew,
+      { context: { title: 'Add Image' } });
   }
+
+  loadcategory() {
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/property/get-image-category-list'
+      , { headers: headers }).subscribe((res: any) => {
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.categorylist = res.data;
+
+          }
+        }
+
+      },
+        error => {
+
+          console.log('api/property/get-image-category-list', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
+  }
+
+  loadsubcategory() {
+    this.subcategorylist = [];
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/property/get-image-subcategory-list?category=' + this.propertyImage.categoryid
+      , { headers: headers }).subscribe((res: any) => {
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.subcategorylist = res.data;
+          }
+        }
+
+      },
+        error => {
+
+          console.log('api/property/get-image-subcategory-list', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
+  }
+
   uploadThumbnail(files) {
     if (files.length === 0) {
       return;
@@ -782,7 +878,7 @@ export class PropertyComponent implements OnInit  {
     let headers = new HttpHeaders().set("Authorization", "Bearer " +
       this.token);
 
-    this.http.put('api/property/add-image?id=' + this.property.id
+    this.http.put('api/property/add-image?id=' + this.property.id + '&&category=' + this.propertyImage.categoryid + '&&subcategory=' + this.propertyImage.subcategoryid + '&&room=' + this.propertyImage.roomid
       , formData, { headers: headers }).subscribe((res: any) => {
         this.loadingImageSave = false;
 
@@ -790,6 +886,7 @@ export class PropertyComponent implements OnInit  {
 
           this.imageEditMode = false;
           this.loadImages();
+          this.imageDialogRef.close();
           this.toast('Success', 'Data saved successfully!', 'success');
         }
         else {
@@ -1133,13 +1230,26 @@ export class PropertyComponent implements OnInit  {
 
   openImage(imageDialog: TemplateRef<any>, id) {
 
-    this.propertyImage = this.images.find(_img => _img.id == id);
+    //this.propertyImage = this.images.find(_img => _img.id == id);
+
+    let obj = this.images.find(_img => _img.id == id);
+
+    this.propertyImage = new PropertyImage();
+    this.propertyImage.id = id;
+    this.propertyImage.url = obj.url;
+    this.propertyImage.image_alt = obj.image_alt;
+    this.propertyImage.categoryid = obj.categoryid;
+    this.propertyImage.category = obj.category;
+    this.loadsubcategory();
+    this.propertyImage.subcategoryid = obj.subcategoryid;
+    this.propertyImage.subcategory = obj.subcategory;
+    this.propertyImage.roomid = obj.roomid;
 
     this.imageDialogRef = this.dialogService.open(
       imageDialog,
       { context: { title: 'Image' } });
 
-
+    
   }
 
 
@@ -1203,6 +1313,8 @@ export class PropertyComponent implements OnInit  {
 
           this.loadingImageAlt = false;
           this.toast('Success', 'Data saved successfully!', 'success');
+          this.loadImages();
+          this.imageDialogRef.close();
         }
         else {
 
@@ -2166,9 +2278,7 @@ export class PropertyComponent implements OnInit  {
 
     // Check if the effective from date is in the future (optional)
     const currentDate = new Date();
-    alert(this.appcharge.effective);
-    alert(new Date(this.appcharge.effective).setHours(0, 0, 0, 0));
-    alert(currentDate.setHours(0, 0, 0, 0));
+
     if (new Date(this.appcharge.effective).setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
       this.toast('Error', 'Effective From date should not be less than current date!', 'danger');
       this.appcharge.effective = '';
@@ -2348,7 +2458,11 @@ class PropertyImage {
   id: number;
   url: number;
   image_alt: string ;
-
+  categoryid: string;
+  category: string;
+  subcategoryid: string;
+  subcategory: string;
+  roomid: string;
 }
 
 
@@ -2382,5 +2496,10 @@ class AltContact {
   propertyid: number;
   contact: number;
   status: number;
+}
+class Imagedetails {
+  category: number;
+  subcategory: number;
+  imagealt: number;
 }
 

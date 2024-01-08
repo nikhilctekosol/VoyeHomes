@@ -947,8 +947,13 @@ namespace VTravel.Admin.Controllers
                 List<PropertyImage> imageList = new List<PropertyImage>();
                 MySqlHelper sqlHelper = new MySqlHelper();
 
-                var query = string.Format(@"SELECT id,url,image_alt FROM property_image WHERE property_id={0}  
-                                    ORDER BY sort_order, id", id
+                var query = string.Format(@"SELECT pi.id,url,image_alt, c.id category_id, IFNULL(c.category_name,'') category, s.id subcat_id, IFNULL(s.subcategory_name, '') subcategory, r.id room_id, IFNULL(r.title,'') room
+									FROM property_image pi
+                                    left join img_category c on c.id = pi.category
+                                    left join img_subcategory s on s.id = pi.subcategory
+                                    left join room r on r.id = pi.room
+                                    WHERE pi.property_id={0} 
+                                    ORDER BY c.id, s.id,pi.sort_order, pi.id;", id
                                    );
 
                 DataSet ds = sqlHelper.GetDatasetByMySql(query);
@@ -963,6 +968,12 @@ namespace VTravel.Admin.Controllers
                             id = Convert.ToInt32(r["id"].ToString()),
                             url = r["url"].ToString(),
                             image_alt = r["image_alt"].ToString(),
+                            categoryid = r["category_id"] == DBNull.Value ? "0" : r["category_id"].ToString(),
+                            category = r["category"] == DBNull.Value ? "0" : r["category"].ToString(),
+                            subcategoryid = r["subcat_id"] == DBNull.Value ? "0" : r["subcat_id"].ToString(),
+                            subcategory = r["subcategory"] == DBNull.Value ? "0" : r["subcategory"].ToString(),
+                            roomid = r["room_id"] == DBNull.Value ? "0" : r["room_id"].ToString(),
+                            room = r["room"] == DBNull.Value ? "" : r["room"].ToString(),
                         }
                         );
 
@@ -1388,7 +1399,7 @@ namespace VTravel.Admin.Controllers
 
         [Authorize(Roles = "ADMIN,MARKETING")]
         [HttpPut, Route("add-image"), DisableRequestSizeLimit]
-        public async Task<IActionResult> AddImage(int id)
+        public async Task<IActionResult> AddImage(int id, int categoryid, int subcategoryid, int roomid)
         {
             ApiResponse response = new ApiResponse();
             response.ActionStatus = "FAILURE";
@@ -1402,51 +1413,51 @@ namespace VTravel.Admin.Controllers
 
                 if (files.Count > 0)
                 {
-                    foreach(var file in files)
+                    foreach (var file in files)
                     {
                         var guid = Guid.NewGuid().ToString();
                         var filePath = Path.Combine(_hostingEnvironment.WebRootPath, guid + file.FileName);
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
+                        //using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        //{
 
-                            await file.CopyToAsync(fileStream);
-                        }
-
-
-                        Account account = new Account(
-                             General.GetSettingsValue("cdy_cloud_name"),
-                             General.GetSettingsValue("cdy_api_key"),
-                             General.GetSettingsValue("cdy_api_secret"));
-                        Cloudinary cloudinary = new Cloudinary(account);
-
-                       
-                        var uploadParams = new ImageUploadParams()
-                        {
-                            File = new FileDescription(file.FileName, filePath),
-                            Folder = "property/" + id + "/image",
-                            Overwrite = true,
-                            PublicId= guid,
-                            Invalidate=true
-                        };
+                        //    await file.CopyToAsync(fileStream);
+                        //}
 
 
-                        var uploadResult = cloudinary.Upload(uploadParams);
-                        System.IO.File.Delete(filePath);
+                        //Account account = new Account(
+                        //     General.GetSettingsValue("cdy_cloud_name"),
+                        //     General.GetSettingsValue("cdy_api_key"),
+                        //     General.GetSettingsValue("cdy_api_secret"));
+                        //Cloudinary cloudinary = new Cloudinary(account);
 
-                        if (uploadResult.Url != null)
-                        {
+
+                        //var uploadParams = new ImageUploadParams()
+                        //{
+                        //    File = new FileDescription(file.FileName, filePath),
+                        //    Folder = "property/" + id + "/image",
+                        //    Overwrite = true,
+                        //    PublicId = guid,
+                        //    Invalidate = true
+                        //};
+
+
+                        //var uploadResult = cloudinary.Upload(uploadParams);
+                        //System.IO.File.Delete(filePath);
+
+                        //if (uploadResult.Url != null)
+                        //{
                             MySqlHelper sqlHelper = new MySqlHelper();
 
-                            var query = string.Format(@"INSERT INTO property_image(property_id,url,public_id) VALUES({0},'{1}','{2}')",
-                                    id, uploadResult.SecureUrl, guid);
+                            var query = string.Format(@"INSERT INTO property_image(property_id,url,public_id, category, subcategory, room) VALUES({0},'{1}','{2}', {3}, {4}, {5})",
+                                    id, "", guid, categoryid, subcategoryid, roomid);
 
                             DataSet ds = sqlHelper.GetDatasetByMySql(query);
 
                             response.ActionStatus = "SUCCESS";
                             response.Data = new { id = id, file = "" };
-                        }
+                        //}
                     }
-                    
+
 
 
 
@@ -1916,8 +1927,8 @@ namespace VTravel.Admin.Controllers
                     MySqlHelper sqlHelper = new MySqlHelper();
                     string query = string.Empty; ;
 
-                    query = string.Format(@"UPDATE property_image SET image_alt='{0}' WHERE id={1}",
-                        model.image_alt, id);
+                    query = string.Format(@"UPDATE property_image SET image_alt='{0}', category={2}, subcategory={3}, room={4} WHERE id={1}",
+                        model.image_alt, id, model.categoryid, model.subcategoryid, model.roomid);
 
 
                     DataSet ds = sqlHelper.GetDatasetByMySql(query);
@@ -2291,6 +2302,102 @@ namespace VTravel.Admin.Controllers
         }
 
 
+        [HttpGet, Route("get-image-category-list")]
+        public IActionResult GetImageCategories()
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                List<ImageCategory> imgcatList = new List<ImageCategory>();
+
+                MySqlHelper sqlHelper = new MySqlHelper();
+
+                    //get publicId
+                    var query = string.Format(@"SELECT id, category_name, is_active from img_category where is_active = 'Y'");
+
+                    DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+
+                    imgcatList.Add(
+                        new ImageCategory
+                        {
+                            id = Convert.ToInt32(r["id"].ToString()),
+                            category_name = r["category_name"].ToString(),
+                            isactive = r["is_active"].ToString(),
+                        }
+                        );
+
+                }
+
+
+                response.Data = imgcatList;
+                response.ActionStatus = "SUCCESS";
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
+
+        [HttpGet, Route("get-image-subcategory-list")]
+        public IActionResult GetImageSubCategories(int category)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                List<ImageCategory> imgcatList = new List<ImageCategory>();
+
+                MySqlHelper sqlHelper = new MySqlHelper();
+
+                //get publicId
+                var query = string.Format(@"SELECT id, subcategory_name, is_active from img_subcategory where is_active = 'Y' and category_id = {0}", category);
+
+                DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+
+                    imgcatList.Add(
+                        new ImageCategory
+                        {
+                            id = Convert.ToInt32(r["id"].ToString()),
+                            category_name = r["subcategory_name"].ToString(),
+                            isactive = r["is_active"].ToString(),
+                        }
+                        );
+
+                }
+
+
+                response.Data = imgcatList;
+                response.ActionStatus = "SUCCESS";
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
     }
 }
 

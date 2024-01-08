@@ -1,0 +1,7 @@
+ALTER TABLE `vtravel_uat`.`property_image` 
+ADD COLUMN `category` INT NULL AFTER `image_alt`,
+ADD COLUMN `subcategory` INT NULL AFTER `category`;
+
+
+ALTER TABLE `vtravel_uat`.`property_image` 
+ADD COLUMN `room` INT NULL AFTER `subcategory`;

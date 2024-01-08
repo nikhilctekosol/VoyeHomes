@@ -38,6 +38,10 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.5" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.6.0" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.3.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="MySql.Data" Version="8.0.26" />
     <PackageReference Include="RestSharp" Version="106.11.4" />
@@ -60,6 +64,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\src\app\pipes\" />
     <Folder Include="files\" />
   </ItemGroup>
 

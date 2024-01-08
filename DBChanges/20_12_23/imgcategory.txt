@@ -1,0 +1,29 @@
+CREATE TABLE `vtravel_uat`.`img_category` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `category_name` VARCHAR(50) NULL,
+  `is_active` VARCHAR(1) NULL,
+  PRIMARY KEY (`id`));
+
+
+INSERT INTO `vtravel_uat`.`img_category` (`category_name`,`is_active`) VALUES ('Property','Y');
+INSERT INTO `vtravel_uat`.`img_category` (`category_name`,`is_active`) VALUES ('Rooms','Y');
+INSERT INTO `vtravel_uat`.`img_category` (`category_name`,`is_active`) VALUES ('Indoor','Y');
+INSERT INTO `vtravel_uat`.`img_category` (`category_name`,`is_active`) VALUES ('Outdoor','Y');
+INSERT INTO `vtravel_uat`.`img_category` (`category_name`,`is_active`) VALUES ('Reception','Y');
+INSERT INTO `vtravel_uat`.`img_category` (`category_name`,`is_active`) VALUES ('Garden','Y');
+INSERT INTO `vtravel_uat`.`img_category` (`category_name`,`is_active`) VALUES ('Play Area','Y');
+
+
+CREATE TABLE `vtravel_uat`.`img_subcategory` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `subcategory_name` VARCHAR(50) NULL,
+  `category_id` INT NULL,
+  `is_active` VARCHAR(1) NULL,
+  PRIMARY KEY (`id`));
+
+
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Bed', '2', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Dining', '2', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Living', '2', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Bathroom', '2', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Balcony', '2', 'Y');

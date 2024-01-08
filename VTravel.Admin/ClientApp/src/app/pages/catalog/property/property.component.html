@@ -504,17 +504,17 @@
             </nb-card>
             <nb-card>
               <nb-card-header>
-                <div class="row" *ngIf="!imageEditMode">
+                <div class="row">
                   <div class="col-md-10">Images(Res. 800X400)</div>
                   <div class="col-md-2">
 
-                    <button type="submit" nbButton (click)="toggleImageEditMode()" class="btn btn-sm btn-outline-primary">
+                    <button type="submit" nbButton (click)="toggleImageEditMode(mediaDialogNew)" class="btn btn-sm btn-outline-primary">
                       <nb-icon icon="plus-outline"></nb-icon>ADD
                     </button>
                   </div>
 
                 </div>
-                <div class="row" *ngIf="imageEditMode">
+                <!--<div class="row" *ngIf="imageEditMode">
                   <div class="col-md-3">Select images</div>
                   <div class="col-md-5">
                     <input type="file" #file placeholder="Choose files" multiple />
@@ -535,16 +535,21 @@
                     </button>
                   </div>
 
-                </div>
+                </div>-->
               </nb-card-header>
               <nb-card-body>
-                <div class="row">
-                  <div class="col-md-2 thumbnail" *ngFor="let item of images"
-                       (click)="openImage(imageDialog,item.id)">
-                    <img src="{{item.url}}" alt="" onerror="this.src='assets/images/default.jpg'" />
+
+                <div style="border-bottom:1px solid gray;" *ngFor="let c of transform(images,'category')">
+                  <div class="col-md-12" style="text-align:center;"><u><span style="font-size:18px; font-weight:900;">{{c.key}}</span></u></div>
+                  <div class="row nb-card" *ngFor="let s of transform(c.items,'subcategory')">
+                    <div class="col-md-12"><span style="font-size:15px; font-weight:700;">{{s.key}}</span></div><br />
+                    <div class="col-md-2" style="margin:15px;" *ngFor="let item of s.items"
+                         (click)="openImage(imageDialog,item.id)">
+                      <img src="{{item.url}}" alt="" onerror="this.src='assets/images/default.jpg'" />
+                      <span style="text-align:center;">{{item.room}}</span>
+                    </div>
                   </div>
                 </div>
-
 
               </nb-card-body>
 
@@ -1090,7 +1095,7 @@
   <nb-card>
     <nb-card-header>
       <div class="row">
-        <div class="col-md-10"></div>
+        <div class="col-md-10">{{data.title}}</div>
         <div class="col-md-2">
           <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
             <nb-icon icon="close-outline"></nb-icon>
@@ -1102,31 +1107,61 @@
       <div class="row">
         <div class="col-12">
           <div class="property-image">
-            <img src="{{propertyImage.url}}" alt="" width="600" height="300"
+            <img src="{{propertyImage.url}}" alt="" width="400" height="200"
                  onerror="this.src='assets/images/default.jpg'" />
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-12">
-          <div class="form-group">
-            <label class="label">Image Alt Text</label>
-            <input type="text" nbInput fullWidth placeholder="Image Alt Text"
-                   autocomplete="off"
-                   name="image_alt"
-                   [(ngModel)]="propertyImage.image_alt"
-                   #image_alt="ngModel"
-                   [status]="image_alt.dirty ? (image_alt.invalid  ? 'danger' : 'success') : 'basic'">
-          </div>
-          <div class="form-group">
-            <button type="button" (click)="updateImageAlt()" nbButton class="btn btn-sm btn-outline-secondary"
-                    [nbSpinner]="loadingImageAlt" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
-              <nb-icon icon="save-outline"></nb-icon>UPDATE
-            </button>
-          </div>
-        </div>
-
+      <!--<div class="row">-->
+      <!--<div class="col-12">-->
+      <div class="form-group">
+        <label class="label">Image Alt Text</label>
+        <input type="text" nbInput fullWidth placeholder="Image Alt Text"
+               autocomplete="off"
+               name="image_alt"
+               [(ngModel)]="propertyImage.image_alt"
+               #image_alt="ngModel"
+               [status]="image_alt.dirty ? (image_alt.invalid  ? 'danger' : 'success') : 'basic'">
       </div>
+
+      <div class="form-group">
+        <label class="label">Category</label>
+        <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                   name="category"
+                   [(ngModel)]="propertyImage.categoryid"
+                   #category="ngModel" (selectedChange)="loadsubcategory()">
+          <nb-option value={{item.id}} *ngFor="let item of categorylist">{{item.category_name}}</nb-option>
+        </nb-select>
+      </div>
+
+      <div class="form-group" *ngIf="subcategorylist.length>0">
+        <label class="label">Subcategory</label>
+        <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                   name="subcategory"
+                   [(ngModel)]="propertyImage.subcategoryid"
+                   #subcategory="ngModel">
+          <nb-option value={{item.id}} *ngFor="let item of subcategorylist">{{item.category_name}}</nb-option>
+        </nb-select>
+      </div>
+
+      <div class="form-group" *ngIf="propertyImage.categoryid==2">
+        <label class="label">Room</label>
+        <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                   name="roomid"
+                   [(ngModel)]="propertyImage.roomid"
+                   #roomid="ngModel">
+          <nb-option value={{item.id}} *ngFor="let item of rooms">{{item.title}}</nb-option>
+        </nb-select>
+      </div>
+
+      <div class="form-group">
+        <button type="button" (click)="updateImageAlt()" nbButton class="btn btn-sm btn-outline-secondary"
+                [nbSpinner]="loadingImageAlt" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>UPDATE
+        </button>
+      </div>
+      <!--</div>-->
+      <!--</div>-->
 
     </nb-card-body>
     <nb-card-footer>
@@ -1846,6 +1881,71 @@
 
 
     </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #mediaDialogNew let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      <div class="row">
+        <div class="col-md-10">{{data.title}}</div>
+        <div class="col-md-2">
+          <button type="button" (click)="ref.close()" nbButton class="btn btn-sm btn-outline-secondary">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body class="res-card-contaier">
+
+      <form (ngSubmit)="uploadImages(file.files)" #mainNewChargeForm="ngForm" novalidate>
+
+        <div class="row">
+          <div class="col-md-4">Select images</div>
+          <div class="col-md-8">
+            <input type="file" #file placeholder="Choose files" multiple />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Category</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="category"
+                     [(ngModel)]="propertyImage.categoryid"
+                     #category="ngModel" (selectedChange)="loadsubcategory()">
+            <nb-option value={{item.id}} *ngFor="let item of categorylist">{{item.category_name}}</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Subcategory</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="subcategory"
+                     [(ngModel)]="propertyImage.subcategoryid"
+                     #subcategory="ngModel">
+            <nb-option value={{item.id}} *ngFor="let item of subcategorylist">{{item.category_name}}</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-group" *ngIf="propertyImage.categoryid==2">
+          <label class="label">Room</label>
+          <nb-select placeholder="[SELECT]" [fullWidth]="true"
+                     name="roomid"
+                     [(ngModel)]="propertyImage.roomid"
+                     #roomid="ngModel">
+            <nb-option value={{item.id}} *ngFor="let item of rooms">{{item.title}}</nb-option>
+          </nb-select>
+        </div>
+
+
+        <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewChargeForm.invalid"
+                [nbSpinner]="loadingChargeSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>SAVE
+        </button>
+      </form>
+
+
+    </nb-card-body>
   </nb-card>
 </ng-template>
 
