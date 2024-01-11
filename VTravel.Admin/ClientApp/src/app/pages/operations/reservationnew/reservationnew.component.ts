@@ -417,7 +417,6 @@ export class ReservationnewComponent implements OnInit {
   displayInventories() {
     var events = [];
     for (let i = 0; i < this.inventories.length; i++) {
-
       events.push(
         {
           id: this.inventories[i].id,

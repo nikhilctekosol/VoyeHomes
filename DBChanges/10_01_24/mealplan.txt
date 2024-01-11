@@ -1,0 +1,3 @@
+INSERT INTO `vtravel_uat`.`mealplans` (`mealplan`) VALUES ('EP');
+INSERT INTO `vtravel_uat`.`mealplans` (`mealplan`) VALUES ('MAP');
+INSERT INTO `vtravel_uat`.`mealplans` (`mealplan`) VALUES ('AP');
