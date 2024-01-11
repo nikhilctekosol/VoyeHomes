@@ -66,8 +66,11 @@
           <a nbButton class="btn btn-sm btn-outline-primary" (click)="exportToExcel()">
             Export to excel
           </a>
-          <a nbButton class="btn btn-sm btn-outline-danger pull-right" (click)="getsheet()">
+          <a nbButton class="btn btn-sm btn-outline-danger pull-right" *ngIf="isapproved=='N'" (click)="getsheet()">
             Generate Sheet
+          </a>
+          <a nbButton class="btn btn-sm btn-outline-danger pull-right" *ngIf="isapproved=='Y'" (click)="view()">
+            View
           </a>
         </div>
         <table class="table table-striped custom-table" id="tblData">

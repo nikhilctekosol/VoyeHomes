@@ -171,6 +171,14 @@ export class PagesComponent {
                   title: 'Availability',
                   link: '/pages/reports/availability',
                 },
+                {
+                  title: 'Settlement',
+                  link: '/pages/reports/settlement',
+                },
+                {
+                  title: 'Settlement Approval',
+                  link: '/pages/reports/sheetapproval',
+                }
               ],
 
             },

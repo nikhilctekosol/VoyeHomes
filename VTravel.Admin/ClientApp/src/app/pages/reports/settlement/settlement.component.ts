@@ -27,6 +27,9 @@ export class SettlementComponent implements OnInit {
   loadingSave = false;
   dialogRef: any;
   monthlist: any;
+  id: string;
+  isapproved: string;
+  html: string;
   @ViewChild('autoInput') input;
   constructor(private http: HttpClient, private router: Router, private authService: NbAuthService
     , private toastrService: NbToastrService, private dialogService: NbDialogService) {
@@ -168,6 +171,19 @@ export class SettlementComponent implements OnInit {
         if (res.actionStatus == 'SUCCESS') {
 
           this.settlementdata = res.data;
+
+          this.http.get('api/reports/get-sheet-status?id=' + this.searchdata.property
+            + '&fromdate=' + this.formatDate(this.searchdata.fromDate)
+            + '&todate=' + this.formatDate(this.searchdata.toDate)
+            , { headers: headers }).subscribe((res: any) => {
+
+              if (res.actionStatus == 'SUCCESS') {
+
+                this.id = res.data.split('&&')[0];
+                this.isapproved = res.data.split('&&')[1] == '' ? 'N' : res.data.split('&&')[1];
+                this.html = res.data.split('&&')[2];
+              }
+            });
         }
         else {
 
@@ -252,31 +268,24 @@ export class SettlementComponent implements OnInit {
       + '&todate=' + this.formatDate(this.searchdata.toDate)
       , { headers: headers }).subscribe((res: any) => {
         if (res.actionStatus == 'SUCCESS') {
+          if (res.data != '') {
+            this.loadingSave = false;
+            var win = window.open('', '', 'height=700,width=700');
 
-          var win = window.open('', '', 'height=700,width=700');
+            win.document.write(res.data);
 
-          win.document.write(res.data);
+            win.document.close();
 
-          win.document.close();
+            setTimeout(function () {
+              win.print();
+              win.close();
+            }, 250);
+          }
+          else {
 
-          setTimeout(function () {
-            win.print();
-            win.close();
-          }, 250);
-
-          ////this.historydata = new Historydata();
-          //this.historydata.propertyid = this.searchdata.property.toString();
-          //this.historydata.fromDate = this.formatDate(this.searchdata.fromDate);
-          //this.historydata.toDate = this.formatDate(this.searchdata.toDate);
-          ////this.historydata.html = res.data;
-
-
-          //alert(JSON.stringify(this.historydata));
-
-          //this.http.put('api/reports/update-sheet-history'
-          //  , this.historydata, { headers: headers }).subscribe((res: any) => {
-
-          //  });
+            this.loadingSave = false;
+            this.toast('Error', 'No data found!', 'danger');
+          }
 
         }
         else {
@@ -293,6 +302,20 @@ export class SettlementComponent implements OnInit {
             this.router.navigate(['auth/login']);
           }
         });
+  }
+
+  view() {
+
+    var win = window.open('', '', 'height=700,width=700');
+
+    win.document.write(this.html);
+
+    win.document.close();
+
+    setTimeout(function () {
+      win.print();
+      win.close();
+    }, 250);
   }
 
   toast(title, message, status: NbComponentStatus) {

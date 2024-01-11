@@ -1,0 +1,75 @@
+<div class="row">
+  <div class="col-md-12">
+    <nb-card>
+      <nb-card-header>
+        <div class="row">
+          <div class="col-md-4">
+            Settlement Report
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-md-4">
+            <input #autoInput
+                   nbInput
+                   [(ngModel)]="selectedPropertyName"
+                   type="text"
+                   (input)="onChange()"
+                   placeholder="[SELECT PROPERTY]"
+                   [nbAutocomplete]="auto"
+                   [fullWidth]="true" />
+
+            <nb-autocomplete #auto (selectedChange)="onPropSelectionChange($event)">
+
+              <nb-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+                {{ option.title }}
+              </nb-option>
+
+
+            </nb-autocomplete>
+          </div>
+          <div class="col-md-1">
+            <a nbButton class="btn btn-sm btn-outline-primary" (click)="search()">
+              <nb-icon icon="search-outline"></nb-icon>
+            </a>
+          </div>
+        </div>
+
+      </nb-card-body>
+    </nb-card>
+
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <nb-card style="overflow:auto;">
+      <nb-card-body style="max-width:82vw; max-height:68vh;">
+        <table class="table table-striped custom-table" id="tblData">
+          <thead>
+            <tr>
+              <th scope="col">Property</th>
+              <th scope="col">Month</th>
+              <th scope="col">Host Share</th>
+              <th scope="col">Last Updated</th>
+              <th scope="col">Approved On</th>
+              <th scope="col">View</th>
+              <th scope="col">Approve</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let option of historylist">
+              <td scope="row">{{ option.property }}</td>
+              <td scope="row">{{ option.fromDate | date: 'MMM yy' }}</td>
+              <td scope="row">{{ option.host_share | number:'1.2-2' }}</td>
+              <td scope="row">{{ option.updated_on }}</td>
+              <td scope="row">{{ option.approved_on }}</td>
+              <td scope="row"><a nbButton class="btn btn-sm btn-outline-primary" (click)="view(option.id)"> View </a></td>
+              <td scope="row"><a *ngIf="option.is_approved=='N'" nbButton class="btn btn-sm btn-outline-danger" (click)="approve(option.id)"> Approve </a><span *ngIf="option.is_approved=='Y'">Approved</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

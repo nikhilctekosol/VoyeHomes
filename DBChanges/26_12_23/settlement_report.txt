@@ -1,0 +1,68 @@
+USE `vtravel`;
+DROP procedure IF EXISTS `settlement_report`;
+
+USE `vtravel`;
+DROP procedure IF EXISTS `vtravel`.`settlement_report`;
+;
+
+DELIMITER $$
+USE `vtravel`$$
+CREATE PROCEDURE `settlement_report`(IN `propertyId` INT, IN `dtfrom` VARCHAR(50), IN `dtto` VARCHAR(50))
+BEGIN
+	DECLARE n INT DEFAULT 0;
+	DECLARE i INT DEFAULT 0;
+    
+    CREATE TEMPORARY TABLE temp_rooms (
+		  slno int primary key,
+		  room_id int,
+		  room varchar(100),
+		  booking_id int,
+		  min_rent decimal(18,2),
+		  no_of_nights int,
+		  booking_amount decimal(18,2),
+		  is_gst varchar(10),
+		  gst_percent decimal(18,2),
+		  gst_amount decimal(18,2),
+		  no_of_guests int
+		);
+
+		insert into temp_rooms
+		select ROW_NUMBER() OVER(ORDER BY r.id) slno, rm.id room_id, rm.title room, r.id reservation_id, rm.base_rate
+		, datediff(rr.to_date, rr.from_date) no_of_nights, rr.amount, case when IFNULL(p.is_gst, 0) = 0 then 'No' else 'Yes' end is_gst, ts.tax
+		, ROUND(rr.amount * ts.tax / (100 + ts.tax),2) gst, rr.years06 + rr.years612 + rr.years12 no_of_guests
+		from reservation r
+		left join reserve_rooms rr on rr.reservation_id = r.id
+		left join property p on p.id = r.property_id
+		left join room rm on rm.id = rr.room_id
+		left join tax_slab ts on ts.from <= (rr.amount / datediff(rr.to_date, rr.from_date)) and ts.to >= (rr.amount / datediff(rr.to_date, rr.from_date)) and ts.is_active = 'Y'
+		where r.created_on between dtfrom and dtto and r.is_active = 'Y' and (rm.property_id = propertyId or propertyId = 0);
+        
+        
+        
+		select r.id reservation_id, r.created_on, p.id property_id, p.title property, bc.id channel_id, bc.channel_name, d.id destination_id, d.title destination, SUM(no_of_nights) no_of_nights
+        , r.cust_name, IFNULL(c.country_name, 'India') nationality, r.cust_email, r.cust_phone, r.res_status, COUNT(tr.booking_id) no_of_units, SUM(tr.min_rent * tr.no_of_nights) agreed_rent, r.final_amount booking_amount
+        , IFNULL(r.commission, 0) commission, case when IFNULL(p.is_gst, 0) = 0 then 'No' else 'Yes' end is_gst, SUM(tr.gst_amount) gst, SUM(tr.no_of_guests) no_of_guests
+        , r.final_amount - IFNULL(r.commission, 0) rent_after_ota, case when (r.final_amount - IFNULL(r.commission, 0)) > SUM(tr.min_rent * tr.no_of_nights) then (r.final_amount - IFNULL(r.commission, 0))
+        else SUM(tr.min_rent * tr.no_of_nights) end higher_eligible, case when (r.final_amount - IFNULL(r.commission, 0)) > SUM(tr.min_rent * tr.no_of_nights) then 0
+        else SUM(tr.min_rent * tr.no_of_nights) - (r.final_amount - IFNULL(r.commission, 0)) end shortage, ROUND(case when IFNULL(p.is_gst, 0) = 1 then (case when (r.final_amount - IFNULL(r.commission, 0)) > SUM(tr.min_rent * tr.no_of_nights) then (r.final_amount - IFNULL(r.commission, 0))
+        else SUM(tr.min_rent * tr.no_of_nights) end) * pd.percentage / 100 else ((case when (r.final_amount - IFNULL(r.commission, 0)) > SUM(tr.min_rent * tr.no_of_nights) then (r.final_amount - IFNULL(r.commission, 0))
+        else SUM(tr.min_rent * tr.no_of_nights) end) - SUM(tr.gst_amount)) * pd.percentage / 100 end,2) host_share, ROUND(case when IFNULL(p.is_gst, 0) = 1 then (case when (r.final_amount - IFNULL(r.commission, 0)) > SUM(tr.min_rent * tr.no_of_nights) then (r.final_amount - IFNULL(r.commission, 0))
+        else SUM(tr.min_rent * tr.no_of_nights) end) * (100 - pd.percentage) / 100 else ((case when (r.final_amount - IFNULL(r.commission, 0)) > SUM(tr.min_rent * tr.no_of_nights) then (r.final_amount - IFNULL(r.commission, 0))
+        else SUM(tr.min_rent * tr.no_of_nights) end) - SUM(tr.gst_amount)) * (100 - pd.percentage) / 100 end,2) voye_comm, IFNULL(r.discount, 0) discount, ROUND((case when IFNULL(p.is_gst, 0) = 1 then (case when (r.final_amount - IFNULL(r.commission, 0)) > SUM(tr.min_rent * tr.no_of_nights) then (r.final_amount - IFNULL(r.commission, 0))
+        else SUM(tr.min_rent * tr.no_of_nights) end) * (100 - pd.percentage) / 100 else ((case when (r.final_amount - IFNULL(r.commission, 0)) > SUM(tr.min_rent * tr.no_of_nights) then (r.final_amount - IFNULL(r.commission, 0))
+        else SUM(tr.min_rent * tr.no_of_nights) end) - SUM(tr.gst_amount)) * (100 - pd.percentage) / 100 end) - (case when (r.final_amount - IFNULL(r.commission, 0)) > SUM(tr.min_rent * tr.no_of_nights) then 0
+        else SUM(tr.min_rent * tr.no_of_nights) - (r.final_amount - IFNULL(r.commission, 0)) end) - IFNULL(r.discount, 0),2) voye_share, r.advancepayment, r.partpayment, r.balancepayment
+        from temp_rooms tr
+        left join reservation r on r.id = tr.booking_id
+        left join property p on p.id = r.property_id
+		left join booking_channel bc on bc.id = r.booking_channel_id
+		left join destination d on d.id = p.destination_id
+		left join country c on c.country_code = r.country
+        left join profit_details pd on pd.property_id = r.property_id and r.booking_channel_id = pd.channel_id
+        group by r.id;
+        
+		drop TEMPORARY TABLE temp_rooms;
+END$$
+
+DELIMITER ;
+;
