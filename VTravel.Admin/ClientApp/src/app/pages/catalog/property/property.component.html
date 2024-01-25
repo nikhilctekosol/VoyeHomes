@@ -1092,7 +1092,7 @@
 </ng-template>
 
 <ng-template #imageDialog let-data let-ref="dialogRef">
-  <nb-card>
+  <nb-card style="max-height:500px; overflow:auto;">
     <nb-card-header>
       <div class="row">
         <div class="col-md-10">{{data.title}}</div>
@@ -1154,21 +1154,21 @@
         </nb-select>
       </div>
 
-      <div class="form-group">
-        <button type="button" (click)="updateImageAlt()" nbButton class="btn btn-sm btn-outline-secondary"
-                [nbSpinner]="loadingImageAlt" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
-          <nb-icon icon="save-outline"></nb-icon>UPDATE
-        </button>
-      </div>
+      
+      
       <!--</div>-->
       <!--</div>-->
 
     </nb-card-body>
     <nb-card-footer>
-      <button type="button" (click)="deleteImage(propertyImage.id)" nbButton class="btn btn-sm btn-outline-primary"
-              [nbSpinner]="loadingImageDelete" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
-        <nb-icon icon="trash-outline"></nb-icon>DELETE
-      </button>
+        <button type="button" (click)="updateImageAlt()" nbButton class="btn btn-sm btn-outline-secondary pull-left"
+                [nbSpinner]="loadingImageAlt" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="save-outline"></nb-icon>UPDATE
+        </button>
+        <button type="button" (click)="deleteImage(propertyImage.id)" nbButton class="btn btn-sm btn-outline-primary" style="float:right;"
+                [nbSpinner]="loadingImageDelete" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
+          <nb-icon icon="trash-outline"></nb-icon>DELETE
+        </button>
     </nb-card-footer>
   </nb-card>
 </ng-template>
@@ -1418,6 +1418,19 @@
         </div>
 
         <div class="form-group">
+          <label class="label">Mealplans</label>
+          <div *ngFor="let item of meallist">
+            <!--<input type="checkbox" [checked]="item.checked" (checkedChange)="toggleoccupancy($event,item.id)" [(ngModel)]="item.checked">{{item.title}}-->
+
+            <nb-checkbox [checked]="item.check" (checkedChange)="togglemeals($event,item.id)">
+              {{item.mealplan}}
+            </nb-checkbox>
+          </div>
+
+
+        </div>
+
+        <div class="form-group">
           <label class="label">Normal Occupancy</label>
           <input type="number" nbInput fullWidth placeholder="Normal Occupancy"
                  autocomplete="off"
@@ -1447,37 +1460,37 @@
                  [status]="maxchildren.dirty ? (maxchildren.invalid  ? 'danger' : 'success') : 'basic'">
         </div>
         <!--<div class="form-group">
-          <label class="label">Rate Slab</label>
-        </div>
-        <div class="form-group">
-          <label class="label">0 - 6 Years</label>
-          <input type="number" nbInput fullWidth placeholder="0-6 years"
-                 autocomplete="off"
-                 name="years06"
-                 [(ngModel)]="room.years06"
-                 required #years06="ngModel"
-                 [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
+    <label class="label">Rate Slab</label>
+  </div>
+  <div class="form-group">
+    <label class="label">0 - 6 Years</label>
+    <input type="number" nbInput fullWidth placeholder="0-6 years"
+           autocomplete="off"
+           name="years06"
+           [(ngModel)]="room.years06"
+           required #years06="ngModel"
+           [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
 
-        </div>
-        <div class="form-group">
-          <label class="label">6 - 12 Years</label>
-          <input type="number" nbInput fullWidth placeholder="6-12 years"
-                 autocomplete="off"
-                 name="years612"
-                 [(ngModel)]="room.years612"
-                 required #years612="ngModel"
-                 [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
+  </div>
+  <div class="form-group">
+    <label class="label">6 - 12 Years</label>
+    <input type="number" nbInput fullWidth placeholder="6-12 years"
+           autocomplete="off"
+           name="years612"
+           [(ngModel)]="room.years612"
+           required #years612="ngModel"
+           [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
 
-        </div>
-        <div class="form-group">
-          <label class="label">Above 12 Years</label>
-          <input type="number" nbInput fullWidth placeholder="Above 12 years"
-                 autocomplete="off"
-                 name="years12"
-                 [(ngModel)]="room.years12"
-                 required #years12="ngModel"
-                 [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
-        </div>-->
+  </div>
+  <div class="form-group">
+    <label class="label">Above 12 Years</label>
+    <input type="number" nbInput fullWidth placeholder="Above 12 years"
+           autocomplete="off"
+           name="years12"
+           [(ngModel)]="room.years12"
+           required #years12="ngModel"
+           [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
+  </div>-->
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainNewRoomForm.invalid"
                 [nbSpinner]="loadingRoomSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
           <nb-icon icon="save-outline"></nb-icon>SAVE
@@ -1570,6 +1583,19 @@
         </div>
 
         <div class="form-group">
+          <label class="label">Mealplans</label>
+          <div *ngFor="let item of meallist">
+            <!--<input type="checkbox" [checked]="item.checked" (checkedChange)="toggleoccupancy($event,item.id)" [(ngModel)]="item.checked">{{item.title}}-->
+
+            <nb-checkbox [checked]="item.check" (checkedChange)="togglemeals($event,item.id)">
+              {{item.mealplan}}
+            </nb-checkbox>
+          </div>
+
+
+        </div>
+
+        <div class="form-group">
           <label class="label">Normal Occupancy</label>
           <input type="number" nbInput fullWidth placeholder="Normal Occupancy"
                  autocomplete="off"
@@ -1599,37 +1625,37 @@
                  [status]="maxchildren.dirty ? (maxchildren.invalid  ? 'danger' : 'success') : 'basic'">
         </div>
         <!--<div class="form-group">
-          <label class="label">Rate Slab</label>
-        </div>
-        <div class="form-group">
-          <label class="label">0 - 6 Years</label>
-          <input type="number" nbInput fullWidth placeholder="0-6 years"
-                 autocomplete="off"
-                 name="years06"
-                 [(ngModel)]="room.years06"
-                 required #years06="ngModel"
-                 [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
+    <label class="label">Rate Slab</label>
+  </div>
+  <div class="form-group">
+    <label class="label">0 - 6 Years</label>
+    <input type="number" nbInput fullWidth placeholder="0-6 years"
+           autocomplete="off"
+           name="years06"
+           [(ngModel)]="room.years06"
+           required #years06="ngModel"
+           [status]="years06.dirty ? (years06.invalid  ? 'danger' : 'success') : 'basic'">
 
-        </div>
-        <div class="form-group">
-          <label class="label">6 - 12 Years</label>
-          <input type="number" nbInput fullWidth placeholder="6-12 years"
-                 autocomplete="off"
-                 name="years612"
-                 [(ngModel)]="room.years612"
-                 required #years612="ngModel"
-                 [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
+  </div>
+  <div class="form-group">
+    <label class="label">6 - 12 Years</label>
+    <input type="number" nbInput fullWidth placeholder="6-12 years"
+           autocomplete="off"
+           name="years612"
+           [(ngModel)]="room.years612"
+           required #years612="ngModel"
+           [status]="years612.dirty ? (years612.invalid  ? 'danger' : 'success') : 'basic'">
 
-        </div>
-        <div class="form-group">
-          <label class="label">Above 12 Years</label>
-          <input type="number" nbInput fullWidth placeholder="Above 12 years"
-                 autocomplete="off"
-                 name="years12"
-                 [(ngModel)]="room.years12"
-                 required #years12="ngModel"
-                 [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
-        </div>-->
+  </div>
+  <div class="form-group">
+    <label class="label">Above 12 Years</label>
+    <input type="number" nbInput fullWidth placeholder="Above 12 years"
+           autocomplete="off"
+           name="years12"
+           [(ngModel)]="room.years12"
+           required #years12="ngModel"
+           [status]="years12.dirty ? (years12.invalid  ? 'danger' : 'success') : 'basic'">
+  </div>-->
 
         <button type="submit" nbButton class="btn btn-sm btn-outline-primary" [disabled]="mainRoomForm.invalid"
                 [nbSpinner]="loadingRoomSave" nbSpinnerStatus="primary" nbSpinnerSize="xsmall" nbSpinnerMessage="">
@@ -1885,7 +1911,7 @@
 </ng-template>
 
 <ng-template #mediaDialogNew let-data let-ref="dialogRef">
-  <nb-card>
+  <nb-card style="max-height:500px; overflow:auto;">
     <nb-card-header>
       <div class="row">
         <div class="col-md-10">{{data.title}}</div>
@@ -1917,7 +1943,7 @@
           </nb-select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" *ngIf="subcategorylist.length>0">
           <label class="label">Subcategory</label>
           <nb-select placeholder="[SELECT]" [fullWidth]="true"
                      name="subcategory"

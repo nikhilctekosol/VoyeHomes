@@ -166,7 +166,10 @@ namespace VTravel.Admin.Controllers
                             hostShare = Convert.ToDecimal(r["host_share"]),
                             voyeCommission = Convert.ToDecimal(r["voye_comm"]),
                             discount = Convert.ToDecimal(r["discount"]),
-                            voyeShare = Convert.ToDecimal(r["voye_share"])
+                            voyeShare = Convert.ToDecimal(r["voye_share"]),
+                            advance = r["advancepayment"].ToString() == "" ? 0 : Convert.ToDecimal(r["advancepayment"]),
+                            part = r["partpayment"].ToString() == "" ? 0 : Convert.ToDecimal(r["partpayment"]),
+                            balance = r["balancepayment"].ToString() == "" ? 0 : Convert.ToDecimal(r["balancepayment"])
                         }
                         );
 
@@ -413,9 +416,10 @@ namespace VTravel.Admin.Controllers
             MySqlHelper sqlHelper = new MySqlHelper();
 
 
-            var query = string.Format(@"select p.id,p.title,p.address,p.city,p.state,p.country,p.property_type_id,p.email,p.phone,d.title destination
+            var query = string.Format(@"select p.id,p.title,p.address,p.city,p.state,p.country,p.property_type_id,p.email,p.phone,d.title destination, p.is_gst, o.gst_no
                  ,p.room_count FROM property p 
                  left join destination d on d.id = p.destination_id 
+                 left join owner_master o on o.id = p.owner
                  WHERE p.id={0} ORDER BY p.sort_order;
                  select name, charge_type, amount, percentage from app_charges ac
                  where property_id = {0} and effective_from between '{1}' and '{2}'; 
@@ -561,6 +565,14 @@ namespace VTravel.Admin.Controllers
                     "</tr>           " +
                     "<tr style=\"height:15pt\">               " +
                     "<td bgcolor=\"#F1F1F1\">                   " +
+                    "<p>GST</p>               " +
+                    "</td>               " +
+                    "<td bgcolor=\"#F1F1F1\">                   " +
+                    "<p>" + (dsproperty.Tables[0].Rows[0]["is_gst"].ToString() == "0" ? "NA" : dsproperty.Tables[0].Rows[0]["gst_no"].ToString()) + "</p>               " +
+                    "</td>           " +
+                    "</tr>           " +
+                    "<tr style=\"height:15pt\">               " +
+                    "<td bgcolor=\"#F1F1F1\">                   " +
                     "<p>Total Occupancy Rate</p>               " +
                     "</td>               " +
                     "<td bgcolor=\"#F1F1F1\">                   " +
@@ -634,15 +646,18 @@ namespace VTravel.Admin.Controllers
 
                 if (dsproperty.Tables[3].Rows.Count > 0)
                 {
-                    tds = (hostshare * Convert.ToDecimal(dsproperty.Tables[3].Rows[0]["percentage"]) / 100);
-                    html = html + "<tr style=\"height:15pt\">               " +
-                            "<td style=\"border:1pt solid black;\">                   " +
-                            "<p class=\"s4\" style=\"padding-top: 1pt;padding-right: 4pt;text-indent: 0pt;line-height: 12pt;text-align: right;\">" + dsproperty.Tables[3].Rows[0]["name"].ToString() + "@" + dsproperty.Tables[3].Rows[0]["percentage"].ToString() + "%</p>               " +
-                            "</td>               " +
-                            "<td style=\"border:1pt solid black;\">                   " +
-                            "<p class=\"amount\">₹ " + tds.ToString("0.##") + "</p>               " +
-                            "</td>           " +
-                            "</tr>           ";
+                    if (ds.Tables[0].Rows[0]["is_gst"].ToString() == "No")
+                    {
+                        tds = (hostshare * Convert.ToDecimal(dsproperty.Tables[3].Rows[0]["percentage"]) / 100);
+                        html = html + "<tr style=\"height:15pt\">               " +
+                                "<td style=\"border:1pt solid black;\">                   " +
+                                "<p class=\"s4\" style=\"padding-top: 1pt;padding-right: 4pt;text-indent: 0pt;line-height: 12pt;text-align: right;\">" + dsproperty.Tables[3].Rows[0]["name"].ToString() + "@" + dsproperty.Tables[3].Rows[0]["percentage"].ToString() + "%</p>               " +
+                                "</td>               " +
+                                "<td style=\"border:1pt solid black;\">                   " +
+                                "<p class=\"amount\">₹ " + tds.ToString("0.##") + "</p>               " +
+                                "</td>           " +
+                                "</tr>           ";
+                    }
                 }
                 html = html + "<tr style=\"height:16pt\">               " +
                 "<td style=\"border:1pt solid black;\">                   " +
@@ -692,10 +707,10 @@ namespace VTravel.Admin.Controllers
                         "<p style=\" color: white;\">Total Units</p>               " +
                         "</th>               " +
                         "<th bgcolor=\"#001F5F\">                   " +
-                        "<p style=\" color: white;\">GST Amount</p>               " +
+                        "<p style=\" color: white;\">Booking Amount</p>               " +
                         "</th>               " +
                         "<th bgcolor=\"#001F5F\">                   " +
-                        "<p style=\" color: white;\">Booking Amount</p>               " +
+                        "<p style=\" color: white;\">GST Amount</p>               " +
                         "</th>               " +
                         "<th bgcolor=\"#001F5F\">                   " +
                         "<p style=\" color: white;\">Payment to Host</p>               " +
@@ -741,10 +756,10 @@ namespace VTravel.Admin.Controllers
                             "<p style=\"padding-right: 4pt;text-indent: 0pt;line-height: 12pt;text-align: right;\">" + dv.ToTable().Rows[j]["no_of_units"].ToString() + "</p>               " +
                             "</td>               " +
                             "<td style=\"border:1pt solid black;\">                   " +
-                            "<p style=\"padding-right: 4pt;text-indent: 0pt;line-height: 12pt;text-align: right;\">₹" + Convert.ToDecimal(dv.ToTable().Rows[j]["gst"]).ToString("F2") + "</p>               " +
+                            "<p style=\"padding-right: 4pt;text-indent: 0pt;line-height: 12pt;text-align: right;\">₹" + Convert.ToDecimal(dv.ToTable().Rows[j]["booking_amount"]).ToString("F2") + "</p>               " +
                             "</td>               " +
                             "<td style=\"border:1pt solid black;\">                   " +
-                            "<p style=\"padding-right: 4pt;text-indent: 0pt;line-height: 12pt;text-align: right;\">₹" + Convert.ToDecimal(dv.ToTable().Rows[j]["booking_amount"]).ToString("F2") + "</p>               " +
+                            "<p style=\"padding-right: 4pt;text-indent: 0pt;line-height: 12pt;text-align: right;\">₹" + Convert.ToDecimal(dv.ToTable().Rows[j]["gst"]).ToString("F2") + "</p>               " +
                             "</td>               " +
                             "<td style=\"border:1pt solid black;\">                   " +
                             "<p style=\"padding-right: 4pt;text-indent: 0pt;line-height: 12pt;text-align: right;\">₹" + Convert.ToDecimal(dv.ToTable().Rows[j]["host_share"]).ToString("F2") + "</p>               " +
@@ -770,10 +785,10 @@ namespace VTravel.Admin.Controllers
                         "<p style=\"text-indent: 0pt;text-align: left;\"><br /></p>               " +
                         "</td>               " +
                         "<td style=\"border:1pt solid black;\" bgcolor=\"#001F5F\">                   " +
-                        "<p class=\"amount\" style=\" color: white;\">₹" + gst.ToString("F2") + "</p>               " +
+                        "<p class=\"amount\" style=\" color: white;\">₹" + ba.ToString("F2") + "</p>               " +
                         "</td>               " +
                         "<td style=\"border:1pt solid black;\" bgcolor=\"#001F5F\">                   " +
-                        "<p class=\"amount\" style=\" color: white;\">₹" + ba.ToString("F2") + "</p>               " +
+                        "<p class=\"amount\" style=\" color: white;\">₹" + gst.ToString("F2") + "</p>               " +
                         "</td>               " +
                         "<td style=\"border:1pt solid black;\" bgcolor=\"#001F5F\">                   " +
                         "<p class=\"amount\" style=\" color: white;\">₹" + hs.ToString("F2") + "</p>               " +

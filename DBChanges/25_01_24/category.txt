@@ -1,0 +1,37 @@
+UPDATE `vtravel_uat`.`img_category` SET `category_name` = 'Activities' WHERE (`id` = '5');
+UPDATE `vtravel_uat`.`img_category` SET `category_name` = 'Nearby Attractions' WHERE (`id` = '6');
+UPDATE `vtravel_uat`.`img_category` SET `category_name` = 'People' WHERE (`id` = '7');
+
+UPDATE `vtravel_uat`.`img_subcategory` SET `subcategory_name` = 'Bedroom' WHERE (`id` = '1');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Kids Room', '2', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Private Pool', '2', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Plunge Pool', '2', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Sofa Bed', '2', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Bathtub', '2', 'Y');
+
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Building', '1', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Aerial View', '1', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Outside View', '1', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Facade', '1', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Others', '1', 'Y');
+
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Reception', '3', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Kitchen', '3', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Meals', '3', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Spa', '3', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Restaurant', '3', 'Y');
+
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Outdoor Area', '4', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Outdoor Dining', '4', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Common Area', '4', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Garden', '4', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Play Area', '4', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Party Area', '4', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Swimming Pool', '4', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Kids Pool', '4', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Parking Area', '4', 'Y');
+
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Caretaker', '7', 'Y');
+INSERT INTO `vtravel_uat`.`img_subcategory` (`subcategory_name`, `category_id`, `is_active`) VALUES ('Property Manager', '7', 'Y');
+
+

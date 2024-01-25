@@ -31,5 +31,8 @@ namespace VTravel.Admin.Models
         public decimal voyeCommission { get; set; }
         public decimal discount { get; set; }
         public decimal voyeShare { get; set; }
+        public decimal advance { get; set; }
+        public decimal part { get; set; }
+        public decimal balance { get; set; }
     }
 }

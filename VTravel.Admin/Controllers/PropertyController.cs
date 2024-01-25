@@ -1660,6 +1660,57 @@ namespace VTravel.Admin.Controllers
 
         }
 
+        [HttpGet, Route("get-room-meals")]
+        public IActionResult GetRoomMeals(int id)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                List<RoomMeals> mealList = new List<RoomMeals>();
+                MySqlHelper sqlHelper = new MySqlHelper();
+
+                var query = string.Format(@"select m.id, IFNULL(rm.room_id, {0}) room_id, m.mealplan, case when rm.id is null then 'false' else 'true' end checked from mealplans m
+                                            left join room_meals rm on m.id = rm.mealplan and rm.room_id = {0} ORDER BY m.id;", id);
+
+                DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+
+                    mealList.Add(
+                        new RoomMeals
+                        {
+                            id = Convert.ToInt32(r["id"].ToString()),
+                            roomid = Convert.ToInt32(r["room_id"].ToString()),
+                            mealplan = r["mealplan"].ToString(),
+                            check = r["checked"].ToString()
+                        }
+                        );
+
+                }
+
+
+                response.Data = mealList;
+                response.ActionStatus = "SUCCESS";
+
+
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
         [HttpGet, Route("get-room")]
         public IActionResult GetRoom(int propid, int id)
         {
@@ -1853,6 +1904,55 @@ namespace VTravel.Admin.Controllers
                         if (model[i].check == "true")
                         {
                             query = string.Format(@"INSERT INTO room_occupancy(room_id, occupancy) VALUES({0}, {1})",
+                            id, model[i].id);
+
+                            ds = sqlHelper.GetDatasetByMySql(query);
+                        }
+                    }
+                    response.ActionStatus = "SUCCESS";
+
+                }
+                else
+                {
+                    return BadRequest("Invalid room details");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.ActionStatus = "EXCEPTION";
+                response.Message = "Something went wrong";
+            }
+            return new OkObjectResult(response);
+
+
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpPut, Route("update-room-mealplan")]
+        public IActionResult UpdateRoomMealplan([FromBody] List<RoomMeals> model, int id)
+        {
+            ApiResponse response = new ApiResponse();
+            response.ActionStatus = "FAILURE";
+            response.Message = string.Empty;
+
+            try
+            {
+
+                if (model != null)
+                {
+                    MySqlHelper sqlHelper = new MySqlHelper();
+
+                    var query = string.Format(@"DELETE FROM room_meals WHERE room_id={0}",
+                           id);
+
+                    DataSet ds = sqlHelper.GetDatasetByMySql(query);
+
+                    for (int i = 0; i < model.Count; i++)
+                    {
+                        if (model[i].check == "true")
+                        {
+                            query = string.Format(@"INSERT INTO room_meals(room_id, mealplan) VALUES({0}, {1})",
                             id, model[i].id);
 
                             ds = sqlHelper.GetDatasetByMySql(query);

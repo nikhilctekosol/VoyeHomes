@@ -1,0 +1,10 @@
+CREATE TABLE `vtravel_uat`.`room_meals` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `room_id` INT NULL,
+  `mealplan` INT NULL,
+  PRIMARY KEY (`id`));
+
+
+
+insert into room_meals(room_id, mealplan)
+select id,1 from room where is_active = 'Y' and id not in (select room_id from room_meals);

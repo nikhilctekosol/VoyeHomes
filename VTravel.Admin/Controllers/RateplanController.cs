@@ -374,14 +374,16 @@ namespace VTravel.Admin.Controllers
                                             left join room r on r.property_id = rp.property_id
                                             inner join room_occupancy ro on ro.room_id = r.id
                                             inner join occupancy o on (o.id = ro.occupancy)
-                                            cross join mealplans m
+                                            inner join room_meals rm on rm.room_id = r.id
+                                            inner join mealplans m on m.id = rm.mealplan
                                             left join rateplan_breakup rb on rb.rateplan = rp.id and rb.room_id = r.id and o.id = rb.occupancy and m.id = rb.mealplan
                                             where rp.id = {0} order by r.id, m.id)  union 
                                             (select distinct IFNULL(rb.id, 0) id, r.id room_id, r.title room, m.id mealid, m.mealplan, o.id occid, o.occupancy, IFNULL(rb.rate, 0) rate
                                             from rateplans rp
                                             left join room r on r.property_id = rp.property_id
                                             inner join occupancy o on ( o.is_default = 'Y')
-                                            cross join mealplans m
+                                            inner join room_meals rm on rm.room_id = r.id
+                                            inner join mealplans m on m.id = rm.mealplan
                                             left join rateplan_breakup rb on rb.rateplan = rp.id and rb.room_id = r.id and o.id = rb.occupancy and m.id = rb.mealplan
                                             where rp.id = {0} order by r.id) order by room_id, mealid;"
                                    , id);

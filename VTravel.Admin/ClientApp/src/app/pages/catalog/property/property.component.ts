@@ -76,6 +76,7 @@ export class PropertyComponent implements OnInit  {
   rooms: any[];
   occupancylist: any[];
   occupancylist1: Occupancy[];
+  meallist: Mealplan[];
 
   profitDetails: any[] = [];
   profitsharing = new ProfitSharing();
@@ -1700,6 +1701,7 @@ export class PropertyComponent implements OnInit  {
     this.room.maxchildren = 0;
     this.room.maxadults = 0;
     this.loadRoomOccupancy();
+    this.loadRoomMeals();
     this.roomDialogRef = this.dialogService.open(
       roomDialogNew,
       { context: { title: 'Add Room' } });
@@ -1726,6 +1728,7 @@ export class PropertyComponent implements OnInit  {
     // this.room.years12 = obj.years12;
 
     this.loadRoomOccupancy();
+    this.loadRoomMeals();
 
     this.roomDialogRef = this.dialogService.open(
       roomDialog,
@@ -1743,6 +1746,29 @@ export class PropertyComponent implements OnInit  {
         if (res.actionStatus == 'SUCCESS') {
           if (res.data.length > 0) {
             this.occupancylist1 = res.data;
+          }
+        }
+
+      },
+        error => {
+
+          console.log('api/property/get-room-occupancy', error)
+          if (error.status === 401) {
+            this.router.navigate(['auth/login']);
+          }
+        });
+
+  }
+
+  loadRoomMeals() {
+
+    let headers = new HttpHeaders().set("Authorization", "Bearer " +
+      this.token).set("Content-Type", "application/json");
+    this.http.get('api/property/get-room-meals?id=' + this.room.id
+      , { headers: headers }).subscribe((res: any) => {
+        if (res.actionStatus == 'SUCCESS') {
+          if (res.data.length > 0) {
+            this.meallist = res.data;
           }
         }
 
@@ -1781,8 +1807,12 @@ export class PropertyComponent implements OnInit  {
 
         if (res.actionStatus === 'SUCCESS') {
 
-            this.http.put('api/property/update-room-occupancy?id=' + res.message
+          this.http.put('api/property/update-room-occupancy?id=' + res.message
             , this.occupancylist1, { headers: headers }).subscribe((res: any) => {
+
+            });
+          this.http.put('api/property/update-room-mealplan?id=' + res.message
+            , this.meallist, { headers: headers }).subscribe((res: any) => {
 
             });
 
@@ -1833,6 +1863,10 @@ export class PropertyComponent implements OnInit  {
             , this.occupancylist1, { headers: headers }).subscribe((res: any) => {
 
             });
+          this.http.put('api/property/update-room-mealplan?id=' + this.room.id
+            , this.meallist, { headers: headers }).subscribe((res: any) => {
+
+            });
 
           this.loadRooms();
           this.loadingRoomSave = false;
@@ -1869,12 +1903,23 @@ export class PropertyComponent implements OnInit  {
     let attr = this.occupancylist1.find(_attr => _attr.id == id);
 
     if (checked) {
-      attr.check = 'true' ;
+      attr.check = 'true';
     }
     else {
       attr.check = 'false';
     }
     this.maxchange();
+  }
+
+  togglemeals(checked: boolean, id) {
+    let attr = this.meallist.find(_attr => _attr.id == id);
+
+    if (checked) {
+      attr.check = 'true';
+    }
+    else {
+      attr.check = 'false';
+    }
   }
   deleteRoom() {
 
@@ -2445,11 +2490,20 @@ class Room {
 
 class Occupancy {
 
-  id: number ;
+  id: number;
   room_id: number;
-  occupancy: string ;
-  check: string ;
+  occupancy: string;
+  check: string;
   occcount: number;
+
+}
+
+class Mealplan {
+
+  id: number;
+  room_id: number;
+  mealplan: string;
+  check: string;
 
 }
 

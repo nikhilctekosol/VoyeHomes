@@ -100,6 +100,8 @@
               <th scope="col">Voye Commission</th>
               <th scope="col">Discount</th>
               <th scope="col">Voye Share</th>
+              <th scope="col">Payment @ Voye</th>
+              <th scope="col">Payment @ Property</th>
               <!--<th scope="col">View</th>-->
             </tr>
           </thead>
@@ -129,6 +131,8 @@
               <td scope="row">{{ option.voyeCommission }}</td>
               <td scope="row">{{ option.discount }}</td>
               <td scope="row">{{ option.voyeShare }}</td>
+              <td scope="row">{{ option.advance + option.part }}</td>
+              <td scope="row">{{ option.balance }}</td>
               <!--<td scope="row">
                 <a nbButton class="btn btn-sm btn-outline-primary" (click)="viewpopup(resDetails, option.res_id)">
                   <nb-icon icon="arrow-right"></nb-icon>
