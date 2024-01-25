@@ -63,11 +63,38 @@ $(function () {
         });
     }
 
+    $('.carousel-room .carousel').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        centerMode: true,
+        autoplay: false,
+        autoplaySpeed: 5000,
+        centerPadding: '0px',
+        arrows: true,
+        dots: false,
+        responsive: [
+            {
+                breakpoint: 1200,
+                settings: {
+                    centerPadding: '0px',
+                    slidesToShow: 1
+                }
+            },
+            {
+                breakpoint: 768,
+                settings: {
+                    centerPadding: '0px',
+                    slidesToShow: 1
+                }
+            }
+        ]
+    });
+
     // Slick lightbox
     if ($('.lightbox').length > 0) {
         $('.lightbox').slickLightbox({
             itemSelector: 'a.open-lightbox',
-            caption: 'caption',
+            caption: function (element, info) { return $(element).find('img').attr('caption'); },
             navigateByKeyboard: true,
             layouts: {
                 closeButton: '<button class="btn close"><i class="fas fa-times"></i></button>'

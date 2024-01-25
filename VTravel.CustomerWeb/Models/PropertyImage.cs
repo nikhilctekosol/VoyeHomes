@@ -14,6 +14,12 @@ namespace VTravel.CustomerWeb.Models
         public string image_alt { get; set; }
         
         public int sortOrder { get; set; }
+        public int categoryid { get; set; }
+        public int subcategoryid { get; set; }
+        public int roomid { get; set; }
+        public string category { get; set; }
+        public string subcategory { get; set; }
+        public string room { get; set; }
     }
   
 }

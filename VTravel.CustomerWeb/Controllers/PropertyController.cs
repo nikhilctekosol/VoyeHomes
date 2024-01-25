@@ -56,9 +56,13 @@ namespace VTravel.CustomerWeb.Controllers
                             ,'imageList',(SELECT CAST(CONCAT('[',
                                     GROUP_CONCAT(
                                       JSON_OBJECT(
-                                        'id',im.id,'url',im.url,'image_alt',im.image_alt,'sortOrder',im.sort_order)),
+                                        'id',im.id,'url',im.url,'image_alt',im.image_alt,'sortOrder',im.sort_order,'categoryid',IFNULL(im.category,0),'subcategoryid',IFNULL(im.subcategory,0),'roomid',IFNULL(im.room,0)
+                                        ,'category',IFNULL(c.category_name,''),'subcategory',IFNULL(sc.subcategory_name,''),'room',IFNULL(r.title,''))),
                                     ']')
-                             AS JSON) from property_image im where im.property_id = p.id ORDER BY im.sort_order) 
+                             AS JSON) from property_image im
+                             left join img_category c on c.id = im.category 
+                             left join img_subcategory sc on sc.id = im.subcategory
+                             left join room r on r.id = im.room where im.property_id = p.id ORDER BY im.sort_order) 
 
                             ,'attributeList',(SELECT CAST(CONCAT('[',
                                     GROUP_CONCAT(
@@ -78,7 +82,15 @@ namespace VTravel.CustomerWeb.Controllers
                                       JSON_OBJECT(
                                         'id',ac.id,'name',ac.contact_name,'contact',ac.contact_no)),
                                     ']')
-                             AS JSON) from property_contacts pc INNER JOIN alternate_contacts ac ON ac.id = pc.contact_id where pc.property_id = p.id))
+                             AS JSON)
+                             from property_contacts pc INNER JOIN alternate_contacts ac ON ac.id = pc.contact_id where pc.property_id = p.id)
+                             ,'roomList',(SELECT CAST(CONCAT('[',
+                                    GROUP_CONCAT(
+                                      JSON_OBJECT(
+                                        'id',r.id,'title',r.title,'noofrooms', r.noofrooms)),
+                                    ']')
+                             AS JSON)
+                             from room r where r.property_id = p.id and r.is_active = 'Y'))
                              
  
                            

@@ -1085,9 +1085,6 @@ footer {
     padding: 20px 20px 10px;
     margin-bottom: 20px;
 }
-.rooms .wrapper .card{
- border: 0px;
-}
 .rooms .wrapper img {
     border-radius: 10px;
 }
@@ -1112,32 +1109,6 @@ footer {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
 }
-.rooms .wrapper .propertySlide .slick-slider .slick-arrow.slick-next, .rooms .wrapper .propertySlide .slick-slider .slick-arrow.slick-prev{
-    background: transparent;
-}
-.rooms .wrapper .propertySlide .slick-slider .slick-arrow.slick-next{
-    right: 10px;
-    top: 40%;
-}
-.rooms .wrapper .propertySlide .slick-slider .slick-arrow.slick-prev {
-    left: 10px;
-    top: 40%;
-}
-.rooms .wrapper .propertySlide .slick-slider .slick-arrow:before {
-    color: #ffffff;
-}
-.slick-lightbox-slick-caption{
-    color: white;
-    border: 1px solid rgb(255 255 255 / 29%);
-    padding: 5px 10px;
-    border-radius: 100px;
-    background: rgb(255 255 255 / 29%);
-    position: relative;
-    top: 13px;
-}
-.slick-lightbox-slick-caption:empty {
-    display: none;
-  }
 
 @keyframes fadeInOpacity {
     0% {
@@ -4042,20 +4013,6 @@ textarea.form-control.message{
     }
 }
 @media (max-width: 768px){
-    .image-category{
-        overflow: scroll;
-    }
-    .image-category ul {
-        display: flex;
-        padding-top: 10px;
-    }
-    .image-category ul li {
-        margin: 0 3px;
-    }
-    .image-category ul li button{
-        width: 100px;
-        font-size: 12px;
-    }
     .propertyCaption .col-md-6.text-right {
         text-align: left !important;
         display: flex;

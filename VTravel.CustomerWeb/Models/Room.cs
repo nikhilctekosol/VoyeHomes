@@ -13,6 +13,8 @@ namespace VTravel.CustomerWeb.Models
         public string title { get; set; }
         public string description { get; set; }
         public string typeName { get; set; }
+        public int noofrooms { get; set; }
+        public decimal base_rate { get; set; }
         
 
     }

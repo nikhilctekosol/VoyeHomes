@@ -1,6 +1,5 @@
 ﻿@model PropertyViewModel
 
-
 <div class="container">
 
     <div class="breadCrumbs">
@@ -18,24 +17,48 @@
     <div class="carousel lightbox">
         @foreach (var img in Model.property.imageList)
         {
-<div class="card">
-    
-    <a href="@img.url" data-caption="" class="open-lightbox">
+            <div class="card @img.category.Replace(' ', '_')" data-caption="@img.category" >
+
+                <a href="@img.url" data-caption="" class="open-lightbox">
        
 
-                            <picture>
-                                <source media="(max-width: 320px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_320,c_scale/")">
-                                <source media="(max-width: 375px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_375,c_scale/")">
-                                <source media="(max-width: 414px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_414,c_scale/")">
-                                <source media="(max-width: 480px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_480,c_scale/")">
-                                <source media="(max-width: 600px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_600,c_scale/")">
-                                <img src="@img.url.Replace("/image/upload/","/image/upload/w_1280,f_auto,c_scale/")" alt="@img.image_alt"
-                                     onerror="this.src='/assets/img/default.jpg'" class="img-fluid">
-                            </picture>
-    </a>
-</div>                }
+                    <picture>
+                        <source media="(max-width: 320px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_320,c_scale/")">
+                        <source media="(max-width: 375px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_375,c_scale/")">
+                        <source media="(max-width: 414px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_414,c_scale/")">
+                        <source media="(max-width: 480px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_480,c_scale/")">
+                        <source media="(max-width: 600px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_600,c_scale/")">
+                        @if (@img.subcategory == "")
+                        {
+                            <img src="@img.url.Replace("/image/upload/","/image/upload/w_1280,f_auto,c_scale/")" alt="@img.image_alt" caption="@img.category" onerror="this.src='/assets/img/default.jpg'" class="img-fluid">
+                        }
+                        else{
+                            <img src="@img.url.Replace("/image/upload/","/image/upload/w_1280,f_auto,c_scale/")" alt="@img.image_alt" caption="@img.category - @img.subcategory" onerror="this.src='/assets/img/default.jpg'" class="img-fluid">
+                        }
+                                
+                    </picture>
+                </a>
+            </div>                
+        }
     </div>
-</div>}
+</div>
+
+
+
+        <div class="image-category">
+            <ul>
+                <li><button class="btn_cat active">All</button></li>
+                @foreach (var c in Model.property.imageList.Select(item => item.category).Distinct())
+                {
+                    if (@c != "") {
+
+                        <li><button class="btn_cat">@c</button></li>
+                    }
+                }
+
+            </ul>
+        </div>
+    }
     <div class="row ">
         <!-- Highlights -->
         <div class="col-md-12">
@@ -156,7 +179,55 @@
                     <a href="javascript:void(0);" class="see-more">See more...</a>
                     <a href="javascript:void(0);" class="see-less">...See less</a>
                 </div>}
+            <div class="rooms">
+                <div class="header">
+                    <h3>Rooms</h3>
+                </div>
+                <div class="row">
+                    @foreach (var room in Model.property.roomList)
+                    {
+                        <div class="col-md-6">
+                            <div class="wrapper" style="width:100%;">
+                                <div class="gallery">
+                                    <div class="carousel-room propertySlide">
+                                        <div class="carousel lightbox">
+                                            @foreach (var img in Model.property.imageList.Where(i => i.category == "Rooms" && i.room == room.title).ToList())
+                                            {
+                                                <div class="card @img.category" caption="@img.category">
 
+                                                    <a href="@img.url" data-caption="" caption="@img.room - @img.subcategory" class="open-lightbox">
+
+
+                                                        <picture>
+                                                            <source media="(max-width: 320px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_320,c_scale/")">
+                                                            <source media="(max-width: 375px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_375,c_scale/")">
+                                                            <source media="(max-width: 414px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_414,c_scale/")">
+                                                            <source media="(max-width: 480px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_480,c_scale/")">
+                                                            <source media="(max-width: 600px)" srcset="@img.url.Replace("/image/upload/", "/image/upload/w_600,c_scale/")">
+                                                            @if (@img.subcategory == "")
+                                                            {
+                                                            <img src="@img.url.Replace("/image/upload/","/image/upload/w_1280,f_auto,c_scale/")" alt="@img.image_alt" caption="@img.room"
+                                                                onerror="this.src='/assets/img/default.jpg'" class="img-fluid">
+                                                            }
+                                                            else
+                                                            {
+                                                                <img src="@img.url.Replace("/image/upload/","/image/upload/w_1280,f_auto,c_scale/")" alt="@img.image_alt" caption="@img.room - @img.subcategory"
+                                                                     onerror="this.src='/assets/img/default.jpg'" class="img-fluid">
+                                                            }
+                                                        </picture>
+                                                    </a>
+                                                    <h4>@img.room - @img.subcategory</h4>
+                                                    <div class="gray">@room.noofrooms rooms</div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
             @if (Model.property.attributeList != null)
             {<!--Accordion wrapper-->
                                 <div class="accordion" id="myAccordion">
@@ -173,9 +244,10 @@
                         </div>
                     </div>}
                                 </div> <!-- Accordion wrapper Ends -->            }
-
+            
 
         </div>
+
         <div class="col-md-4">
             @if (Model.property.amenityList != null)
             {
@@ -470,6 +542,23 @@
         initMap(@Model.property.latitude,@Model.property.longitude);
        
     };
+    
+    $(".btn_cat").click(function (event) {
+        var cat = event.target.innerText.replace(' ', '_');
+
+        $(".btn_cat").removeClass('active');
+        event.target.classList.add('active');
+
+        if (cat == 'All') {
+            $('.carousel2-1 .carousel').slick('slickUnfilter');
+        }
+        else {
+
+            $('.carousel2-1 .carousel').slick('slickUnfilter');
+
+            $('.carousel2-1 .carousel').slick('slickFilter', $('.carousel2-1 .carousel').find('.' + cat).parent().parent());
+        }
+    });
 </script>
 
 <script type="text/javascript">
