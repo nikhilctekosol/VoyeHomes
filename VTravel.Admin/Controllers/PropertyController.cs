@@ -1417,45 +1417,45 @@ namespace VTravel.Admin.Controllers
                     {
                         var guid = Guid.NewGuid().ToString();
                         var filePath = Path.Combine(_hostingEnvironment.WebRootPath, guid + file.FileName);
-                        //using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        //{
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
 
-                        //    await file.CopyToAsync(fileStream);
-                        //}
-
-
-                        //Account account = new Account(
-                        //     General.GetSettingsValue("cdy_cloud_name"),
-                        //     General.GetSettingsValue("cdy_api_key"),
-                        //     General.GetSettingsValue("cdy_api_secret"));
-                        //Cloudinary cloudinary = new Cloudinary(account);
+                            await file.CopyToAsync(fileStream);
+                        }
 
 
-                        //var uploadParams = new ImageUploadParams()
-                        //{
-                        //    File = new FileDescription(file.FileName, filePath),
-                        //    Folder = "property/" + id + "/image",
-                        //    Overwrite = true,
-                        //    PublicId = guid,
-                        //    Invalidate = true
-                        //};
+                        Account account = new Account(
+                             General.GetSettingsValue("cdy_cloud_name"),
+                             General.GetSettingsValue("cdy_api_key"),
+                             General.GetSettingsValue("cdy_api_secret"));
+                        Cloudinary cloudinary = new Cloudinary(account);
 
 
-                        //var uploadResult = cloudinary.Upload(uploadParams);
-                        //System.IO.File.Delete(filePath);
+                        var uploadParams = new ImageUploadParams()
+                        {
+                            File = new FileDescription(file.FileName, filePath),
+                            Folder = "property/" + id + "/image",
+                            Overwrite = true,
+                            PublicId = guid,
+                            Invalidate = true
+                        };
 
-                        //if (uploadResult.Url != null)
-                        //{
+
+                        var uploadResult = cloudinary.Upload(uploadParams);
+                        System.IO.File.Delete(filePath);
+
+                        if (uploadResult.Url != null)
+                        {
                             MySqlHelper sqlHelper = new MySqlHelper();
 
                             var query = string.Format(@"INSERT INTO property_image(property_id,url,public_id, category, subcategory, room) VALUES({0},'{1}','{2}', {3}, {4}, {5})",
-                                    id, "", guid, categoryid, subcategoryid, roomid);
+                                    id, uploadResult.SecureUrl, guid, categoryid, subcategoryid, roomid);
 
                             DataSet ds = sqlHelper.GetDatasetByMySql(query);
 
                             response.ActionStatus = "SUCCESS";
                             response.Data = new { id = id, file = "" };
-                        //}
+                        }
                     }
 
 
